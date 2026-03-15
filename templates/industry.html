@@ -1,0 +1,437 @@
+{% extends "base.html" %}
+{% block title %}Industries | Enmett{% endblock %}
+{% block meta_description %}Enmett combines SAP and technology expertise with sector-specific patterns, controls, and accelerators across six key industries.{% endblock %}
+{% block extra_css %}
+<style>
+    /* Page hero */
+    .pageHero { background: var(--primary); padding: 80px 0 96px; position: relative; overflow: hidden; }
+    .pageHero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 80% at 90% 30%, rgba(14,165,233,0.12) 0%, transparent 65%), radial-gradient(ellipse 40% 60% at 5% 80%, rgba(14,165,233,0.07) 0%, transparent 60%); }
+    .pageHero__grid { position: absolute; inset: 0; pointer-events: none; }
+    .pageHero__grid::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(14,165,233,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(14,165,233,0.04) 1px, transparent 1px); background-size: 56px 56px; mask-image: radial-gradient(ellipse 90% 90% at 50% 50%, black 20%, transparent 75%); }
+    .pageHero__inner { position: relative; z-index: 2; display: grid; grid-template-columns: 1fr 420px; gap: 60px; align-items: center; }
+    .pageHero__breadcrumb { display: flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 0.75rem; font-weight: 500; color: rgba(255,255,255,0.4); margin-bottom: 20px; }
+    .pageHero__breadcrumb a { color: rgba(255,255,255,0.4); transition: color 0.2s; }
+    .pageHero__breadcrumb a:hover { color: var(--accent-bright); }
+    .pageHero__breadcrumb-sep { opacity: 0.3; }
+    .pageHero__eyebrow { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 1rem; }
+    .pageHero__eyebrow::before { content: ''; display: inline-block; width: 18px; height: 2px; background: var(--accent); border-radius: 2px; }
+    .pageHero__title { font-family: var(--font-display); font-size: clamp(2.1rem,4vw,3.1rem); font-weight: 800; color: #fff; letter-spacing: -0.03em; line-height: 1.12; margin-bottom: 1.1rem; }
+    .pageHero__title em { font-style: normal; background: linear-gradient(135deg, var(--accent) 0%, var(--accent-bright) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .pageHero__sub { font-size: 1.02rem; color: rgba(255,255,255,0.5); max-width: 520px; line-height: 1.75; margin-bottom: 2rem; }
+    .pageHero__actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    /* Mosaic */
+    .heroMosaic { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(3, 88px); gap: 10px; }
+    .heroMosaicTile { border-radius: var(--r-md); overflow: hidden; position: relative; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end; padding: 14px; transition: transform 0.3s var(--ease-expo), box-shadow 0.3s; }
+    .heroMosaicTile:hover { transform: translateY(-3px) scale(1.01); box-shadow: 0 12px 32px rgba(0,0,0,0.4); }
+    .heroMosaicTile--wide { grid-column: span 2; }
+    .heroMosaicTile__bg { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0.28; transition: opacity 0.4s; }
+    .heroMosaicTile:hover .heroMosaicTile__bg { opacity: 0.42; }
+    .heroMosaicTile__overlay { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 30%, rgba(8,17,31,0.85) 100%); }
+    .heroMosaicTile__body { position: relative; z-index: 1; }
+    .heroMosaicTile__tag { font-family: var(--font-display); font-size: 0.65rem; font-weight: 600; color: var(--accent-bright); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 3px; }
+    .heroMosaicTile__name { font-family: var(--font-display); font-size: 0.8rem; font-weight: 700; color: #fff; }
+
+    /* Sector strip */
+    .sectorBand { background: var(--surface-muted); border-bottom: 1px solid var(--border); }
+    .sectorBandInner { display: flex; align-items: center; overflow-x: auto; scrollbar-width: none; }
+    .sectorBandInner::-webkit-scrollbar { display: none; }
+    .sectorBandItem { display: flex; align-items: center; gap: 10px; padding: 18px 28px; border-right: 1px solid var(--border); flex-shrink: 0; transition: background 0.2s; }
+    .sectorBandItem:last-child { border-right: none; }
+    .sectorBandItem:hover { background: #fff; }
+    .sectorBandItem__icon { width: 32px; height: 32px; border-radius: var(--r-sm); background: var(--accent-subtle); border: 1px solid var(--accent-border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .sectorBandItem__icon svg { color: var(--accent); }
+    .sectorBandItem__label { font-family: var(--font-display); font-size: 0.78rem; font-weight: 700; color: var(--text-primary); white-space: nowrap; }
+
+    /* Section head */
+    .sectionHead { padding: 72px 0 52px; }
+    .sectionHead__inner { display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; }
+    .sectionHead__copy { max-width: 560px; }
+    .sectionHead__copy h2 { margin-bottom: 10px; }
+    .sectionHead__copy p { font-size: 1rem; color: var(--text-secondary); }
+
+    /* Industry cards */
+    .industriesGrid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; padding-bottom: 100px; }
+
+    .industryCard { display: flex; flex-direction: column; border-radius: var(--r-lg); overflow: hidden; border: 1px solid var(--border); background: var(--surface); transition: transform 0.35s var(--ease-expo), box-shadow 0.35s var(--ease-expo), border-color 0.3s; position: relative; }
+    .industryCard:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); border-color: var(--accent-border); }
+    .industryCard::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--accent-bright)); transform: scaleX(0); transform-origin: left; transition: transform 0.4s var(--ease-expo); z-index: 2; }
+    .industryCard:hover::before { transform: scaleX(1); }
+
+    /* Image */
+    .industryCard__img { position: relative; overflow: hidden; height: 210px; }
+    .industryCard__img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s var(--ease-expo), filter 0.4s; filter: brightness(0.88) saturate(0.9); }
+    .industryCard:hover .industryCard__img img { transform: scale(1.06); filter: brightness(0.75) saturate(1.1); }
+    .industryCard__img::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(8,17,31,0.5) 100%); }
+    .industryCard__imgPlaceholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+    .industryCard__imgPlaceholder svg { opacity: 0.14; width: 72px; height: 72px; }
+    .industryCard__num { position: absolute; top: 16px; right: 16px; z-index: 2; font-family: var(--font-display); font-size: 0.68rem; font-weight: 800; color: rgba(255,255,255,0.5); letter-spacing: 0.08em; background: rgba(8,17,31,0.55); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.12); border-radius: 99px; padding: 4px 10px; transition: color 0.2s; }
+    .industryCard:hover .industryCard__num { color: var(--accent-bright); }
+    .industryCard__tag { position: absolute; bottom: 14px; left: 16px; z-index: 2; font-family: var(--font-display); font-size: 0.66rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent-bright); opacity: 0; transform: translateY(6px); transition: opacity 0.3s var(--ease-expo), transform 0.3s var(--ease-expo); }
+    .industryCard:hover .industryCard__tag { opacity: 1; transform: translateY(0); }
+
+    /* Body */
+    .industryCard__body { padding: 26px 28px 28px; flex: 1; display: flex; flex-direction: column; gap: 10px; }
+    .industryCard__header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .industryCard__icon { width: 40px; height: 40px; border-radius: var(--r-sm); flex-shrink: 0; background: var(--accent-subtle); border: 1px solid var(--accent-border); display: flex; align-items: center; justify-content: center; transition: background 0.25s, border-color 0.25s; }
+    .industryCard:hover .industryCard__icon { background: var(--accent); border-color: var(--accent); }
+    .industryCard:hover .industryCard__icon svg { color: #fff; }
+    .industryCard__icon svg { color: var(--accent); transition: color 0.25s; }
+    .industryCard__name { font-family: var(--font-display); font-size: 1.1rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.02em; transition: color 0.2s; }
+    .industryCard:hover .industryCard__name { color: var(--accent); }
+    .industryCard__desc { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7; flex: 1; }
+    .industryCard__caps { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+    .industryCard__cap { font-family: var(--font-display); font-size: 0.68rem; font-weight: 600; color: var(--text-muted); background: var(--surface-muted); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 4px 9px; transition: all 0.18s; }
+    .industryCard:hover .industryCard__cap { color: var(--accent); background: var(--accent-subtle); border-color: var(--accent-border); }
+    .industryCard__cta { display: inline-flex; align-items: center; gap: 7px; margin-top: 6px; font-family: var(--font-display); font-size: 0.82rem; font-weight: 700; color: var(--text-muted); transition: color 0.2s, gap 0.2s; }
+    .industryCard__cta svg { transition: transform 0.2s; }
+    .industryCard:hover .industryCard__cta { color: var(--accent); gap: 10px; }
+    .industryCard:hover .industryCard__cta svg { transform: translateX(2px); }
+
+    /* CTA band */
+    .ctaBand { background: var(--primary); padding: 80px 0; position: relative; overflow: hidden; margin-top: 40px; }
+    .ctaBand::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--accent), var(--accent-bright), var(--accent), transparent); }
+    .ctaBand::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 80% at 80% 50%, rgba(14,165,233,0.1) 0%, transparent 65%); }
+    .ctaBandInner { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: center; }
+    .ctaBand__eyebrow { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 12px; font-family: var(--font-display); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); }
+    .ctaBand__eyebrow::before { content: ''; width: 18px; height: 2px; background: var(--accent); border-radius: 2px; }
+    .ctaBand h2 { font-size: clamp(1.6rem,3vw,2.2rem); color: #fff; margin-bottom: 12px; }
+    .ctaBand p { font-size: 1rem; color: rgba(255,255,255,0.45); max-width: 500px; line-height: 1.75; }
+    .ctaBand__actions { display: flex; gap: 12px; flex-direction: column; align-items: flex-end; flex-shrink: 0; }
+
+    /* Responsive */
+    @media (max-width: 1024px) { .industriesGrid { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width: 960px) {
+      .pageHero__inner { grid-template-columns: 1fr; }
+      .heroMosaic { display: none; }
+      .sectionHead__inner { flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 600px) {
+      .industriesGrid { grid-template-columns: 1fr; }
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+  <!-- PAGE HERO -->
+  <div class="pageHero">
+    <div class="pageHero__grid" aria-hidden="true"></div>
+    <div class="container">
+      <div class="pageHero__inner">
+        <div class="reveal">
+          <nav class="pageHero__breadcrumb" aria-label="Breadcrumb">
+            <a href="/">Home</a>
+            <span class="pageHero__breadcrumb-sep">›</span>
+            <span>Industries</span>
+          </nav>
+          <p class="pageHero__eyebrow">Industries we serve</p>
+          <h1 class="pageHero__title">Sector‑specific expertise, <em>proven delivery</em></h1>
+          <p class="pageHero__sub">We combine SAP and IT expertise with sector‑specific patterns, controls, and accelerators built for six key verticals — from financial services to public sector.</p>
+          <div class="pageHero__actions">
+            <a href="/contact" class="btn btn--primary">
+              Discuss your industry
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+            <a href="/services" class="btn btn--outline-white">Our services</a>
+          </div>
+        </div>
+
+        <!-- Mosaic (replace background-image urls with Flask url_for in production) -->
+        <div class="heroMosaic reveal" data-delay="180" aria-hidden="true">
+          <div class="heroMosaicTile">
+            <div class="heroMosaicTile__bg" style="background:linear-gradient(135deg,#0f2744,#1e4a7c);"></div>
+            <div class="heroMosaicTile__overlay"></div>
+            <div class="heroMosaicTile__body">
+              <div class="heroMosaicTile__tag">Finance</div>
+              <div class="heroMosaicTile__name">Banking &amp; Risk</div>
+            </div>
+          </div>
+          <div class="heroMosaicTile">
+            <div class="heroMosaicTile__bg" style="background:linear-gradient(135deg,#1a2a10,#2e4f18);"></div>
+            <div class="heroMosaicTile__overlay"></div>
+            <div class="heroMosaicTile__body">
+              <div class="heroMosaicTile__tag">Retail</div>
+              <div class="heroMosaicTile__name">Omni‑Channel</div>
+            </div>
+          </div>
+          <div class="heroMosaicTile">
+            <div class="heroMosaicTile__bg" style="background:linear-gradient(135deg,#1f1528,#341f45);"></div>
+            <div class="heroMosaicTile__overlay"></div>
+            <div class="heroMosaicTile__body">
+              <div class="heroMosaicTile__tag">Hospitality</div>
+              <div class="heroMosaicTile__name">Guest Operations</div>
+            </div>
+          </div>
+          <div class="heroMosaicTile">
+            <div class="heroMosaicTile__bg" style="background:linear-gradient(135deg,#1a1a0a,#2c2c10);"></div>
+            <div class="heroMosaicTile__overlay"></div>
+            <div class="heroMosaicTile__body">
+              <div class="heroMosaicTile__tag">Manufacturing</div>
+              <div class="heroMosaicTile__name">Smart Plants</div>
+            </div>
+          </div>
+          <div class="heroMosaicTile heroMosaicTile--wide">
+            <div class="heroMosaicTile__bg" style="background:linear-gradient(135deg,#1a120a,#2e1e0e);"></div>
+            <div class="heroMosaicTile__overlay"></div>
+            <div class="heroMosaicTile__body">
+              <div class="heroMosaicTile__tag">Oil &amp; Gas · Public Sector</div>
+              <div class="heroMosaicTile__name">Critical Infrastructure</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTOR STRIP -->
+  <div class="sectorBand">
+    <div class="container" style="padding:0 28px;">
+      <div class="sectorBandInner">
+        <div class="sectorBandItem">
+          <div class="sectorBandItem__icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></div>
+          <span class="sectorBandItem__label">Finance</span>
+        </div>
+        <div class="sectorBandItem">
+          <div class="sectorBandItem__icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div>
+          <span class="sectorBandItem__label">Retail</span>
+        </div>
+        <div class="sectorBandItem">
+          <div class="sectorBandItem__icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 22V12a9 9 0 0 1 18 0v10"/><path d="M3 18h18"/><path d="M9 22v-4h6v4"/></svg></div>
+          <span class="sectorBandItem__label">Hospitality</span>
+        </div>
+        <div class="sectorBandItem">
+          <div class="sectorBandItem__icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h20"/><path d="M5 20V8l7-6 7 6v12"/><path d="M9 20v-5h6v5"/></svg></div>
+          <span class="sectorBandItem__label">Manufacturing</span>
+        </div>
+        <div class="sectorBandItem">
+          <div class="sectorBandItem__icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8"/><path d="M12 2v4"/><path d="M5 12C5 8.13 8.13 5 12 5s7 3.13 7 7c0 5-7 11-7 11S5 17 5 12z"/></svg></div>
+          <span class="sectorBandItem__label">Oil &amp; Gas</span>
+        </div>
+        <div class="sectorBandItem">
+          <div class="sectorBandItem__icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 22h18"/><path d="M6 18V7l6-5 6 5v11"/><path d="M10 18v-4h4v4"/><path d="M3 7h18"/></svg></div>
+          <span class="sectorBandItem__label">Public Sector</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <main id="main">
+    <div class="container">
+      <div class="sectionHead">
+        <div class="sectionHead__inner">
+          <div class="sectionHead__copy reveal">
+            <p class="eyebrow">All industries</p>
+            <h2>Where we operate</h2>
+            <p>Deep expertise across six verticals, with pre-built accelerators, regulatory controls, and proven delivery patterns that reduce risk and speed time-to-value.</p>
+          </div>
+          <a href="/contact" class="btn btn--primary reveal" data-delay="100">
+            Talk to a specialist
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="industriesGrid">
+
+        <!-- 01 Finance -->
+        <article class="industryCard reveal" data-delay="40">
+          <div class="industryCard__img">
+            <!-- In Flask: <img src="{{ url_for('static', filename='img/Industry/Finance.jpeg') }}" alt="Finance" loading="lazy"> -->
+            <div class="industryCard__imgPlaceholder" style="background:linear-gradient(140deg,#0d2244 0%,#1a4a7c 100%);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+            </div>
+            <span class="industryCard__num">01</span>
+            <span class="industryCard__tag">SAP · Cyber · Analytics</span>
+          </div>
+          <div class="industryCard__body">
+            <div class="industryCard__header">
+              <h3 class="industryCard__name"><a href="/industry/finance" style="color:inherit;">Finance</a></h3>
+              <div class="industryCard__icon">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+              </div>
+            </div>
+            <p class="industryCard__desc">Core banking, treasury, risk, and regulatory reporting on stable and compliant platforms.</p>
+            <div class="industryCard__caps">
+              <span class="industryCard__cap">Digital Banking</span>
+              <span class="industryCard__cap">Risk &amp; Compliance</span>
+              <span class="industryCard__cap">SAP Finance</span>
+            </div>
+            <a class="industryCard__cta" href="/industry/finance">
+              Explore Finance
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </article>
+
+        <!-- 02 Retail -->
+        <article class="industryCard reveal" data-delay="120">
+          <div class="industryCard__img">
+            <div class="industryCard__imgPlaceholder" style="background:linear-gradient(140deg,#122010 0%,#264a1a 100%);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            </div>
+            <span class="industryCard__num">02</span>
+            <span class="industryCard__tag">SAP Retail · E-Commerce · Analytics</span>
+          </div>
+          <div class="industryCard__body">
+            <div class="industryCard__header">
+              <h3 class="industryCard__name"><a href="/industry/retail" style="color:inherit;">Retail</a></h3>
+              <div class="industryCard__icon">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+              </div>
+            </div>
+            <p class="industryCard__desc">Omni‑channel operations, inventory visibility, and real‑time analytics from store to warehouse.</p>
+            <div class="industryCard__caps">
+              <span class="industryCard__cap">E-Commerce</span>
+              <span class="industryCard__cap">Supply Chain</span>
+              <span class="industryCard__cap">Customer Analytics</span>
+            </div>
+            <a class="industryCard__cta" href="/industry/retail">
+              Explore Retail
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </article>
+
+        <!-- 03 Hospitality -->
+        <article class="industryCard reveal" data-delay="200">
+          <div class="industryCard__img">
+            <div class="industryCard__imgPlaceholder" style="background:linear-gradient(140deg,#1c1030 0%,#302048 100%);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 22V12a9 9 0 0 1 18 0v10"/><path d="M3 18h18"/><path d="M9 22v-4h6v4"/></svg>
+            </div>
+            <span class="industryCard__num">03</span>
+            <span class="industryCard__tag">PMS · Guest Exp · Payments</span>
+          </div>
+          <div class="industryCard__body">
+            <div class="industryCard__header">
+              <h3 class="industryCard__name"><a href="/industry/hospitality" style="color:inherit;">Hospitality</a></h3>
+              <div class="industryCard__icon">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 22V12a9 9 0 0 1 18 0v10"/><path d="M3 18h18"/><path d="M9 22v-4h6v4"/></svg>
+              </div>
+            </div>
+            <p class="industryCard__desc">Guest‑centric experiences, integrated reservations, and lean back‑of‑house processes.</p>
+            <div class="industryCard__caps">
+              <span class="industryCard__cap">Hotel Mgmt</span>
+              <span class="industryCard__cap">Guest Analytics</span>
+              <span class="industryCard__cap">Secure Payments</span>
+            </div>
+            <a class="industryCard__cta" href="/industry/hospitality">
+              Explore Hospitality
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </article>
+
+        <!-- 04 Manufacturing -->
+        <article class="industryCard reveal" data-delay="80">
+          <div class="industryCard__img">
+            <div class="industryCard__imgPlaceholder" style="background:linear-gradient(140deg,#181808 0%,#2c2c0e 100%);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h20"/><path d="M5 20V8l7-6 7 6v12"/><path d="M9 20v-5h6v5"/></svg>
+            </div>
+            <span class="industryCard__num">04</span>
+            <span class="industryCard__tag">SAP MFG · IoT · Supply Chain</span>
+          </div>
+          <div class="industryCard__body">
+            <div class="industryCard__header">
+              <h3 class="industryCard__name"><a href="/industry/manufacturing" style="color:inherit;">Manufacturing</a></h3>
+              <div class="industryCard__icon">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h20"/><path d="M5 20V8l7-6 7 6v12"/><path d="M9 20v-5h6v5"/></svg>
+              </div>
+            </div>
+            <p class="industryCard__desc">Digitized plants, integrated supply chains, and quality‑driven production.</p>
+            <div class="industryCard__caps">
+              <span class="industryCard__cap">Smart Manufacturing</span>
+              <span class="industryCard__cap">SAP ERP</span>
+              <span class="industryCard__cap">Industrial Security</span>
+            </div>
+            <a class="industryCard__cta" href="/industry/manufacturing">
+              Explore Manufacturing
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </article>
+
+        <!-- 05 Oil & Gas -->
+        <article class="industryCard reveal" data-delay="160">
+          <div class="industryCard__img">
+            <div class="industryCard__imgPlaceholder" style="background:linear-gradient(140deg,#1c0e08 0%,#341808 100%);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8"/><path d="M12 2v4"/><path d="M5 12C5 8.13 8.13 5 12 5s7 3.13 7 7c0 5-7 11-7 11S5 17 5 12z"/></svg>
+            </div>
+            <span class="industryCard__num">05</span>
+            <span class="industryCard__tag">HSE · Asset Mgmt · OT Security</span>
+          </div>
+          <div class="industryCard__body">
+            <div class="industryCard__header">
+              <h3 class="industryCard__name"><a href="/industry/oil-gas" style="color:inherit;">Oil &amp; Gas</a></h3>
+              <div class="industryCard__icon">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8"/><path d="M12 2v4"/><path d="M5 12C5 8.13 8.13 5 12 5s7 3.13 7 7c0 5-7 11-7 11S5 17 5 12z"/></svg>
+              </div>
+            </div>
+            <p class="industryCard__desc">Capital‑intensive operations, HSE, and asset lifecycle management on robust platforms.</p>
+            <div class="industryCard__caps">
+              <span class="industryCard__cap">Asset Management</span>
+              <span class="industryCard__cap">OT Cyber Security</span>
+              <span class="industryCard__cap">Energy Analytics</span>
+            </div>
+            <a class="industryCard__cta" href="/industry/oil-gas">
+              Explore Oil &amp; Gas
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </article>
+
+        <!-- 06 Public Sector -->
+        <article class="industryCard reveal" data-delay="240">
+          <div class="industryCard__img">
+            <div class="industryCard__imgPlaceholder" style="background:linear-gradient(140deg,#081422 0%,#102238 100%);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 22h18"/><path d="M6 18V7l6-5 6 5v11"/><path d="M10 18v-4h4v4"/><path d="M3 7h18"/></svg>
+            </div>
+            <span class="industryCard__num">06</span>
+            <span class="industryCard__tag">Gov Platforms · Compliance · Data</span>
+          </div>
+          <div class="industryCard__body">
+            <div class="industryCard__header">
+              <h3 class="industryCard__name"><a href="/industry/public-sector" style="color:inherit;">Public Sector</a></h3>
+              <div class="industryCard__icon">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 22h18"/><path d="M6 18V7l6-5 6 5v11"/><path d="M10 18v-4h4v4"/><path d="M3 7h18"/></svg>
+              </div>
+            </div>
+            <p class="industryCard__desc">Citizen services, grants, and public finance with transparency and control.</p>
+            <div class="industryCard__caps">
+              <span class="industryCard__cap">Digital Gov</span>
+              <span class="industryCard__cap">Public Finance</span>
+              <span class="industryCard__cap">Gov Cyber Security</span>
+            </div>
+            <a class="industryCard__cta" href="/industry/public-sector">
+              Explore Public Sector
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </article>
+
+      </div>
+    </div>
+
+    <!-- CTA Band -->
+    <div class="ctaBand">
+      <div class="container">
+        <div class="ctaBandInner">
+          <div class="reveal">
+            <p class="ctaBand__eyebrow">Work with us</p>
+            <h2>Don't see your sector?</h2>
+            <p>Our cross-industry expertise in SAP, cybersecurity, and managed services applies beyond these six verticals. Reach out and let's explore how we can help.</p>
+          </div>
+          <div class="ctaBand__actions reveal" data-delay="100">
+            <a href="/contact" class="btn btn--primary">
+              Start a conversation
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+            <a href="/services" class="btn btn--outline-white">View all services</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+{% endblock %}
+
+{% block extra_js %}{% endblock %}

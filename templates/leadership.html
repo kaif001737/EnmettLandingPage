@@ -1,0 +1,416 @@
+{% extends "base.html" %}
+{% block title %}Leadership | Enmett{% endblock %}
+{% block meta_description %}Meet the Enmett leadership team — driving innovation, strategic vision, and a commitment to excellence across SAP, cybersecurity, and IT.{% endblock %}
+{% block extra_css %}
+<style>
+    /* ═══════════════ TOKENS ═══════════════ */
+    :root {
+      --primary:        #08111f;
+      --accent:         #0ea5e9;
+      --accent-bright:  #38bdf8;
+      --accent-subtle:  rgba(14,165,233,0.07);
+      --accent-border:  rgba(14,165,233,0.22);
+      --surface:        #ffffff;
+      --surface-muted:  #f5f8fc;
+      --border:         #e2eaf3;
+      --border-dark:    rgba(255,255,255,0.08);
+      --text-primary:   #0b1421;
+      --text-secondary: #4b5a72;
+      --text-muted:     #8896a8;
+      --text-on-dark:   #dde6f0;
+      --font-display:   'Sora', sans-serif;
+      --font-body:      'DM Sans', sans-serif;
+      --r-sm: 6px; --r-md: 14px; --r-lg: 22px; --r-xl: 36px;
+      --shadow-sm:     0 1px 4px rgba(8,17,31,0.06);
+      --shadow-md:     0 4px 20px rgba(8,17,31,0.09), 0 1px 4px rgba(8,17,31,0.05);
+      --shadow-lg:     0 16px 52px rgba(8,17,31,0.13), 0 4px 16px rgba(8,17,31,0.06);
+      --shadow-accent: 0 8px 36px rgba(14,165,233,0.28);
+      --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-std:  cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-body); color: var(--text-primary); background: var(--surface); line-height: 1.65; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    img { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; }
+    ul { list-style: none; }
+    .srOnly { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 28px; }
+
+    /* Typography */
+    h1,h2,h3,h4 { font-family: var(--font-display); font-weight: 700; line-height: 1.2; color: var(--text-primary); }
+    h2 { font-size: clamp(1.7rem,3vw,2.4rem); letter-spacing: -0.025em; }
+    h3 { font-size: 1.05rem; letter-spacing: -0.01em; }
+    p  { color: var(--text-secondary); font-size: 0.975rem; line-height: 1.8; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 1rem; }
+    .eyebrow::before { content: ''; display: inline-block; width: 18px; height: 2px; background: var(--accent); border-radius: 2px; }
+
+    /* Buttons */
+    .btn { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 0.875rem; font-weight: 600; padding: 12px 24px; border-radius: var(--r-sm); border: none; transition: all 0.22s var(--ease-std); letter-spacing: 0.01em; white-space: nowrap; cursor: pointer; }
+    .btn svg { transition: transform 0.2s; }
+    .btn:hover svg { transform: translateX(3px); }
+    .btn--primary { background: var(--accent); color: #fff; box-shadow: 0 4px 14px rgba(14,165,233,0.3); }
+    .btn--primary:hover { background: #0284c7; transform: translateY(-1px); box-shadow: var(--shadow-accent); }
+    .btn--ghost { background: transparent; color: var(--text-secondary); border: 1.5px solid var(--border); }
+    .btn--ghost:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-subtle); }
+    .btn--outline-white { background: transparent; color: rgba(255,255,255,0.8); border: 1.5px solid rgba(255,255,255,0.18); }
+    .btn--outline-white:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.4); color: #fff; }
+
+    /* Reveal */
+    .reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.7s var(--ease-expo), transform 0.7s var(--ease-expo); }
+    .reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+    /* ════════════════════════════════════
+       PAGE HERO — full-width dark split
+    ════════════════════════════════════ */
+    .pageHero { background: var(--primary); padding: 0; position: relative; overflow: hidden; min-height: 520px; display: flex; align-items: stretch; }
+    .pageHero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 65% 80% at 70% 40%, rgba(14,165,233,0.12) 0%, transparent 65%), radial-gradient(ellipse 30% 50% at 0% 85%, rgba(14,165,233,0.06) 0%, transparent 60%); }
+    .pageHero__grid { position: absolute; inset: 0; pointer-events: none; }
+    .pageHero__grid::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(14,165,233,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(14,165,233,0.04) 1px, transparent 1px); background-size: 56px 56px; mask-image: radial-gradient(ellipse 90% 90% at 50% 50%, black 20%, transparent 75%); }
+    .pageHero__layout { position: relative; z-index: 2; display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
+
+    /* Copy side */
+    .pageHero__copy { padding: 80px 60px 80px 0; display: flex; flex-direction: column; justify-content: center; }
+    .pageHero__breadcrumb { display: flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 0.75rem; font-weight: 500; color: rgba(255,255,255,0.4); margin-bottom: 20px; }
+    .pageHero__breadcrumb a { color: rgba(255,255,255,0.4); transition: color 0.2s; }
+    .pageHero__breadcrumb a:hover { color: var(--accent-bright); }
+    .pageHero__breadcrumb-sep { opacity: 0.3; }
+    .pageHero__eyebrow { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 1rem; }
+    .pageHero__eyebrow::before { content: ''; display: inline-block; width: 18px; height: 2px; background: var(--accent); border-radius: 2px; }
+    .pageHero__title { font-family: var(--font-display); font-size: clamp(2rem,3.8vw,3rem); font-weight: 800; color: #fff; letter-spacing: -0.03em; line-height: 1.12; margin-bottom: 1.1rem; }
+    .pageHero__title em { font-style: normal; background: linear-gradient(135deg, var(--accent) 0%, var(--accent-bright) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .pageHero__sub { font-size: 1rem; color: rgba(255,255,255,0.5); max-width: 480px; line-height: 1.78; margin-bottom: 2rem; }
+    .pageHero__actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    /* Image side */
+    .pageHero__imgSide { position: relative; overflow: hidden; }
+    .pageHero__imgSide::before { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, var(--primary) 0%, transparent 25%), linear-gradient(0deg, rgba(8,17,31,0.45) 0%, transparent 55%); }
+    .pageHero__img { width: 100%; height: 100%; object-fit: cover; opacity: 0.72; transition: transform 0.8s var(--ease-expo); }
+    .pageHero__imgSide:hover .pageHero__img { transform: scale(1.03); }
+
+    /* Image placeholder */
+    .pageHero__imgPlaceholder { width: 100%; min-height: 520px; background: linear-gradient(140deg, #0d1e36 0%, #152b48 50%, #0d1e36 100%); display: flex; align-items: center; justify-content: center; position: relative; }
+    .pageHero__imgPlaceholder::after { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='20' cy='20' r='1' fill='%230ea5e9' opacity='0.15'/%3E%3C/svg%3E"); }
+
+    /* Floating leadership badge */
+    .leaderBadge { position: absolute; bottom: 32px; left: 32px; z-index: 3; display: flex; align-items: center; gap: 14px; background: rgba(8,17,31,0.78); backdrop-filter: blur(18px); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--r-lg); padding: 16px 22px; }
+    .leaderBadge::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; border-radius: var(--r-lg) var(--r-lg) 0 0; background: linear-gradient(90deg, var(--accent), var(--accent-bright)); }
+    .leaderBadge__avatars { display: flex; }
+    .leaderBadge__avatar { width: 34px; height: 34px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.15); background: linear-gradient(135deg, #1e4a7c, #0ea5e9); display: flex; align-items: center; justify-content: center; margin-left: -8px; flex-shrink: 0; }
+    .leaderBadge__avatar:first-child { margin-left: 0; }
+    .leaderBadge__avatar svg { color: rgba(255,255,255,0.7); }
+    .leaderBadge__text { }
+    .leaderBadge__label { font-family: var(--font-display); font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.35); display: block; margin-bottom: 2px; }
+    .leaderBadge__value { font-family: var(--font-display); font-size: 0.88rem; font-weight: 700; color: #fff; }
+
+    /* ════════════════════════════════════
+       PRINCIPLES BAND (stats-like row)
+    ════════════════════════════════════ */
+    .principlesBand { background: var(--surface-muted); border-bottom: 1px solid var(--border); }
+    .principlesBandInner { display: grid; grid-template-columns: repeat(4,1fr); gap: 0; }
+    .principleCell { padding: 32px 28px; border-right: 1px solid var(--border); position: relative; transition: background 0.22s; }
+    .principleCell:last-child { border-right: none; }
+    .principleCell:hover { background: #fff; }
+    .principleCell::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform 0.35s var(--ease-expo); }
+    .principleCell:hover::after { transform: scaleX(1); }
+    .principleCell__icon { width: 40px; height: 40px; border-radius: var(--r-sm); background: var(--accent-subtle); border: 1px solid var(--accent-border); display: flex; align-items: center; justify-content: center; margin-bottom: 14px; transition: background 0.22s; }
+    .principleCell:hover .principleCell__icon { background: var(--accent); }
+    .principleCell:hover .principleCell__icon svg { color: #fff; }
+    .principleCell__icon svg { color: var(--accent); transition: color 0.22s; }
+    .principleCell__title { font-family: var(--font-display); font-size: 0.92rem; font-weight: 800; color: var(--text-primary); margin-bottom: 6px; }
+    .principleCell__desc { font-size: 0.83rem; color: var(--text-muted); line-height: 1.65; }
+
+    /* ════════════════════════════════════
+       MAIN BODY
+    ════════════════════════════════════ */
+    .leadershipBody { padding: 80px 0 0; }
+
+    /* Intro copy section */
+    .introSection { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; margin-bottom: 72px; }
+    .introSection__copy { }
+    .introSection__copy h2 { margin-bottom: 20px; }
+    .introSection__copy p + p { margin-top: 14px; }
+    .introSection__aside { display: flex; flex-direction: column; gap: 16px; }
+
+    /* Stat cards in aside */
+    .statCard { background: var(--primary); border-radius: var(--r-lg); padding: 26px 28px; position: relative; overflow: hidden; }
+    .statCard::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent), var(--accent-bright)); }
+    .statCard__glow { position: absolute; width: 200px; height: 200px; border-radius: 50%; background: radial-gradient(circle, rgba(14,165,233,0.1) 0%, transparent 70%); top: -60px; right: -40px; }
+    .statCard__inner { position: relative; z-index: 1; }
+    .statCard__value { font-family: var(--font-display); font-size: 2.4rem; font-weight: 800; color: #fff; letter-spacing: -0.05em; line-height: 1; }
+    .statCard__value span { color: var(--accent); }
+    .statCard__label { font-family: var(--font-display); font-size: 0.78rem; font-weight: 600; color: rgba(255,255,255,0.4); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.08em; }
+
+    /* Two column panels */
+    .panelsGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+    .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 36px 32px; position: relative; overflow: hidden; transition: box-shadow 0.3s var(--ease-expo), border-color 0.3s; }
+    .panel:hover { box-shadow: var(--shadow-md); border-color: var(--accent-border); }
+    .panel::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--accent-bright)); transform: scaleX(0); transform-origin: left; transition: transform 0.4s var(--ease-expo); }
+    .panel:hover::before { transform: scaleX(1); }
+    .panel__icon { width: 44px; height: 44px; border-radius: var(--r-sm); background: var(--accent-subtle); border: 1px solid var(--accent-border); display: flex; align-items: center; justify-content: center; margin-bottom: 18px; transition: background 0.2s; }
+    .panel:hover .panel__icon { background: var(--accent); }
+    .panel:hover .panel__icon svg { color: #fff; }
+    .panel__icon svg { color: var(--accent); transition: color 0.2s; }
+    .panel h3 { font-size: 1.08rem; margin-bottom: 18px; }
+
+    /* Principles list */
+    .principleList { display: flex; flex-direction: column; gap: 14px; }
+    .principleItem { display: flex; gap: 14px; align-items: flex-start; padding: 14px 16px; border-radius: var(--r-sm); background: var(--surface-muted); border: 1px solid var(--border); transition: all 0.2s var(--ease-std); }
+    .principleItem:hover { background: var(--accent-subtle); border-color: var(--accent-border); transform: translateX(4px); }
+    .principleItem__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+    .principleItem strong { font-family: var(--font-display); font-size: 0.85rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 2px; }
+    .principleItem span { font-size: 0.84rem; color: var(--text-muted); line-height: 1.55; }
+
+    /* Expertise chips */
+    .expertiseList { display: flex; flex-direction: column; gap: 10px; }
+    .expertiseRow { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: var(--r-sm); border: 1px solid transparent; transition: all 0.18s; }
+    .expertiseRow:hover { background: var(--surface-muted); border-color: var(--border); }
+    .expertiseRow__num { font-family: var(--font-display); font-size: 0.65rem; font-weight: 800; color: var(--accent); background: var(--accent-subtle); border: 1px solid var(--accent-border); border-radius: var(--r-sm); padding: 3px 8px; flex-shrink: 0; letter-spacing: 0.04em; }
+    .expertiseRow__text { font-size: 0.9rem; color: var(--text-secondary); font-weight: 500; }
+
+    /* Commitment panel — full width dark */
+    .commitmentPanel { background: var(--primary); border-radius: var(--r-xl); padding: 56px 60px; position: relative; overflow: hidden; margin-bottom: 0; }
+    .commitmentPanel::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--accent), var(--accent-bright), var(--accent), transparent); }
+    .commitmentPanel__glow { position: absolute; width: 600px; height: 600px; border-radius: 50%; background: radial-gradient(circle, rgba(14,165,233,0.08) 0%, transparent 70%); top: -200px; right: -100px; pointer-events: none; }
+    .commitmentPanel__inner { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+    .commitmentPanel h3 { font-family: var(--font-display); font-size: 1.7rem; font-weight: 800; color: #fff; letter-spacing: -0.02em; margin-bottom: 14px; }
+    .commitmentPanel p { font-size: 0.95rem; color: rgba(255,255,255,0.5); line-height: 1.8; }
+    .commitmentPanel__actions { margin-top: 24px; display: flex; gap: 12px; flex-wrap: wrap; }
+
+    /* Commitment right — pillars */
+    .commitmentPillars { display: flex; flex-direction: column; gap: 14px; }
+    .commitmentPillar { display: flex; align-items: center; gap: 14px; padding: 16px 20px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: var(--r-md); transition: background 0.2s, border-color 0.2s; }
+    .commitmentPillar:hover { background: rgba(255,255,255,0.07); border-color: rgba(14,165,233,0.25); }
+    .commitmentPillar__icon { width: 36px; height: 36px; flex-shrink: 0; border-radius: var(--r-sm); background: rgba(14,165,233,0.12); border: 1px solid rgba(14,165,233,0.2); display: flex; align-items: center; justify-content: center; }
+    .commitmentPillar__icon svg { color: var(--accent-bright); }
+    .commitmentPillar__text { font-family: var(--font-display); font-size: 0.88rem; font-weight: 600; color: rgba(255,255,255,0.75); }
+
+    /* Bottom padding */
+    .leadershipFooter { padding-bottom: 100px; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 960px) {
+      .pageHero__layout { grid-template-columns: 1fr; }
+      .pageHero__imgSide { display: none; }
+      .pageHero__copy { padding: 68px 0 68px; }
+      .principlesBandInner { grid-template-columns: repeat(2,1fr); }
+      .principleCell:nth-child(2) { border-right: none; }
+      .principleCell:nth-child(3) { border-top: 1px solid var(--border); }
+      .introSection { grid-template-columns: 1fr; gap: 36px; }
+      .panelsGrid { grid-template-columns: 1fr; }
+      .commitmentPanel { padding: 40px 32px; }
+      .commitmentPanel__inner { grid-template-columns: 1fr; gap: 36px; }
+      .footer__top { grid-template-columns: 1fr; gap: 48px; }
+      .footerNav { grid-template-columns: repeat(2,1fr); }
+    }
+    @media (max-width: 600px) {
+      .principlesBandInner { grid-template-columns: 1fr; }
+      .principleCell { border-right: none; border-bottom: 1px solid var(--border); }
+      .principleCell:last-child { border-bottom: none; }
+      .commitmentPanel { padding: 32px 24px; border-radius: var(--r-lg); }
+      .footer__bottom { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+{% endblock %}
+{% block content %}
+
+  <!-- ══════════════ PAGE HERO ══════════════ -->
+  <div class="pageHero">
+    <div class="pageHero__grid" aria-hidden="true"></div>
+    <div class="container" style="display:contents;">
+      <div class="pageHero__layout container" style="display:grid;">
+
+        <!-- Copy -->
+        <div class="pageHero__copy reveal">
+          <nav class="pageHero__breadcrumb" aria-label="Breadcrumb">
+            <a href="/">Home</a>
+            <span class="pageHero__breadcrumb-sep">›</span>
+            <a href="/about">Company</a>
+            <span class="pageHero__breadcrumb-sep">›</span>
+            <span>Leadership</span>
+          </nav>
+          <p class="pageHero__eyebrow">Company</p>
+          <h1 class="pageHero__title">Leadership driving <em>innovation &amp; growth</em></h1>
+          <p class="pageHero__sub">Our leadership team brings together deep industry expertise, strategic vision, and a commitment to innovation — guiding Enmett toward delivering high-quality solutions that empower businesses worldwide.</p>
+          <div class="pageHero__actions">
+            <a href="/contact" class="btn btn--primary">
+              Work with us
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+            <a href="/about" class="btn btn--outline-white">About Enmett</a>
+          </div>
+        </div>
+
+        <!-- Image side -->
+        <div class="pageHero__imgSide reveal" data-delay="160">
+          <img class="pageHero__img" src="{{ url_for('static', filename='img/Company/Leader.jpeg') }}" alt="Enmett Leadership" loading="lazy">
+          <div class="leaderBadge">
+            <div class="leaderBadge__avatars">
+              <div class="leaderBadge__avatar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+              <div class="leaderBadge__avatar" style="background:linear-gradient(135deg,#0f4c75,#1b7fba);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+              <div class="leaderBadge__avatar" style="background:linear-gradient(135deg,#064e3b,#065f46);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+            </div>
+            <div class="leaderBadge__text">
+              <span class="leaderBadge__label">Leadership team</span>
+              <span class="leaderBadge__value">Driving digital excellence</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ PRINCIPLES BAND ══════════════ -->
+  <div class="principlesBand">
+    <div class="container" style="padding:0 28px;">
+      <div class="principlesBandInner">
+        <div class="principleCell reveal">
+          <div class="principleCell__icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          </div>
+          <div class="principleCell__title">Vision</div>
+          <div class="principleCell__desc">Building innovative solutions that help businesses adapt to the future of technology.</div>
+        </div>
+        <div class="principleCell reveal" data-delay="80">
+          <div class="principleCell__icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.663 17h4.673M12 3v1m6.364 1.636-.707.707M21 12h-1M4 12H3m3.343-5.657-.707-.707m2.828 9.9a5 5 0 1 1 7.072 0l-.548.547A3.374 3.374 0 0 0 14 18.469V19a2 2 0 1 1-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+          </div>
+          <div class="principleCell__title">Innovation</div>
+          <div class="principleCell__desc">Creative thinking and continuous improvement to deliver modern digital solutions.</div>
+        </div>
+        <div class="principleCell reveal" data-delay="160">
+          <div class="principleCell__icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div class="principleCell__title">Integrity</div>
+          <div class="principleCell__desc">Transparency and ethical practices at the core of everything we do.</div>
+        </div>
+        <div class="principleCell reveal" data-delay="240">
+          <div class="principleCell__icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div class="principleCell__title">Collaboration</div>
+          <div class="principleCell__desc">Strong teamwork and partnerships that drive better results for our clients.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ MAIN BODY ══════════════ -->
+  <section class="leadershipMain">
+    <div class="leadershipBody">
+      <div class="container">
+
+        <!-- Intro + stats -->
+        <div class="introSection">
+          <div class="introSection__copy reveal">
+            <p class="eyebrow">Our leadership</p>
+            <h2>Guiding Enmett with purpose and precision</h2>
+            <p>At Enmett, our leadership team brings together deep industry expertise, strategic vision, and a commitment to innovation. With extensive experience in technology, consulting, and business transformation, our leaders guide the organization toward delivering high-quality solutions.</p>
+            <p style="margin-top:14px;">Our leadership philosophy is centred on collaboration, integrity, and continuous innovation. By fostering a culture of excellence and forward-thinking strategies, the Enmett leadership team ensures we consistently deliver value-driven solutions for our clients across various industries.</p>
+            <p style="margin-top:14px;">Through strong leadership and a focus on long-term partnerships, we help organisations navigate complex technological challenges and achieve sustainable growth.</p>
+          </div>
+          <div class="introSection__aside reveal" data-delay="120">
+            <!-- numeric stat cards removed as requested -->
+          </div>
+        </div>
+
+        <!-- Principles + Expertise panels -->
+        <div class="panelsGrid">
+          <div class="panel reveal" data-delay="40">
+            <div class="panel__icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <h3>Leadership Principles</h3>
+            <ul class="principleList">
+              <li class="principleItem">
+                <span class="principleItem__dot"></span>
+                <div><strong>Vision</strong><span>Focus on building innovative solutions that help businesses adapt to the future of technology.</span></div>
+              </li>
+              <li class="principleItem">
+                <span class="principleItem__dot"></span>
+                <div><strong>Innovation</strong><span>Encourage creative thinking and continuous improvement to deliver modern digital solutions.</span></div>
+              </li>
+              <li class="principleItem">
+                <span class="principleItem__dot"></span>
+                <div><strong>Integrity</strong><span>Transparency and ethical practices are at the core of everything we do.</span></div>
+              </li>
+              <li class="principleItem">
+                <span class="principleItem__dot"></span>
+                <div><strong>Collaboration</strong><span>Strong teamwork and partnerships drive better results for our clients.</span></div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="panel reveal" data-delay="140">
+            <div class="panel__icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            </div>
+            <h3>Leadership Expertise</h3>
+            <ul class="expertiseList">
+              <li class="expertiseRow"><span class="expertiseRow__num">01</span><span class="expertiseRow__text">Enterprise Technology Solutions</span></li>
+              <li class="expertiseRow"><span class="expertiseRow__num">02</span><span class="expertiseRow__text">SAP Implementation &amp; Consulting</span></li>
+              <li class="expertiseRow"><span class="expertiseRow__num">03</span><span class="expertiseRow__text">Cyber Security Strategy</span></li>
+              <li class="expertiseRow"><span class="expertiseRow__num">04</span><span class="expertiseRow__text">Digital Transformation</span></li>
+              <li class="expertiseRow"><span class="expertiseRow__num">05</span><span class="expertiseRow__text">IT Infrastructure &amp; Managed Services</span></li>
+              <li class="expertiseRow"><span class="expertiseRow__num">06</span><span class="expertiseRow__text">Business Consulting &amp; Strategy</span></li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Commitment full-width dark panel -->
+    <div class="container" style="padding-bottom:0;">
+      <div class="leadershipFooter">
+        <div class="commitmentPanel reveal" data-delay="60">
+          <div class="commitmentPanel__glow" aria-hidden="true"></div>
+          <div class="commitmentPanel__inner">
+            <div>
+              <p class="eyebrow" style="color:var(--accent-bright);">Our commitment</p>
+              <h3>Committed to Excellence</h3>
+              <p>The Enmett leadership team is committed to maintaining the highest standards of service, innovation, and customer satisfaction. By combining technical expertise with strategic insights, our leaders ensure that Enmett continues to grow as a trusted technology partner for businesses worldwide.</p>
+              <div class="commitmentPanel__actions">
+                <a href="/contact" class="btn btn--primary">
+                  Start a conversation
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </a>
+                <a href="/about" class="btn btn--outline-white">Learn about us</a>
+              </div>
+            </div>
+            <div class="commitmentPillars">
+              <div class="commitmentPillar">
+                <div class="commitmentPillar__icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                </div>
+                <span class="commitmentPillar__text">Highest standards of service delivery</span>
+              </div>
+              <div class="commitmentPillar">
+                <div class="commitmentPillar__icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.663 17h4.673M12 3v1m6.364 1.636-.707.707M21 12h-1M4 12H3m3.343-5.657-.707-.707m2.828 9.9a5 5 0 1 1 7.072 0l-.548.547A3.374 3.374 0 0 0 14 18.469V19a2 2 0 1 1-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+                </div>
+                <span class="commitmentPillar__text">Continuous innovation and improvement</span>
+              </div>
+              <div class="commitmentPillar">
+                <div class="commitmentPillar__icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </div>
+                <span class="commitmentPillar__text">Long-term partnerships built on trust</span>
+              </div>
+              <div class="commitmentPillar">
+                <div class="commitmentPillar__icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                </div>
+                <span class="commitmentPillar__text">Global reach with local expertise</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+{% endblock %}

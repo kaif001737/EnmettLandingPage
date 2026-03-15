@@ -1,0 +1,888 @@
+{% extends "base.html" %}
+{% block title %}{{ service.title }} | Enmett{% endblock %}
+{% block meta_description %}Enmett {{ service.title }} solutions — {{ service.tagline }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ═══════════════════════════════════════
+     TOKENS
+  ═══════════════════════════════════════ */
+  :root {
+    --primary:        #08111f;
+    --accent:         #0ea5e9;
+    --accent-bright:  #38bdf8;
+    --accent-subtle:  rgba(14,165,233,0.07);
+    --accent-border:  rgba(14,165,233,0.22);
+    --accent-glow:    rgba(14,165,233,0.28);
+
+    --surface:        #ffffff;
+    --surface-muted:  #f5f8fc;
+    --border:         #e2eaf3;
+    --border-dark:    rgba(255,255,255,0.08);
+
+    --text-primary:   #0b1421;
+    --text-secondary: #4b5a72;
+    --text-muted:     #8896a8;
+    --text-on-dark:   #dde6f0;
+
+    --font-display: 'Sora', sans-serif;
+    --font-body:    'DM Sans', sans-serif;
+
+    --r-sm: 6px;
+    --r-md: 14px;
+    --r-lg: 22px;
+    --r-xl: 36px;
+
+    --shadow-sm:     0 1px 4px rgba(8,17,31,0.06);
+    --shadow-md:     0 4px 20px rgba(8,17,31,0.09), 0 1px 4px rgba(8,17,31,0.05);
+    --shadow-lg:     0 16px 52px rgba(8,17,31,0.13), 0 4px 16px rgba(8,17,31,0.06);
+    --shadow-accent: 0 8px 36px rgba(14,165,233,0.28);
+
+    --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-std:  cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* ═══════════════════════════════════════
+     RESET
+  ═══════════════════════════════════════ */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font-body);
+    color: var(--text-primary);
+    background: var(--surface);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  img    { display: block; max-width: 100%; }
+  a      { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; }
+  ul     { list-style: none; }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 28px; }
+
+  /* ═══════════════════════════════════════
+     TYPOGRAPHY
+  ═══════════════════════════════════════ */
+  h1,h2,h3,h4 {
+    font-family: var(--font-display); font-weight: 700;
+    line-height: 1.2; color: var(--text-primary);
+  }
+  h1 { font-size: clamp(2rem,4.5vw,3.2rem); letter-spacing: -0.03em; }
+  h2 { font-size: clamp(1.7rem,3vw,2.4rem); letter-spacing: -0.025em; }
+  h3 { font-size: 1.05rem; letter-spacing: -0.01em; }
+  p  { color: var(--text-secondary); font-size: 0.975rem; line-height: 1.8; }
+
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-display); font-size: 0.72rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--accent); margin-bottom: 1rem;
+  }
+  .eyebrow::before {
+    content: ''; display: inline-block; width: 18px; height: 2px;
+    background: var(--accent); border-radius: 2px;
+  }
+
+  /* ═══════════════════════════════════════
+     BUTTONS
+  ═══════════════════════════════════════ */
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-display); font-size: 0.875rem; font-weight: 600;
+    padding: 12px 24px; border-radius: var(--r-sm);
+    border: none; transition: all 0.22s var(--ease-std);
+    letter-spacing: 0.01em; white-space: nowrap; cursor: pointer;
+  }
+  .btn svg { transition: transform 0.2s; }
+  .btn:hover svg { transform: translateX(3px); }
+  .btn--primary {
+    background: var(--accent); color: #fff;
+    box-shadow: 0 4px 14px rgba(14,165,233,0.3);
+  }
+  .btn--primary:hover { background: #0284c7; transform: translateY(-1px); box-shadow: var(--shadow-accent); }
+  .btn--outline-white {
+    background: transparent; color: rgba(255,255,255,0.8);
+    border: 1.5px solid rgba(255,255,255,0.18);
+  }
+  .btn--outline-white:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.4); color: #fff; }
+
+  /* ═══════════════════════════════════════
+     REVEAL
+  ═══════════════════════════════════════ */
+  .reveal {
+    opacity: 0; transform: translateY(22px);
+    transition: opacity 0.7s var(--ease-expo), transform 0.7s var(--ease-expo);
+  }
+  .reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+  /* ═══════════════════════════════════════
+     PAGE HERO
+  ═══════════════════════════════════════ */
+  .pageHero {
+    background: var(--primary); padding: 0;
+    position: relative; overflow: hidden;
+    min-height: 520px; display: flex; align-items: stretch;
+  }
+  .pageHero__bg { position: absolute; inset: 0; z-index: 0; }
+  .pageHero__bg img {
+    width: 100%; height: 100%; object-fit: cover;
+    opacity: 0.18; filter: saturate(0.4) contrast(1.1);
+  }
+  /* For images with embedded text/logos (avoid cropping) */
+  .pageHero__bg img.img--contain {
+    object-fit: contain;
+    opacity: 0.12;
+    filter: none;
+    background: linear-gradient(135deg, #061a2f 0%, #0b2a4b 60%, #061a2f 100%);
+  }
+  .pageHero__bg::after {
+    content: ''; position: absolute; inset: 0;
+    background:
+      linear-gradient(110deg, var(--primary) 42%, rgba(8,17,31,0.65) 100%),
+      radial-gradient(ellipse 70% 80% at 85% 40%, rgba(14,165,233,0.1) 0%, transparent 65%);
+  }
+  .pageHero__grid { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+  .pageHero__grid::before {
+    content: ''; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(14,165,233,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(14,165,233,0.04) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 90% 90% at 30% 50%, black 20%, transparent 75%);
+  }
+  .pageHero__inner {
+    position: relative; z-index: 2;
+    display: grid; grid-template-columns: 1fr 420px;
+    gap: 60px; align-items: center;
+    padding: 80px 0 88px; width: 100%;
+  }
+  .pageHero__breadcrumb {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    font-family: var(--font-display); font-size: 0.75rem; font-weight: 500;
+    color: rgba(255,255,255,0.4); margin-bottom: 20px;
+  }
+  .pageHero__breadcrumb a { color: rgba(255,255,255,0.4); transition: color 0.2s; }
+  .pageHero__breadcrumb a:hover { color: var(--accent-bright); }
+  .pageHero__breadcrumb-sep { opacity: 0.3; }
+  .pageHero__eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-display); font-size: 0.72rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--accent); margin-bottom: 1rem;
+  }
+  .pageHero__eyebrow::before {
+    content: ''; display: inline-block; width: 18px; height: 2px;
+    background: var(--accent); border-radius: 2px;
+  }
+  .pageHero__title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 3.8vw, 2.9rem); font-weight: 800;
+    color: #fff; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 1.1rem;
+  }
+  .pageHero__title em {
+    font-style: normal;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-bright) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .pageHero__sub {
+    font-size: 1rem; color: rgba(255,255,255,0.5);
+    max-width: 500px; line-height: 1.75; margin-bottom: 2rem;
+  }
+  .pageHero__ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+  .pageHero__imageCard {
+    position: relative; border-radius: var(--r-lg); overflow: hidden;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.07);
+    aspect-ratio: 4/3;
+  }
+  .pageHero__imageCard img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 8s var(--ease-expo);
+  }
+  .pageHero__imageCard img.img--contain {
+    object-fit: contain;
+    background: linear-gradient(135deg, #061a2f 0%, #0b2a4b 60%, #061a2f 100%);
+  }
+  .pageHero__imageCard:hover img { transform: scale(1.04); }
+  .pageHero__imageCard::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 50%, rgba(8,17,31,0.6) 100%);
+  }
+  .pageHero__badge {
+    position: absolute; bottom: 20px; left: 20px; z-index: 2;
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(8,17,31,0.78); backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: var(--r-sm); padding: 10px 14px;
+  }
+  .pageHero__badge-icon {
+    width: 32px; height: 32px; border-radius: 6px;
+    background: var(--accent-subtle); border: 1px solid var(--accent-border);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .pageHero__badge-icon svg { color: var(--accent-bright); }
+  .pageHero__badge-label {
+    font-family: var(--font-display); font-size: 0.72rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.09em;
+    color: rgba(255,255,255,0.4); display: block; margin-bottom: 1px;
+  }
+  .pageHero__badge-value {
+    font-family: var(--font-display); font-size: 0.85rem; font-weight: 700; color: #fff;
+  }
+
+  /* ═══════════════════════════════════════
+     STAT STRIP
+  ═══════════════════════════════════════ */
+  .statStrip { background: var(--surface-muted); border-bottom: 1px solid var(--border); }
+  .statStrip__inner { display: grid; grid-template-columns: repeat(4, 1fr); }
+  .statCell {
+    padding: 28px 32px; border-right: 1px solid var(--border);
+    transition: background 0.2s;
+  }
+  .statCell:last-child { border-right: none; }
+  .statCell:hover { background: var(--surface); }
+  .statCell__num {
+    font-family: var(--font-display); font-size: 1.9rem; font-weight: 800;
+    color: var(--text-primary); letter-spacing: -0.03em; line-height: 1; margin-bottom: 4px;
+  }
+  .statCell__num span { color: var(--accent); }
+  .statCell__label { font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-display); font-weight: 500; }
+
+  /* ═══════════════════════════════════════
+     MAIN CONTENT
+  ═══════════════════════════════════════ */
+  .serviceBody { padding: 80px 0; }
+
+  .twoColGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+
+  .panel {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-lg); padding: 36px 32px;
+    transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+    position: relative; overflow: hidden;
+  }
+  .panel::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-bright));
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.35s var(--ease-expo);
+  }
+  .panel:hover { border-color: var(--accent-border); box-shadow: var(--shadow-md); transform: translateY(-2px); }
+  .panel:hover::before { transform: scaleX(1); }
+  .panel h3 {
+    font-size: 1rem; margin-bottom: 16px; padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .panel h3 .panelIcon {
+    width: 34px; height: 34px; border-radius: var(--r-sm); flex-shrink: 0;
+    background: var(--accent-subtle); border: 1px solid var(--accent-border);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .panel h3 .panelIcon svg { color: var(--accent); }
+  .panel p + p { margin-top: 12px; }
+
+  .solutionList { display: flex; flex-direction: column; gap: 14px; margin-top: 4px; }
+  .solutionItem {
+    display: flex; gap: 14px; align-items: flex-start;
+    padding: 14px 16px; border-radius: var(--r-sm);
+    background: var(--surface-muted); border: 1px solid var(--border);
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .solutionItem:hover { background: #fff; border-color: var(--accent-border); }
+  .solutionItem__dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--accent); flex-shrink: 0; margin-top: 6px;
+  }
+  .solutionItem__title {
+    font-family: var(--font-display); font-size: 0.85rem; font-weight: 700;
+    color: var(--text-primary); margin-bottom: 2px;
+  }
+  .solutionItem__desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.55; }
+
+  .techGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 4px; }
+  .techChip {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px; border-radius: var(--r-sm);
+    background: var(--surface-muted); border: 1px solid var(--border);
+    font-family: var(--font-display); font-size: 0.78rem; font-weight: 600;
+    color: var(--text-secondary); transition: all 0.2s;
+  }
+  .techChip:hover { background: var(--accent-subtle); border-color: var(--accent-border); color: var(--accent); }
+  .techChip::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent); flex-shrink: 0;
+  }
+
+  .benefitList { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+  .benefitRow {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px; border-radius: var(--r-sm); transition: background 0.2s;
+  }
+  .benefitRow:hover { background: var(--surface-muted); }
+  .benefitRow__check {
+    width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+    background: rgba(5,150,105,0.1); border: 1px solid rgba(5,150,105,0.25);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .benefitRow__check svg { color: #059669; }
+  .benefitRow__text { font-size: 0.88rem; color: var(--text-secondary); font-weight: 500; }
+
+  /* Delivery steps */
+  .stepsGrid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+  .stepItem {
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 16px; border-radius: var(--r-sm);
+    background: var(--surface-muted); border: 1px solid var(--border);
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .stepItem:hover { background: #fff; border-color: var(--accent-border); }
+  .stepItem__head { display: flex; align-items: center; gap: 10px; }
+  .stepItem__num {
+    width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
+    background: var(--accent-subtle); border: 1px solid var(--accent-border);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 0.72rem; font-weight: 800; color: var(--accent);
+  }
+  .stepItem__title { font-family: var(--font-display); font-size: 0.85rem; font-weight: 700; color: var(--text-primary); }
+  .stepItem__desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.55; }
+
+  /* Why Enmett */
+  .whyPanel {
+    background: var(--primary); border-radius: var(--r-xl);
+    padding: 60px 60px; margin-top: 24px;
+    position: relative; overflow: hidden;
+  }
+  .whyPanel::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), var(--accent-bright), var(--accent), transparent);
+  }
+  .whyPanel::after {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 80% at 100% 0%, rgba(14,165,233,0.1) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .whyPanel__inner {
+    position: relative; z-index: 1;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+  }
+  .whyPanel__copy h3 {
+    font-family: var(--font-display); font-size: 1.5rem; font-weight: 800;
+    color: #fff; letter-spacing: -0.02em; margin-bottom: 16px;
+  }
+  .whyPanel__copy h3 em {
+    font-style: normal;
+    background: linear-gradient(135deg, var(--accent), var(--accent-bright));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .whyPanel__copy p { color: rgba(255,255,255,0.5); font-size: 0.93rem; line-height: 1.8; }
+  .whyPanel__copy p + p { margin-top: 10px; }
+  .whyPanel__copy .btn { margin-top: 24px; }
+  .whyPanel__pillars { display: flex; flex-direction: column; gap: 14px; }
+  .pillar {
+    display: flex; gap: 16px; align-items: flex-start;
+    padding: 18px 20px; border-radius: var(--r-md);
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .pillar:hover { background: rgba(14,165,233,0.07); border-color: rgba(14,165,233,0.2); }
+  .pillar__icon {
+    width: 38px; height: 38px; border-radius: var(--r-sm); flex-shrink: 0;
+    background: rgba(14,165,233,0.12); border: 1px solid rgba(14,165,233,0.2);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .pillar__icon svg { color: var(--accent-bright); }
+  .pillar__title { font-family: var(--font-display); font-size: 0.85rem; font-weight: 700; color: #fff; margin-bottom: 3px; }
+  .pillar__desc { font-size: 0.8rem; color: rgba(255,255,255,0.4); line-height: 1.55; }
+
+  /* Related services */
+  .relatedSection { padding: 60px 0 80px; background: var(--surface-muted); border-top: 1px solid var(--border); }
+  .relatedGrid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+  .relatedCard {
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    padding: 20px 16px; border-radius: var(--r-md);
+    background: var(--surface); border: 1.5px solid var(--border);
+    font-family: var(--font-display); font-size: 0.8rem; font-weight: 700;
+    color: var(--text-secondary); text-align: center;
+    transition: all 0.2s var(--ease-std);
+  }
+  .relatedCard.active { border-color: var(--accent); background: var(--accent-subtle); color: var(--accent); }
+  .relatedCard:hover:not(.active) { border-color: var(--accent-border); color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .relatedCard__icon {
+    width: 40px; height: 40px; border-radius: var(--r-sm);
+    background: var(--surface-muted); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center; transition: background 0.2s;
+  }
+  .relatedCard.active .relatedCard__icon { background: var(--accent); border-color: var(--accent); }
+  .relatedCard.active .relatedCard__icon svg { color: #fff; }
+  .relatedCard:hover:not(.active) .relatedCard__icon { background: var(--accent-subtle); }
+  .relatedCard__icon svg { color: var(--text-muted); transition: color 0.2s; }
+  .relatedCard:hover:not(.active) .relatedCard__icon svg { color: var(--accent); }
+
+  /* ═══════════════════════════════════════
+     RESPONSIVE
+  ═══════════════════════════════════════ */
+  @media (max-width: 1024px) {
+    .relatedGrid { grid-template-columns: repeat(3,1fr); }
+    .whyPanel { padding: 44px 36px; }
+    .whyPanel__inner { grid-template-columns: 1fr; gap: 36px; }
+    .stepsGrid { grid-template-columns: repeat(2,1fr); }
+  }
+  @media (max-width: 960px) {
+    .pageHero__inner { grid-template-columns: 1fr; }
+    .pageHero__imageCard { display: none; }
+    .statStrip__inner { grid-template-columns: repeat(2,1fr); }
+    .statCell:nth-child(2) { border-right: none; }
+    .statCell:nth-child(3) { border-top: 1px solid var(--border); }
+    .statCell:nth-child(4) { border-top: 1px solid var(--border); border-right: none; }
+    .twoColGrid { grid-template-columns: 1fr; }
+    .techGrid { grid-template-columns: repeat(2,1fr); }
+  }
+  @media (max-width: 640px) {
+    .relatedGrid { grid-template-columns: repeat(2,1fr); }
+    .techGrid { grid-template-columns: 1fr 1fr; }
+    .stepsGrid { grid-template-columns: 1fr; }
+    .whyPanel { padding: 32px 22px; }
+    .pageHero__ctas { flex-direction: column; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ══════════════════════════════════════════════
+     PAGE HERO
+══════════════════════════════════════════════ -->
+<div class="pageHero">
+  <div class="pageHero__bg">
+    {% if service.title == "SAP Solutions" %}
+      <img src="{{ url_for('static', filename='img/Services/Sap.jpeg') }}" alt="SAP solutions visual" />
+    {% elif service.title == "Cyber Security" %}
+      <img src="{{ url_for('static', filename='img/Services/cyber.jpeg') }}" alt="Cyber security visual" />
+    {% elif service.title == "IT Managed Services" %}
+      <img src="{{ url_for('static', filename='img/Services/itsm.jpeg') }}" alt="IT managed services visual" />
+    {% elif service.title == "AI & Automation" %}
+      <img src="{{ url_for('static', filename='img/Services/AI.png') }}" alt="AI and automation visual" />
+    {% elif service.title == "Resourcing" %}
+      <img src="{{ url_for('static', filename='img/Services/Resource.jpeg') }}" alt="Resourcing strategies visual" />
+    {% endif %}
+  </div>
+  <div class="pageHero__grid" aria-hidden="true"></div>
+  <div class="container" style="position:relative;z-index:2;width:100%;">
+    <div class="pageHero__inner">
+
+      <div class="pageHero__copy reveal">
+        <nav class="pageHero__breadcrumb" aria-label="Breadcrumb">
+          <a href="{{ url_for('home') }}">Home</a>
+          <span class="pageHero__breadcrumb-sep">›</span>
+          <a href="/services">Services</a>
+          <span class="pageHero__breadcrumb-sep">›</span>
+          <span>{{ service.title }}</span>
+        </nav>
+        <p class="pageHero__eyebrow">Service</p>
+
+        {% if service.title == "SAP Solutions" %}
+          <h1 class="pageHero__title">Enterprise-grade <em>SAP Solutions</em></h1>
+          <p class="pageHero__sub">End-to-end SAP consulting, implementation, and managed support — helping organisations modernise core finance, supply chain, HR and analytics on a stable, scalable platform.</p>
+        {% elif service.title == "Cyber Security" %}
+          <h1 class="pageHero__title">Protecting your business with <em>Cyber Security</em></h1>
+          <p class="pageHero__sub">Comprehensive security solutions that safeguard your data, systems, and operations against evolving cyber threats — so you can operate with confidence.</p>
+        {% elif service.title == "IT Managed Services" %}
+          <h1 class="pageHero__title">Proactive <em>IT Managed Services</em></h1>
+          <p class="pageHero__sub">Round-the-clock monitoring, maintenance, and support so your IT environment stays stable, secure, and optimised — without burdening your internal teams.</p>
+        {% elif service.title == "AI & Automation" %}
+          <h1 class="pageHero__title">Intelligent growth through <em>AI &amp; Automation</em></h1>
+          <p class="pageHero__sub">Practical AI and automation solutions that reduce manual effort, surface actionable insights, and accelerate business outcomes across your organisation.</p>
+        {% elif service.title == "Resourcing" %}
+          <h1 class="pageHero__title">The right talent for your <em>Technology Needs</em></h1>
+          <p class="pageHero__sub">Flexible, skilled technology resourcing — from contract specialists to permanent placements — helping you scale teams and deliver projects with confidence.</p>
+        {% endif %}
+
+        <div class="pageHero__ctas">
+          <a href="{{ url_for('contact_page') }}?service={{ service.title | urlencode }}" class="btn btn--primary">
+            Discuss your project
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="/services" class="btn btn--outline-white">View all services</a>
+        </div>
+      </div>
+
+      <div class="pageHero__imageCard reveal" data-delay="200">
+        {% if service.title == "SAP Solutions" %}
+          <img src="{{ url_for('static', filename='img/Services/Sap.jpeg') }}" alt="SAP Solutions" />
+        {% elif service.title == "Cyber Security" %}
+          <img src="{{ url_for('static', filename='img/Services/cyber.jpeg') }}" alt="Cyber Security" />
+        {% elif service.title == "IT Managed Services" %}
+          <img src="{{ url_for('static', filename='img/Services/itsm.jpeg') }}" alt="IT Managed Services" />
+        {% elif service.title == "AI & Automation" %}
+          <img src="{{ url_for('static', filename='img/Services/AI.png') }}" alt="AI & Automation" />
+        {% elif service.title == "Resourcing" %}
+          <img src="{{ url_for('static', filename='img/Services/Resource.jpeg') }}" alt="Resourcing" />
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     MAIN BODY
+════════════════════════════════════════════ -->
+<main id="main">
+  <div class="serviceBody">
+    <div class="container">
+
+      <!-- ROW 1: Overview + Key Services -->
+      <div class="twoColGrid">
+
+        <!-- Overview -->
+        <article class="panel reveal" data-delay="40">
+          <h3>
+            <span class="panelIcon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </span>
+            Overview
+          </h3>
+          {% if service.title == "SAP Solutions" %}
+            <p>Enmett's SAP practice helps organisations modernise core business processes — from finance and supply chain to HR and analytics — on a stable, scalable platform without disrupting business-as-usual.</p>
+            <p>We cover the full SAP lifecycle: from roadmap and architecture, through implementation and rollout, to long-term managed support. Our team works across S/4HANA, SAP BTP, SuccessFactors, Ariba, and more.</p>
+            <p>Whether you are planning a new implementation, migrating from a legacy ERP, or optimising an existing SAP estate, we bring the expertise and delivery rigour to make it happen reliably.</p>
+          {% elif service.title == "Cyber Security" %}
+            <p>Today's organisations face an increasingly complex threat landscape — from ransomware and phishing to supply chain attacks and insider threats. A reactive approach to security is no longer sufficient.</p>
+            <p>Enmett's cyber security practice provides end-to-end protection across your entire digital environment. We assess your current posture, identify vulnerabilities, and implement layered defences aligned to international standards including ISO 27001 and NIST.</p>
+            <p>Our team embeds security into every layer of your technology stack — from endpoints and networks to cloud platforms and enterprise applications — so your business can grow with confidence.</p>
+          {% elif service.title == "IT Managed Services" %}
+            <p>Managing IT in-house is costly, complex, and increasingly difficult as technology environments grow. Enmett's managed services model gives you access to a dedicated team of experts who monitor, manage, and optimise your IT environment around the clock.</p>
+            <p>We take on the operational burden — from proactive monitoring and patch management to helpdesk support and vendor management — so your internal teams can focus on business priorities.</p>
+            <p>Our managed services are underpinned by clear SLAs, transparent reporting, and a continuous improvement mindset that keeps your systems performing at their best.</p>
+          {% elif service.title == "AI & Automation" %}
+            <p>Artificial intelligence and automation are transforming how businesses operate — reducing manual effort, improving decision-making speed, and unlocking new sources of value across every function.</p>
+            <p>Enmett's AI and automation practice helps organisations move beyond experimentation to real-world deployment. We identify high-value automation opportunities, design intelligent workflows, and implement solutions that integrate with your existing technology landscape.</p>
+            <p>From robotic process automation and machine learning models to intelligent document processing and AI-assisted analytics, we deliver practical outcomes that your teams can act on from day one.</p>
+          {% elif service.title == "Resourcing" %}
+            <p>Finding and retaining skilled technology professionals is one of the biggest challenges facing organisations today. Whether you need specialist contractors for a critical project or permanent hires to build long-term capability, Enmett's resourcing practice delivers.</p>
+            <p>We maintain a deep network of pre-vetted technology professionals across SAP, cyber security, cloud, data, and IT infrastructure — enabling rapid deployment of the right talent for your specific needs.</p>
+            <p>Our consultants take time to understand your culture, technical environment, and objectives — ensuring every placement adds genuine value from day one.</p>
+          {% endif %}
+        </article>
+
+        <!-- Key Services -->
+        <article class="panel reveal" data-delay="120">
+          <h3>
+            <span class="panelIcon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+            </span>
+            {% if service.title == "SAP Solutions" %}Key SAP Services
+            {% elif service.title == "Cyber Security" %}Our Security Services
+            {% elif service.title == "IT Managed Services" %}What We Manage
+            {% elif service.title == "AI & Automation" %}Our AI &amp; Automation Services
+            {% elif service.title == "Resourcing" %}Our Resourcing Services
+            {% endif %}
+          </h3>
+          <div class="solutionList">
+            {% if service.title == "SAP Solutions" %}
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">SAP S/4HANA Implementation</div><div class="solutionItem__desc">Greenfield and brownfield programmes designed around best-practice processes and change management.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">SAP Migration &amp; Upgrades</div><div class="solutionItem__desc">Risk-managed migrations from ECC or legacy ERPs with robust cutover and hypercare support.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">SAP BTP &amp; Extensions</div><div class="solutionItem__desc">Build and run extensions, APIs, and automation on SAP Business Technology Platform.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">SuccessFactors &amp; HR</div><div class="solutionItem__desc">Talent, core HR, and payroll solutions aligned to your operating model and structure.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Analytics &amp; Reporting</div><div class="solutionItem__desc">Real-time dashboards and embedded analytics for faster, better decision-making.</div></div></div>
+            {% elif service.title == "Cyber Security" %}
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Security Assessments &amp; Audits</div><div class="solutionItem__desc">Identify gaps in your security posture with comprehensive assessments against industry standards.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Threat Detection &amp; Response</div><div class="solutionItem__desc">24/7 monitoring, threat intelligence, and rapid incident response to minimise impact.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Network &amp; Endpoint Security</div><div class="solutionItem__desc">Layered protection across firewalls, endpoints, and network infrastructure.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Cloud Security</div><div class="solutionItem__desc">Secure cloud environments across AWS, Azure, and hybrid architectures.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Compliance &amp; Governance</div><div class="solutionItem__desc">Align with ISO 27001, NIST, GDPR and sector-specific regulatory requirements.</div></div></div>
+            {% elif service.title == "IT Managed Services" %}
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">24/7 Infrastructure Monitoring</div><div class="solutionItem__desc">Continuous visibility across servers, networks, and cloud environments with proactive alerting.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Helpdesk &amp; End-User Support</div><div class="solutionItem__desc">Responsive L1/L2/L3 support for your teams, available around the clock.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Patch &amp; Vulnerability Management</div><div class="solutionItem__desc">Regular patching cycles and vulnerability remediation to keep systems secure and current.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Backup &amp; Disaster Recovery</div><div class="solutionItem__desc">Reliable backup strategies and tested DR plans to protect business continuity.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Vendor Management</div><div class="solutionItem__desc">Single point of accountability across your technology vendor relationships.</div></div></div>
+            {% elif service.title == "AI & Automation" %}
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Robotic Process Automation (RPA)</div><div class="solutionItem__desc">Automate repetitive, rule-based tasks to free up your teams for higher-value work.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Intelligent Document Processing</div><div class="solutionItem__desc">Extract, classify, and process unstructured data from documents at scale using AI.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">AI-Assisted Analytics</div><div class="solutionItem__desc">Surface insights and predictions from your data using machine learning models.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Process Mining &amp; Optimisation</div><div class="solutionItem__desc">Discover automation opportunities by analysing how your processes actually run.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">AI Strategy &amp; Roadmap</div><div class="solutionItem__desc">Define a pragmatic AI adoption roadmap aligned to your business priorities and readiness.</div></div></div>
+            {% elif service.title == "Resourcing" %}
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Contract &amp; Interim Specialists</div><div class="solutionItem__desc">Rapid deployment of skilled contractors for project delivery and interim capability needs.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Permanent Placement</div><div class="solutionItem__desc">End-to-end recruitment of permanent technology professionals across all levels.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">SAP Resourcing</div><div class="solutionItem__desc">Specialist SAP consultants and project resources across all modules and phases.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Cyber Security Talent</div><div class="solutionItem__desc">Pre-vetted security professionals for SOC, architecture, governance, and compliance roles.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Managed Teams</div><div class="solutionItem__desc">Dedicated, managed resource pools for ongoing programme and operational needs.</div></div></div>
+            {% endif %}
+          </div>
+        </article>
+      </div>
+
+      <!-- ROW 2: Tech Capabilities + Benefits -->
+      <div class="twoColGrid">
+
+        <article class="panel reveal" data-delay="60">
+          <h3>
+            <span class="panelIcon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            </span>
+            Technology Capabilities
+          </h3>
+          <p style="margin-bottom:16px;">Our solutions leverage modern platforms and technologies including:</p>
+          <div class="techGrid">
+            {% if service.title == "SAP Solutions" %}
+              <div class="techChip">S/4HANA</div>
+              <div class="techChip">SAP BTP</div>
+              <div class="techChip">SuccessFactors</div>
+              <div class="techChip">Analytics Cloud</div>
+              <div class="techChip">Integration Suite</div>
+              <div class="techChip">Azure / AWS</div>
+            {% elif service.title == "Cyber Security" %}
+              <div class="techChip">SIEM / SOC</div>
+              <div class="techChip">Zero Trust</div>
+              <div class="techChip">EDR / XDR</div>
+              <div class="techChip">Cloud Security</div>
+              <div class="techChip">IAM / PAM</div>
+              <div class="techChip">Pen Testing</div>
+            {% elif service.title == "IT Managed Services" %}
+              <div class="techChip">NOC / SOC</div>
+              <div class="techChip">ITSM Platforms</div>
+              <div class="techChip">Azure / AWS</div>
+              <div class="techChip">Microsoft 365</div>
+              <div class="techChip">SIEM Monitoring</div>
+              <div class="techChip">ITIL Aligned</div>
+            {% elif service.title == "AI & Automation" %}
+              <div class="techChip">UiPath / AA</div>
+              <div class="techChip">Azure OpenAI</div>
+              <div class="techChip">Power Automate</div>
+              <div class="techChip">ML / LLMs</div>
+              <div class="techChip">Process Mining</div>
+              <div class="techChip">SAP AI Core</div>
+            {% elif service.title == "Resourcing" %}
+              <div class="techChip">SAP Specialists</div>
+              <div class="techChip">Cloud Engineers</div>
+              <div class="techChip">Security Experts</div>
+              <div class="techChip">Data Engineers</div>
+              <div class="techChip">DevOps / SRE</div>
+              <div class="techChip">IT Leadership</div>
+            {% endif %}
+          </div>
+        </article>
+
+        <article class="panel reveal" data-delay="140">
+          <h3>
+            <span class="panelIcon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </span>
+            Benefits
+          </h3>
+          <p style="margin-bottom:16px;">Organisations partnering with Enmett benefit from:</p>
+          <div class="benefitList">
+            {% if service.title == "SAP Solutions" %}
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Faster financial close and reporting</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Real-time operational visibility</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Reduced run-costs and technical debt</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Standardised processes across entities</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Improved compliance and audit readiness</span></div>
+            {% elif service.title == "Cyber Security" %}
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Reduced risk of data breaches and incidents</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Faster threat detection and incident response</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Improved regulatory compliance posture</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Greater stakeholder and customer trust</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Security built into systems from the start</span></div>
+            {% elif service.title == "IT Managed Services" %}
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Reduced IT downtime and disruption</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Lower total cost of IT operations</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Predictable monthly costs and clear SLAs</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Internal teams freed to focus on business goals</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Proactive improvements, not just reactive fixes</span></div>
+            {% elif service.title == "AI & Automation" %}
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Significant reduction in manual processing time</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Faster, more accurate business decisions</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Improved scalability without headcount growth</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Higher accuracy and fewer process errors</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Real ROI delivered within months, not years</span></div>
+            {% elif service.title == "Resourcing" %}
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Access to pre-vetted, specialist technology talent</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Faster time-to-hire for critical roles</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Flexible engagement models for any need</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Reduced hiring risk with thorough vetting</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Resources aligned to your culture and goals</span></div>
+            {% endif %}
+          </div>
+        </article>
+      </div>
+
+      <!-- ROW 3: How We Deliver (full-width steps) -->
+      <div class="twoColGrid" style="margin-bottom:24px;">
+        <article class="panel reveal" data-delay="60" style="grid-column: 1 / -1;">
+          <h3>
+            <span class="panelIcon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </span>
+            {% if service.title == "SAP Solutions" %}How We Deliver SAP Programmes
+            {% elif service.title == "Cyber Security" %}Our Security Delivery Approach
+            {% elif service.title == "IT Managed Services" %}Our Managed Services Model
+            {% elif service.title == "AI & Automation" %}How We Deliver AI &amp; Automation
+            {% elif service.title == "Resourcing" %}Our Resourcing Process
+            {% endif %}
+          </h3>
+          <p style="margin-bottom:16px;">A structured, proven approach that delivers results at every stage.</p>
+          <div class="stepsGrid">
+            {% if service.title == "SAP Solutions" %}
+              <div class="stepItem"><div class="stepItem__head"><div class="stepItem__num">1</div><div class="stepItem__title">Discovery</div></div><div class="stepItem__desc">Vision workshops to align stakeholders and define scope and objectives.</div></div>
+              <div class="stepItem"><div class="stepItem__head"><div class="stepItem__num">2</div><div class="stepItem__title">Design</div></div><div class="stepItem__desc">Solution and integration design that fits your existing technology landscape.</div></div>
+              <div class="stepItem"><div class="stepItem__head"><div class="stepItem__num">3</div><div class="stepItem__title">Build &amp; Test</div></div><div class="stepItem__desc">Agile build, testing, and data migration with clear quality gates throughout.</div></div>
+              <div class="stepItem"><div class="stepItem__head"><div class="stepItem__num">4</div><div class="stepItem__title">Cutover &amp; Run</div></div><div class="stepItem__desc">Cutover planning, hypercare, and smooth handover to managed run-mode.</div></div>
+            {% elif service.title == "Cyber Security" %}
+              <div class="stepItem"><div class="stepItem__head"><div class="stepItem__num">1</div><div class="stepItem__title">Assess</div></div><div class="stepItem__desc">Understand your current security posture, risks, and compliance obligations.</div></div>
+              <div class="stepItem"><div class="stepItem__head"><div class="stepItem__num">2</div><div class="stepItem__title">Design</div></div><div class="stepItem__desc">Build a layered security architecture tailored to your environment and risk appetite.</div></div>
+              <div class="stepItem"><div class="stepItem__head"><div class="stepItem__num">3</div><div class="stepItem__title">Implement</div></div><div class="stepItem__desc">Deploy controls, tools, and processes with minimal disruption to operations.</div></div>
+              <div class="stepItem"><div class="stepItem__head"><div class="stepItem__num">4</div><div class="stepItem__title">Monitor &amp; Improve</div></div><div class="stepItem__desc">Continuous monitoring, threat response, and regular review of your security posture.</div></div>
+            {% elif service.title == "IT Managed Services" %}
+              <div class="stepItem"><div class="stepItem__head"><div class="stepItem__num">1</div><div class="stepItem__title">Onboard</div></div><div class="stepItem__desc">Detailed discovery of your environment, tools, and processes to set a solid baseline.</div></div>
+              <div class="stepItem"><div class="stepItem__head"><div class="stepItem__num">2</div><div class="stepItem__title">Stabilise</div></div><div class="stepItem__desc">Resolve outstanding issues and implement monitoring and process improvements.</div></div>
+              <div class="stepItem"><div class="stepItem__head"><div class="stepItem__num">3</div><div class="stepItem__title">Operate</div></div><div class="stepItem__desc">24/7 monitoring, support, and management against agreed SLAs and KPIs.</div></div>
+              <div class="stepItem"><div class="stepItem__head"><div class="stepItem__num">4</div><div class="stepItem__title">Optimise</div></div><div class="stepItem__desc">Regular service reviews and continuous improvements to drive greater value over time.</div></div>
+            {% elif service.title == "AI & Automation" %}
+              <div class="stepItem"><div class="stepItem__head"><div class="stepItem__num">1</div><div class="stepItem__title">Discover</div></div><div class="stepItem__desc">Identify high-value automation opportunities through process analysis and workshops.</div></div>
+              <div class="stepItem"><div class="stepItem__head"><div class="stepItem__num">2</div><div class="stepItem__title">Design</div></div><div class="stepItem__desc">Design intelligent workflows and select the right AI tools for your use cases.</div></div>
+              <div class="stepItem"><div class="stepItem__head"><div class="stepItem__num">3</div><div class="stepItem__title">Build &amp; Test</div></div><div class="stepItem__desc">Develop, test, and validate automation against real-world scenarios and data.</div></div>
+              <div class="stepItem"><div class="stepItem__head"><div class="stepItem__num">4</div><div class="stepItem__title">Deploy &amp; Scale</div></div><div class="stepItem__desc">Roll out to production with change management support and a plan to scale further.</div></div>
+            {% elif service.title == "Resourcing" %}
+              <div class="stepItem"><div class="stepItem__head"><div class="stepItem__num">1</div><div class="stepItem__title">Brief</div></div><div class="stepItem__desc">Deep-dive into your technical requirements, culture, and project context.</div></div>
+              <div class="stepItem"><div class="stepItem__head"><div class="stepItem__num">2</div><div class="stepItem__title">Search &amp; Screen</div></div><div class="stepItem__desc">Identify and vet candidates from our network and active market sourcing.</div></div>
+              <div class="stepItem"><div class="stepItem__head"><div class="stepItem__num">3</div><div class="stepItem__title">Shortlist</div></div><div class="stepItem__desc">Present a curated shortlist with detailed profiles and honest assessments.</div></div>
+              <div class="stepItem"><div class="stepItem__head"><div class="stepItem__num">4</div><div class="stepItem__title">Place &amp; Support</div></div><div class="stepItem__desc">Manage offer, onboarding, and provide aftercare to ensure a successful placement.</div></div>
+            {% endif %}
+          </div>
+        </article>
+      </div>
+
+      <!-- WHY ENMETT dark panel -->
+      <div class="whyPanel reveal" data-delay="80">
+        <div class="whyPanel__inner">
+          <div class="whyPanel__copy">
+            <h3>Why Enmett for <em>{{ service.title }}</em></h3>
+            {% if service.title == "SAP Solutions" %}
+              <p>Our team combines SAP functional expertise, technical engineering, and cyber security capabilities — so your core systems are not only transformed, but secure and operable long-term.</p>
+              <p>We bring experience from complex, multi-country programmes in finance, manufacturing, public sector and more — always with a focus on measurable outcomes, not just go-live dates.</p>
+            {% elif service.title == "Cyber Security" %}
+              <p>We don't just sell security products — we build security programmes. Our team brings deep expertise across threat intelligence, architecture, compliance, and incident response to deliver protection that actually works in your environment.</p>
+              <p>Security is embedded in everything we do at Enmett, from SAP implementations to managed services — giving you a partner that thinks about risk holistically, not in silos.</p>
+            {% elif service.title == "IT Managed Services" %}
+              <p>We take ownership seriously. When you partner with Enmett for managed services, you get a team that is genuinely invested in the performance of your IT environment — not just a helpdesk ticket queue.</p>
+              <p>Our ITIL-aligned processes, clear SLAs, and transparent monthly reporting give you full visibility into how your IT is performing and where we are improving it.</p>
+            {% elif service.title == "AI & Automation" %}
+              <p>We focus on practical AI — solutions that work today, not hypothetical future capabilities. Our team combines business analysis, data engineering, and AI expertise to deliver automation that integrates seamlessly with your existing systems.</p>
+              <p>Whether you are starting with your first RPA bot or scaling an enterprise-wide AI programme, we meet you where you are and help you move forward with confidence.</p>
+            {% elif service.title == "Resourcing" %}
+              <p>Our resourcing consultants are technology specialists first — they understand the roles they are filling, the skills that matter, and the nuances that separate a good hire from a great one.</p>
+              <p>With deep networks across SAP, security, cloud, and data disciplines, and a genuine commitment to long-term relationships, we are a resourcing partner you can rely on for years, not just a single placement.</p>
+            {% endif %}
+            <a href="{{ url_for('contact_page') }}?service={{ service.title | urlencode }}" class="btn btn--primary">
+              Start a conversation
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+          <div class="whyPanel__pillars">
+            <div class="pillar">
+              <div class="pillar__icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+              <div>
+                <div class="pillar__title">Certified expertise</div>
+                <div class="pillar__desc">SAP-certified consultants and ITIL-aligned delivery teams with deep industry experience.</div>
+              </div>
+            </div>
+            <div class="pillar">
+              <div class="pillar__icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <div>
+                <div class="pillar__title">Security-first approach</div>
+                <div class="pillar__desc">ISO 27001-aligned processes with security embedded in every engagement, not bolted on.</div>
+              </div>
+            </div>
+            <div class="pillar">
+              <div class="pillar__icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <div>
+                <div class="pillar__title">APAC coverage &amp; beyond</div>
+                <div class="pillar__desc">Teams across Singapore and APAC, with partner networks in EMEA and North America.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── RELATED SERVICES ── -->
+  <div class="relatedSection">
+    <div class="container">
+      <div class="sectionTitle reveal">
+        <p class="eyebrow">More services</p>
+        <h2>Other services we offer</h2>
+      </div>
+      <div class="relatedGrid">
+
+        <a href="/services/sap" class="relatedCard {% if service.title == 'SAP Solutions' %}active{% endif %}">
+          <div class="relatedCard__icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          </div>
+          SAP Solutions
+        </a>
+
+        <a href="/services/cyber-security" class="relatedCard {% if service.title == 'Cyber Security' %}active{% endif %}">
+          <div class="relatedCard__icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          Cyber Security
+        </a>
+
+        <a href="/services/it-managed-services" class="relatedCard {% if service.title == 'IT Managed Services' %}active{% endif %}">
+          <div class="relatedCard__icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
+          </div>
+          IT Managed Services
+        </a>
+
+        <a href="/services/ai-automation" class="relatedCard {% if service.title == 'AI & Automation' %}active{% endif %}">
+          <div class="relatedCard__icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2z"/><path d="M12 8v4l3 3"/></svg>
+          </div>
+          AI &amp; Automation
+        </a>
+
+        <a href="/services/resourcing" class="relatedCard {% if service.title == 'Resourcing' %}active{% endif %}">
+          <div class="relatedCard__icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          </div>
+          Resourcing
+        </a>
+
+      </div>
+    </div>
+  </div>
+
+</main>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  (function() {
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          var delay = entry.target.dataset.delay || 0;
+          setTimeout(function() { entry.target.classList.add('is-visible'); }, +delay);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.07, rootMargin: '0px 0px -28px 0px' });
+    document.querySelectorAll('.reveal').forEach(function(el) { observer.observe(el); });
+  })();
+</script>
+{% endblock %}

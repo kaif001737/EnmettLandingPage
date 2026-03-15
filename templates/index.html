@@ -1,0 +1,644 @@
+{% extends "base.html" %}
+{% block title %}Enmett | SAP &amp; IT Solutions{% endblock %}
+{% block extra_css %}
+  <style>
+    /* ════════════════════════════════════════
+       INDEX PAGE STYLES
+       Note: design tokens, .reveal, .btn--outline-white,
+       .eyebrow, h1/h2/h3 base styles are all in base.html
+    ════════════════════════════════════════ */
+
+    /* ─── Section scaffolding ─── */
+    .section { padding: 96px 0; }
+    .section--alt { background: var(--surface-muted); }
+
+    /* Section headers and body text: no justification, left-aligned for readability */
+    .section__head,
+    .section__head p,
+    .panel p,
+    .serviceCard__body p,
+    .processCard p {
+      text-align: left;
+    }
+    .section__head {
+      text-align: center;
+    }
+    .section__head p {
+      text-align: center;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .lead {
+      font-size: clamp(0.9375rem, 1.6vw, 1.075rem);
+      color: var(--text-secondary);
+      line-height: 1.55;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    /* ════════════════════════════════════════
+       HERO
+    ════════════════════════════════════════ */
+    .hero {
+      position: relative;
+      background: var(--ink); /* uses --ink alias = #070d1a */
+      overflow: hidden;
+      padding: 0;
+    }
+
+    /* Radial light blobs */
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 70% 50%, rgba(14,165,233,0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 60% at 10% 80%, rgba(14,165,233,0.07) 0%, transparent 60%);
+    }
+
+    /* Subtle grid overlay */
+    .hero__grid-lines {
+      position: absolute; inset: 0;
+      pointer-events: none; overflow: hidden;
+    }
+    .hero__grid-lines::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(14,165,233,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(14,165,233,0.05) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 80%);
+    }
+
+    .hero__inner {
+      position: relative; z-index: 2;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 48px; align-items: center;
+      min-height: 88vh; padding: 64px 0 56px;
+    }
+
+    /* ─── Hero copy ─── */
+    .hero__copy { display: flex; flex-direction: column; }
+    .hero__copy h1 { color: #fff; margin-bottom: 1rem; }
+    .hero__copy h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--sky) 0%, var(--sky-bright) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero__copy .lead { color: rgba(255,255,255,0.92); margin: 0 0 1.5rem; line-height: 1.5; }
+
+    .hero__actions {
+      display: flex; align-items: center; flex-wrap: wrap;
+      gap: 10px; margin-bottom: 2rem;
+    }
+
+    /* Stats bar */
+    .hero__stats {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1px; background: rgba(255,255,255,0.07);
+      border-radius: var(--radius-md); /* uses alias */
+      border: 1px solid rgba(255,255,255,0.08);
+      overflow: hidden;
+    }
+    .hero__stats > div {
+      padding: 18px 20px;
+      background: rgba(255,255,255,0.03);
+      transition: background 0.2s;
+    }
+    .hero__stats > div:hover { background: rgba(14,165,233,0.08); }
+    .hero__stats dt {
+      font-family: var(--font-display);
+      font-size: 0.75rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.09em;
+      color: var(--sky); /* uses --sky alias */
+      margin-bottom: 5px;
+    }
+    .hero__stats dd { font-size: 0.82rem; color: rgba(255,255,255,0.5); line-height: 1.5; }
+
+    /* ─── Hero visual (dashboard mockup) ─── */
+    .hero__visual {
+      position: relative;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .hero__mockup {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05);
+    }
+    .hero__mockup-bar {
+      display: flex; align-items: center; gap: 7px;
+      padding: 14px 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.03);
+    }
+    .hero__mockup-dot { width: 9px; height: 9px; border-radius: 50%; }
+    .hero__mockup-dot:nth-child(1) { background: #ff5f57; }
+    .hero__mockup-dot:nth-child(2) { background: #febc2e; }
+    .hero__mockup-dot:nth-child(3) { background: #28c840; }
+    .hero__mockup-body { padding: 28px; }
+
+    /* Dashboard cards */
+    .dash { display: flex; flex-direction: column; gap: 16px; }
+    .dash__row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    .dash__card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+    }
+    .dash__card-label {
+      font-size: 0.68rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.08em; color: rgba(255,255,255,0.35); margin-bottom: 8px;
+    }
+    .dash__card-value {
+      font-family: var(--font-display); font-size: 1.4rem; font-weight: 700; color: #fff;
+    }
+    .dash__card-delta { font-size: 0.72rem; color: #34d399; margin-top: 3px; }
+
+    /* Mini bar chart */
+    .dash__chart {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius-sm);
+      height: 80px; display: flex; align-items: flex-end;
+      gap: 4px; padding: 12px; overflow: hidden;
+    }
+    .dash__bar {
+      flex: 1; border-radius: 3px 3px 0 0;
+      background: rgba(14,165,233,0.4); transition: background 0.2s;
+    }
+    .dash__bar:hover { background: var(--sky); }
+    .dash__bar:nth-child(1)  { height: 40%; }
+    .dash__bar:nth-child(2)  { height: 60%; }
+    .dash__bar:nth-child(3)  { height: 80%; }
+    .dash__bar:nth-child(4)  { height: 45%; }
+    .dash__bar:nth-child(5)  { height: 90%; }
+    .dash__bar:nth-child(6)  { height: 70%; }
+    .dash__bar:nth-child(7)  { height: 55%; }
+    .dash__bar:nth-child(8)  { height: 100%; }
+    .dash__bar:nth-child(9)  { height: 75%; }
+    .dash__bar:nth-child(10) { height: 85%; background: var(--sky); }
+
+    /* Status list */
+    .dash__list { display: flex; flex-direction: column; gap: 8px; }
+    .dash__list-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 12px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: var(--radius-sm);
+    }
+    .dash__list-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .dash__list-dot--green { background: #34d399; }
+    .dash__list-dot--blue  { background: var(--sky); }
+    .dash__list-dot--amber { background: #fbbf24; }
+    .dash__list-text { font-size: 0.78rem; color: rgba(255,255,255,0.6); }
+    .dash__list-badge {
+      margin-left: auto; font-size: 0.68rem; font-weight: 600;
+      padding: 2px 8px; border-radius: 99px;
+    }
+    .dash__list-badge--green { background: rgba(52,211,153,0.15); color: #34d399; }
+    .dash__list-badge--blue  { background: rgba(14,165,233,0.15); color: var(--sky); }
+    .dash__list-badge--amber { background: rgba(251,191,36,0.15); color: #fbbf24; }
+
+    /* Floating badge */
+    .hero__badge {
+      position: absolute; bottom: -16px; left: -24px;
+      background: var(--surface); border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg); padding: 14px 18px;
+      display: flex; align-items: center; gap: 12px;
+      border: 1px solid var(--border);
+      animation: float 4s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-6px); }
+    }
+    .hero__badge-icon {
+      width: 36px; height: 36px; border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--sky), var(--sky-dim));
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .hero__badge-text strong {
+      display: block; font-family: var(--font-display);
+      font-size: 0.82rem; font-weight: 700; color: var(--text-primary);
+    }
+    .hero__badge-text span { font-size: 0.75rem; color: var(--text-muted); }
+
+    /* ════════════════════════════════════════
+       SERVICES GRID
+    ════════════════════════════════════════ */
+    .servicesGrid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+    }
+    .serviceCard {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden; transition: all 0.3s var(--ease-expo);
+      display: flex; flex-direction: column;
+    }
+    .serviceCard:hover {
+      border-color: var(--sky);
+      box-shadow: var(--shadow-lg), 0 0 0 1px rgba(14,165,233,0.2);
+      transform: translateY(-4px);
+    }
+    .serviceCard__img {
+      width: 100%; height: 200px; object-fit: cover;
+      background: linear-gradient(135deg, #0f1e33 0%, #1a3050 100%);
+    }
+    .serviceCard__body {
+      padding: 28px; flex: 1;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .serviceCard__tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: var(--font-display); font-size: 0.7rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em; color: var(--sky); margin-bottom: 4px;
+    }
+    .serviceCard__tag::before {
+      content: ''; width: 14px; height: 2px;
+      background: var(--sky); border-radius: 2px;
+    }
+    .serviceCard__body h3 { font-size: 1.15rem; color: var(--text-primary); }
+    .serviceCard__body p  { font-size: 0.9rem; color: var(--text-secondary); flex: 1; }
+    .serviceCard__link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: var(--font-display); font-size: 0.82rem; font-weight: 700;
+      color: var(--sky); margin-top: 8px; transition: gap 0.2s;
+    }
+    .serviceCard__link:hover { gap: 10px; }
+
+    /* ════════════════════════════════════════
+       ABOUT GRID
+    ════════════════════════════════════════ */
+    .aboutGrid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: center;
+    }
+    .aboutGrid__copy { display: flex; flex-direction: column; gap: 36px; }
+
+    .panel {
+      padding: 28px; background: var(--surface);
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .panel:hover { border-color: var(--sky); box-shadow: var(--shadow-md); }
+    .panel h3 {
+      font-size: 1.05rem; margin-bottom: 10px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .panel h3::before {
+      content: ''; width: 4px; height: 18px;
+      background: var(--sky); border-radius: 2px; flex-shrink: 0;
+    }
+    .panel p { font-size: 0.92rem; }
+
+    .list { display: flex; flex-direction: column; gap: 10px; }
+    .list li {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 0.92rem; color: var(--text-secondary);
+    }
+    .list li::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--sky); flex-shrink: 0; margin-top: 8px;
+    }
+
+    .aboutGrid__media img {
+      width: 100%; border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg), 0 0 0 1px rgba(8,17,31,0.06);
+      object-fit: cover; max-height: 480px;
+    }
+
+    /* ════════════════════════════════════════
+       PROCESS GRID
+    ════════════════════════════════════════ */
+    .processGrid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 2px; background: var(--border);
+      border-radius: var(--radius-lg); overflow: hidden;
+    }
+    .processCard {
+      background: var(--surface); padding: 44px 36px;
+      position: relative; transition: background 0.3s;
+    }
+    .processCard:hover { background: #f0f6ff; }
+    .processCard__number {
+      font-family: var(--font-display); font-size: 4rem; font-weight: 800;
+      color: rgba(14,165,233,0.08); line-height: 1;
+      position: absolute; top: 28px; right: 28px;
+      letter-spacing: -0.05em; transition: color 0.3s;
+    }
+    .processCard:hover .processCard__number { color: rgba(14,165,233,0.14); }
+    .processCard__icon {
+      width: 48px; height: 48px;
+      background: rgba(14,165,233,0.08);
+      border: 1px solid rgba(14,165,233,0.25);
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px; transition: background 0.2s;
+    }
+    .processCard:hover .processCard__icon { background: var(--sky); }
+    .processCard:hover .processCard__icon svg { color: #fff; }
+    .processCard__icon svg { color: var(--sky); transition: color 0.2s; }
+    .processCard h3 { font-size: 1.15rem; margin-bottom: 12px; }
+    .processCard p  { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7; }
+
+    /* ════════════════════════════════════════
+       CTA BAND
+    ════════════════════════════════════════ */
+    .ctaBand {
+      background: var(--ink);
+      border-radius: var(--radius-xl); padding: 70px 60px;
+      text-align: center; position: relative; overflow: hidden;
+      margin: 0 28px;
+    }
+    .ctaBand::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 80% at 50% 50%, rgba(14,165,233,0.14) 0%, transparent 65%);
+    }
+    .ctaBand__inner {
+      position: relative; z-index: 1; max-width: 600px; margin: 0 auto;
+    }
+    .ctaBand h2 { color: #fff; margin-bottom: 1rem; }
+    .ctaBand p  { color: rgba(255,255,255,0.6); margin-bottom: 2.4rem; font-size: 1.05rem; }
+    .ctaBand__actions {
+      display: flex; align-items: center; justify-content: center;
+      gap: 12px; flex-wrap: wrap;
+    }
+
+    /* ════════════════════════════════════════
+       RESPONSIVE / MOBILE
+    ════════════════════════════════════════ */
+    @media (max-width: 960px) {
+      .hero__inner { grid-template-columns: 1fr; min-height: auto; padding: 48px 0 40px; gap: 32px; }
+      .hero__visual { display: none; }
+      .hero__copy .lead { margin-left: 0; margin-bottom: 1.25rem; }
+      .hero__copy h1 { margin-bottom: 0.75rem; }
+      .hero__actions { margin-bottom: 1.5rem; }
+      .servicesGrid { grid-template-columns: 1fr; }
+      .aboutGrid { grid-template-columns: 1fr; gap: 36px; }
+      .processGrid { grid-template-columns: 1fr; }
+      .ctaBand { padding: 40px 20px; margin: 0 12px; }
+      .section { padding: 64px 0; }
+    }
+    @media (max-width: 600px) {
+      .section { padding: 48px 0; }
+      .hero__inner { padding: 36px 0 32px; }
+      .hero__stats { grid-template-columns: 1fr; }
+      .hero__stats > div { padding: 14px 16px; }
+      .ctaBand { padding: 32px 16px; margin: 0 8px; }
+      .ctaBand p { margin-bottom: 1.5rem; }
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+
+  <!-- ══ HERO ══ -->
+  <section class="hero">
+    <div class="hero__grid-lines" aria-hidden="true"></div>
+    <div class="container">
+      <div class="hero__inner">
+
+        <div class="hero__copy reveal">
+          <p class="eyebrow">Trusted SAP &amp; IT Partner</p>
+          <h1>Modern digital and <em>IT landscapes,</em> secured and managed end-to-end.</h1>
+          <p class="lead">
+            Unlock a seamlessly integrated technology environment where every layer of your IT—from infrastructure and networks to applications, data, cloud, and security—is proactively monitored, optimized, and protected, enabling your business to innovate confidently and operate without disruption.
+          </p>
+
+          <div class="hero__actions">
+            <a class="btn btn--accent" href="{{ url_for('contact_page') }}">
+              Request a consultation
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+            <a class="btn btn--outline-white" href="{{ url_for('services_main') }}">Explore services</a>
+          </div>
+
+          <dl class="hero__stats" aria-label="Highlights">
+            <div class="reveal" data-delay="100">
+              <dt>SAP-first</dt>
+              <dd>S/4HANA, BTP, security &amp; integrations</dd>
+            </div>
+            <div class="reveal" data-delay="180">
+              <dt>Run &amp; innovate</dt>
+              <dd>Managed services plus new capabilities</dd>
+            </div>
+            <div class="reveal" data-delay="260">
+              <dt>Industry-ready</dt>
+              <dd>Finance, retail, manufacturing, public sector</dd>
+            </div>
+          </dl>
+        </div>
+
+        <!-- Decorative Dashboard Mockup -->
+        <div class="hero__visual reveal" data-delay="200" aria-hidden="true">
+          <div class="hero__mockup">
+            <div class="hero__mockup-bar">
+              <span class="hero__mockup-dot"></span>
+              <span class="hero__mockup-dot"></span>
+              <span class="hero__mockup-dot"></span>
+            </div>
+            <div class="hero__mockup-body">
+              <div class="dash">
+                <div class="dash__row">
+                  <div class="dash__card">
+                    <div class="dash__card-label">Systems Live</div>
+                    <div class="dash__card-value">142</div>
+                    <div class="dash__card-delta">↑ 3 this week</div>
+                  </div>
+                  <div class="dash__card">
+                    <div class="dash__card-label">Landscape Health</div>
+                    <div class="dash__card-value">Stable</div>
+                    <div class="dash__card-delta">Monitored 24/7</div>
+                  </div>
+                  <div class="dash__card">
+                    <div class="dash__card-label">Incidents</div>
+                    <div class="dash__card-value">2</div>
+                    <div class="dash__card-delta" style="color:#fbbf24">↓ 8 resolved</div>
+                  </div>
+                </div>
+                <div class="dash__chart">
+                  <div class="dash__bar"></div><div class="dash__bar"></div>
+                  <div class="dash__bar"></div><div class="dash__bar"></div>
+                  <div class="dash__bar"></div><div class="dash__bar"></div>
+                  <div class="dash__bar"></div><div class="dash__bar"></div>
+                  <div class="dash__bar"></div><div class="dash__bar"></div>
+                </div>
+                <div class="dash__list">
+                  <div class="dash__list-item">
+                    <span class="dash__list-dot dash__list-dot--green"></span>
+                    <span class="dash__list-text">S/4HANA Production — All services nominal</span>
+                    <span class="dash__list-badge dash__list-badge--green">Healthy</span>
+                  </div>
+                  <div class="dash__list-item">
+                    <span class="dash__list-dot dash__list-dot--blue"></span>
+                    <span class="dash__list-text">BTP Integration Suite — 3 flows running</span>
+                    <span class="dash__list-badge dash__list-badge--blue">Active</span>
+                  </div>
+                  <div class="dash__list-item">
+                    <span class="dash__list-dot dash__list-dot--amber"></span>
+                    <span class="dash__list-text">Security scan scheduled — 02:00 UTC</span>
+                    <span class="dash__list-badge dash__list-badge--amber">Queued</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SERVICES ══ -->
+  <section class="section">
+    <div class="container">
+      <div class="section__head reveal">
+        <p class="eyebrow" style="justify-content:center">What we do</p>
+        <h2>A full stack of SAP and IT services</h2>
+        <p>From greenfield S/4HANA programs to day-to-day operations and specialist staffing.</p>
+      </div>
+      <div class="servicesGrid">
+
+        <article class="serviceCard reveal" data-delay="60">
+          <img class="serviceCard__img" src="{{ url_for('static', filename='img/Home/Sap.jpeg') }}" alt="SAP Solutions" loading="lazy" />
+          <div class="serviceCard__body">
+            <span class="serviceCard__tag">SAP</span>
+            <h3>SAP Solutions</h3>
+            <p>Advisory, implementations, upgrades, and optimization for SAP S/4HANA, ECC, BTP, Fiori, CPI, and analytics.</p>
+            <a class="serviceCard__link" href="{{ url_for('service_detail', slug='sap-solutions') }}">
+              Learn more
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </article>
+
+        <article class="serviceCard reveal" data-delay="140">
+          <img class="serviceCard__img" src="{{ url_for('static', filename='img/Home/cyber.jpeg') }}" alt="Cyber Security" loading="lazy" />
+          <div class="serviceCard__body">
+            <span class="serviceCard__tag">Security</span>
+            <h3>Cyber Security</h3>
+            <p>Security architecture, SAP GRC, identity and access management, and continuous monitoring for hybrid estates.</p>
+            <a class="serviceCard__link" href="{{ url_for('service_detail', slug='cyber-security') }}">
+              Learn more
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </article>
+
+        <article class="serviceCard reveal" data-delay="220">
+          <img class="serviceCard__img" src="{{ url_for('static', filename='img/Home/itsm.jpeg') }}" alt="IT Services & Managed Services" loading="lazy" />
+          <div class="serviceCard__body">
+            <span class="serviceCard__tag">Operations</span>
+            <h3>IT Services &amp; Managed Services</h3>
+            <p>24×7 operations, service desk, infrastructure, and cloud engineering with clear SLAs and business-aligned KPIs.</p>
+            <a class="serviceCard__link" href="{{ url_for('service_detail', slug='it-managed-services') }}">
+              Learn more
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ ABOUT ══ -->
+  <section class="section section--alt">
+    <div class="container">
+      <div class="aboutGrid">
+        <div class="aboutGrid__copy">
+          <div class="reveal">
+            <p class="eyebrow">About Enmett</p>
+            <h2>Enterprise governance, specialist speed.</h2>
+          </div>
+          <article class="panel reveal" data-delay="80">
+            <h3>Mission</h3>
+            <p>Help organizations run smarter, safer, and more resilient SAP and IT platforms—so their teams can stay focused on customers and growth instead of firefighting technology issues.</p>
+          </article>
+          <article class="panel reveal" data-delay="150">
+            <h3>How we work</h3>
+            <ul class="list">
+              <li>Clean-core SAP designs and modern integration patterns</li>
+              <li>Security-by-design baked into every engagement</li>
+              <li>Transparent governance, reporting, and knowledge transfer</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="aboutGrid__media-wrap reveal" data-delay="200">
+          <div class="aboutGrid__media">
+            <img src="{{ url_for('static', filename='img/About.png') }}" alt="Enmett team — strategic technology and SAP solutions" loading="lazy" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ PROCESS ══ -->
+  <section class="section">
+    <div class="container">
+      <div class="section__head reveal">
+        <p class="eyebrow" style="justify-content:center">How we deliver</p>
+        <h2>A transparent, repeatable delivery model</h2>
+        <p>Every engagement follows a simple flow so you always know what comes next.</p>
+      </div>
+      <div class="processGrid">
+
+        <article class="processCard reveal" data-delay="60">
+          <span class="processCard__number">01</span>
+          <div class="processCard__icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          </div>
+          <h3>Discover &amp; Plan</h3>
+          <p>We map your SAP and IT landscape, capture risks and opportunities, and co-create a roadmap with clear, measurable milestones.</p>
+        </article>
+
+        <article class="processCard reveal" data-delay="150">
+          <span class="processCard__number">02</span>
+          <div class="processCard__icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <h3>Design &amp; Build</h3>
+          <p>Our teams design secure, scalable architectures and deliver them with iterative build cycles, frequent demos, and quality gates.</p>
+        </article>
+
+        <article class="processCard reveal" data-delay="240">
+          <span class="processCard__number">03</span>
+          <div class="processCard__icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          </div>
+          <h3>Run &amp; Improve</h3>
+          <p>Once live, we operate and continuously tune your platforms using SLAs, run-books, and proactive improvement backlogs.</p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ CTA BAND ══ -->
+  <section style="padding-bottom: 100px;">
+    <div class="ctaBand reveal">
+      <div class="ctaBand__inner">
+        <p class="eyebrow" style="justify-content:center; color:var(--sky-bright)">Ready to start?</p>
+        <h2 style="color:#fff;">Let's modernize your SAP estate.</h2>
+        <p>Talk to our experts and get a tailored roadmap for your enterprise in as little as two weeks.</p>
+        <div class="ctaBand__actions">
+          <a class="btn btn--accent" href="{{ url_for('contact_page') }}">
+            Request a consultation
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a class="btn btn--outline-white" href="{{ url_for('services_main') }}">View all services</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+{% endblock %}

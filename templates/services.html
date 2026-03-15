@@ -1,0 +1,812 @@
+{% extends "base.html" %}
+{% block title %}Services | Enmett{% endblock %}
+{% block meta_description %}Full-stack SAP and technology services — from greenfield S/4HANA programmes to cyber security, managed services, AI automation, and specialist resourcing.{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ═══════════════════════════════════════
+     TOKENS
+  ═══════════════════════════════════════ */
+  :root {
+    --primary:        #08111f;
+    --accent:         #0ea5e9;
+    --accent-bright:  #38bdf8;
+    --accent-subtle:  rgba(14,165,233,0.07);
+    --accent-border:  rgba(14,165,233,0.22);
+    --accent-glow:    rgba(14,165,233,0.28);
+    --surface:        #ffffff;
+    --surface-muted:  #f5f8fc;
+    --border:         #e2eaf3;
+    --border-dark:    rgba(255,255,255,0.08);
+    --text-primary:   #0b1421;
+    --text-secondary: #4b5a72;
+    --text-muted:     #8896a8;
+    --text-on-dark:   #dde6f0;
+    --font-display:   'Sora', sans-serif;
+    --font-body:      'DM Sans', sans-serif;
+    --r-sm:  6px;
+    --r-md:  14px;
+    --r-lg:  22px;
+    --r-xl:  36px;
+    --shadow-sm:     0 1px 4px rgba(8,17,31,0.06);
+    --shadow-md:     0 4px 20px rgba(8,17,31,0.09), 0 1px 4px rgba(8,17,31,0.05);
+    --shadow-lg:     0 16px 52px rgba(8,17,31,0.13), 0 4px 16px rgba(8,17,31,0.06);
+    --shadow-accent: 0 8px 36px rgba(14,165,233,0.28);
+    --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-std:  cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* ═══════════════════════════════════════
+     RESET
+  ═══════════════════════════════════════ */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font-body);
+    color: var(--text-primary);
+    background: var(--surface);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  img    { display: block; max-width: 100%; }
+  a      { color: inherit; text-decoration: none; }
+  ul     { list-style: none; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 28px; }
+
+  /* ═══════════════════════════════════════
+     TYPOGRAPHY
+  ═══════════════════════════════════════ */
+  h1,h2,h3,h4 {
+    font-family: var(--font-display); font-weight: 700;
+    line-height: 1.2; color: var(--text-primary);
+  }
+  h1 { font-size: clamp(2.2rem, 4.5vw, 3.4rem); letter-spacing: -0.03em; }
+  h2 { font-size: clamp(1.7rem, 3vw, 2.4rem); letter-spacing: -0.025em; }
+  h3 { font-size: 1.05rem; letter-spacing: -0.01em; }
+  p  { color: var(--text-secondary); font-size: 0.975rem; line-height: 1.8; }
+
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-display); font-size: 0.72rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--accent); margin-bottom: 1rem;
+  }
+  .eyebrow::before {
+    content: ''; display: inline-block;
+    width: 18px; height: 2px;
+    background: var(--accent); border-radius: 2px;
+  }
+
+  /* ═══════════════════════════════════════
+     BUTTONS
+  ═══════════════════════════════════════ */
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-display); font-size: 0.875rem; font-weight: 600;
+    padding: 12px 24px; border-radius: var(--r-sm);
+    border: none; transition: all 0.22s var(--ease-std);
+    letter-spacing: 0.01em; white-space: nowrap; cursor: pointer;
+  }
+  .btn svg { transition: transform 0.2s; }
+  .btn:hover svg { transform: translateX(3px); }
+  .btn--primary {
+    background: var(--accent); color: #fff;
+    box-shadow: 0 4px 14px rgba(14,165,233,0.3);
+  }
+  .btn--primary:hover { background: #0284c7; transform: translateY(-1px); box-shadow: var(--shadow-accent); }
+  .btn--ghost {
+    background: transparent; color: var(--text-secondary);
+    border: 1.5px solid var(--border);
+  }
+  .btn--ghost:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-subtle); }
+  .btn--outline-white {
+    background: transparent; color: rgba(255,255,255,0.8);
+    border: 1.5px solid rgba(255,255,255,0.18);
+  }
+  .btn--outline-white:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.4); color: #fff; }
+
+  /* ═══════════════════════════════════════
+     REVEAL
+  ═══════════════════════════════════════ */
+  .reveal {
+    opacity: 0; transform: translateY(22px);
+    transition: opacity 0.7s var(--ease-expo), transform 0.7s var(--ease-expo);
+  }
+  .reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+  /* ═══════════════════════════════════════
+     PAGE HERO
+  ═══════════════════════════════════════ */
+  .pageHero {
+    background: var(--primary);
+    position: relative; overflow: hidden;
+    padding: 100px 0 96px;
+  }
+  .pageHero__bg {
+    position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  }
+  .pageHero__bg::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 70% 80% at 85% 40%, rgba(14,165,233,0.12) 0%, transparent 65%),
+      radial-gradient(ellipse 50% 60% at 10% 80%, rgba(14,165,233,0.06) 0%, transparent 60%);
+  }
+  .pageHero__grid {
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  }
+  .pageHero__grid::before {
+    content: ''; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(14,165,233,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(14,165,233,0.04) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 90% 90% at 50% 50%, black 20%, transparent 75%);
+  }
+  .pageHero__inner {
+    position: relative; z-index: 2;
+    max-width: 720px;
+  }
+  .pageHero__breadcrumb {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    font-family: var(--font-display); font-size: 0.75rem; font-weight: 500;
+    color: rgba(255,255,255,0.4); margin-bottom: 24px;
+  }
+  .pageHero__breadcrumb a { color: rgba(255,255,255,0.4); transition: color 0.2s; }
+  .pageHero__breadcrumb a:hover { color: var(--accent-bright); }
+  .pageHero__breadcrumb-sep { opacity: 0.3; }
+  .pageHero__eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-display); font-size: 0.72rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--accent); margin-bottom: 1.1rem;
+  }
+  .pageHero__eyebrow::before {
+    content: ''; display: inline-block;
+    width: 18px; height: 2px;
+    background: var(--accent); border-radius: 2px;
+  }
+  .pageHero__title {
+    font-size: clamp(2.2rem, 4vw, 3.2rem); font-weight: 800;
+    color: #fff; letter-spacing: -0.03em; line-height: 1.12;
+    margin-bottom: 1.2rem;
+  }
+  .pageHero__title em {
+    font-style: normal;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-bright) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .pageHero__sub {
+    font-size: 1.05rem; color: rgba(255,255,255,0.52);
+    max-width: 580px; line-height: 1.75; margin-bottom: 2.4rem;
+  }
+  .pageHero__ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+
+  /* ─── hero capability pills ─── */
+  .pageHero__pills {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-top: 3rem;
+  }
+  .heroPill {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 99px; padding: 6px 14px;
+    font-family: var(--font-display); font-size: 0.75rem; font-weight: 600;
+    color: rgba(255,255,255,0.55); letter-spacing: 0.02em;
+    transition: all 0.2s;
+  }
+  .heroPill:hover { background: rgba(14,165,233,0.12); border-color: var(--accent-border); color: var(--accent-bright); }
+  .heroPill::before {
+    content: ''; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--accent); flex-shrink: 0;
+  }
+
+  /* ═══════════════════════════════════════
+     STAT STRIP
+  ═══════════════════════════════════════ */
+  .statStrip { background: var(--surface-muted); border-bottom: 1px solid var(--border); }
+  .statStrip__inner { display: grid; grid-template-columns: repeat(4, 1fr); }
+  .statCell {
+    padding: 28px 32px; border-right: 1px solid var(--border); transition: background 0.2s;
+  }
+  .statCell:last-child { border-right: none; }
+  .statCell:hover { background: var(--surface); }
+  .statCell__num {
+    font-family: var(--font-display); font-size: 1.9rem; font-weight: 800;
+    color: var(--text-primary); letter-spacing: -0.03em; line-height: 1; margin-bottom: 4px;
+  }
+  .statCell__num span { color: var(--accent); }
+  .statCell__label { font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-display); font-weight: 500; }
+
+  /* ═══════════════════════════════════════
+     SERVICES SECTION
+  ═══════════════════════════════════════ */
+  .servicesSection { padding: 88px 0 80px; }
+
+  .sectionHead { margin-bottom: 52px; }
+  .sectionHead h2 { margin-bottom: 10px; }
+  .sectionHead p { max-width: 560px; font-size: 1rem; }
+
+  /* ─── Service cards grid ─── */
+  .servicesGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .svcCard {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    transition: border-color 0.28s var(--ease-std), box-shadow 0.28s var(--ease-std), transform 0.28s var(--ease-std);
+  }
+  .svcCard::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-bright));
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.4s var(--ease-expo);
+    z-index: 2;
+  }
+  .svcCard:hover {
+    border-color: var(--accent-border);
+    box-shadow: var(--shadow-lg), 0 0 0 1px rgba(14,165,233,0.15);
+    transform: translateY(-4px);
+  }
+  .svcCard:hover::before { transform: scaleX(1); }
+
+  /* Image area */
+  .svcCard__img {
+    position: relative; overflow: hidden;
+    flex-shrink: 0;
+    aspect-ratio: 16 / 10;
+    height: auto;
+  }
+  .svcCard__img img {
+    width: 100%; height: 100%; object-fit: cover;
+    object-position: center;
+    transition: transform 7s var(--ease-expo);
+  }
+  /* For images with embedded text/logos (avoid cropping) */
+  .svcCard__img img.img--contain {
+    object-fit: contain;
+    background: linear-gradient(135deg, #061a2f 0%, #0b2a4b 60%, #061a2f 100%);
+  }
+  .svcCard:hover .svcCard__img img { transform: scale(1.06); }
+  .svcCard__img::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 40%, rgba(8,17,31,0.55) 100%);
+  }
+
+  /* Tag floating on image */
+  .svcCard__tag {
+    position: absolute; top: 16px; left: 16px; z-index: 2;
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(8,17,31,0.72); backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 99px; padding: 5px 12px;
+    font-family: var(--font-display); font-size: 0.68rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent-bright);
+  }
+  .svcCard__tag::before {
+    content: ''; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--accent); flex-shrink: 0;
+  }
+
+  /* Body */
+  .svcCard__body {
+    padding: 22px 22px 20px;
+    flex: 1; display: flex; flex-direction: column; gap: 10px;
+  }
+  .svcCard__body h3 {
+    font-size: 1.1rem; color: var(--text-primary);
+    transition: color 0.2s;
+  }
+  .svcCard:hover .svcCard__body h3 { color: var(--accent); }
+  .svcCard__body p { font-size: 0.9rem; color: var(--text-secondary); flex: 1; }
+
+  /* Capabilities chips inside card */
+  .svcCard__chips {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin-top: 4px;
+  }
+  .svcChip {
+    display: inline-flex; align-items: center;
+    background: var(--surface-muted); border: 1px solid var(--border);
+    border-radius: var(--r-sm); padding: 4px 10px;
+    font-family: var(--font-display); font-size: 0.7rem; font-weight: 600;
+    color: var(--text-muted); transition: all 0.2s;
+  }
+  .svcCard:hover .svcChip { background: var(--accent-subtle); border-color: var(--accent-border); color: var(--accent); }
+
+  /* CTA link */
+  .svcCard__link {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-display); font-size: 0.82rem; font-weight: 700;
+    color: var(--accent); margin-top: 12px;
+    transition: gap 0.2s;
+  }
+  .svcCard__link:hover { gap: 10px; }
+  .svcCard__link svg { transition: transform 0.2s; }
+  .svcCard__link:hover svg { transform: translateX(3px); }
+
+  /* ─── Featured (wide) card ─── */
+  .svcCard--wide {
+    grid-column: span 1;
+    flex-direction: column;
+    max-height: none;
+  }
+  .svcCard--wide .svcCard__img {
+    width: 100%;
+    flex-shrink: 0;
+    height: auto;
+    aspect-ratio: 16 / 10;
+  }
+  .svcCard--wide .svcCard__img img { height: 100%; object-position: center; }
+
+  /* ═══════════════════════════════════════
+     ENGAGEMENT MODELS
+  ═══════════════════════════════════════ */
+  .engageSection {
+    padding: 80px 0 88px;
+    background: var(--surface-muted);
+    border-top: 1px solid var(--border);
+  }
+  .engageGrid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .engageCard {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-lg); padding: 36px 30px;
+    position: relative; overflow: hidden;
+    transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+  }
+  .engageCard::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-bright));
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.35s var(--ease-expo);
+  }
+  .engageCard:hover { border-color: var(--accent-border); box-shadow: var(--shadow-md); transform: translateY(-2px); }
+  .engageCard:hover::before { transform: scaleX(1); }
+  .engageCard__icon {
+    width: 48px; height: 48px; border-radius: var(--r-sm); flex-shrink: 0;
+    background: var(--accent-subtle); border: 1px solid var(--accent-border);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 20px;
+    transition: background 0.2s;
+  }
+  .engageCard:hover .engageCard__icon { background: var(--accent); border-color: var(--accent); }
+  .engageCard__icon svg { color: var(--accent); transition: color 0.2s; }
+  .engageCard:hover .engageCard__icon svg { color: #fff; }
+  .engageCard h3 { font-size: 1.05rem; margin-bottom: 10px; }
+  .engageCard p { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.75; }
+  .engageCard__list {
+    display: flex; flex-direction: column; gap: 8px;
+    margin-top: 16px;
+  }
+  .engageCard__list li {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.84rem; color: var(--text-secondary);
+  }
+  .engageCard__list li::before {
+    content: ''; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--accent); flex-shrink: 0;
+  }
+
+  /* ═══════════════════════════════════════
+     INDUSTRIES BAND
+  ═══════════════════════════════════════ */
+  .industriesBand { padding: 64px 0; border-top: 1px solid var(--border); }
+  .industriesBand__inner {
+    display: grid; grid-template-columns: 280px 1fr; gap: 60px; align-items: center;
+  }
+  .industriesBand__copy h3 {
+    font-family: var(--font-display); font-size: 1.3rem; font-weight: 800;
+    letter-spacing: -0.02em; margin-bottom: 10px;
+  }
+  .industriesBand__copy p { font-size: 0.9rem; }
+  .industryPills { display: flex; flex-wrap: wrap; gap: 10px; }
+  .industryPill {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--surface-muted); border: 1.5px solid var(--border);
+    border-radius: var(--r-md); padding: 10px 16px;
+    font-family: var(--font-display); font-size: 0.8rem; font-weight: 700;
+    color: var(--text-secondary); text-decoration: none;
+    transition: all 0.2s var(--ease-std);
+  }
+  .industryPill:hover {
+    border-color: var(--accent); color: var(--accent);
+    background: var(--accent-subtle); transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+  }
+  .industryPill__icon {
+    width: 22px; height: 22px; border-radius: 4px;
+    background: var(--border); display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
+  }
+  .industryPill:hover .industryPill__icon { background: var(--accent-subtle); }
+  .industryPill__icon svg { color: var(--text-muted); transition: color 0.2s; }
+  .industryPill:hover .industryPill__icon svg { color: var(--accent); }
+
+  /* ═══════════════════════════════════════
+     CTA BAND
+  ═══════════════════════════════════════ */
+  .ctaBand {
+    background: var(--primary); border-radius: var(--r-xl);
+    padding: 70px 60px; margin: 0 28px 80px;
+    position: relative; overflow: hidden; text-align: center;
+  }
+  .ctaBand::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), var(--accent-bright), var(--accent), transparent);
+  }
+  .ctaBand::after {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse 70% 80% at 50% 50%, rgba(14,165,233,0.1) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .ctaBand__inner { position: relative; z-index: 1; max-width: 600px; margin: 0 auto; }
+  .ctaBand__eyebrow {
+    display: inline-flex; align-items: center; gap: 8px; justify-content: center;
+    font-family: var(--font-display); font-size: 0.72rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--accent-bright); margin-bottom: 1rem;
+  }
+  .ctaBand__eyebrow::before {
+    content: ''; display: inline-block; width: 18px; height: 2px;
+    background: var(--accent-bright); border-radius: 2px;
+  }
+  .ctaBand h2 { color: #fff; margin-bottom: 1rem; }
+  .ctaBand p { color: rgba(255,255,255,0.55); margin-bottom: 2.2rem; font-size: 1rem; }
+  .ctaBand__actions { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
+
+  /* ═══════════════════════════════════════
+     RESPONSIVE
+  ═══════════════════════════════════════ */
+  @media (max-width: 1024px) {
+    .svcCard--wide { grid-column: span 1; flex-direction: column; }
+    .svcCard--wide .svcCard__img { width: 100%; aspect-ratio: 16 / 10; }
+    .industriesBand__inner { grid-template-columns: 1fr; gap: 36px; }
+  }
+  @media (max-width: 900px) {
+    .servicesGrid { grid-template-columns: repeat(2, 1fr); }
+    .engageGrid { grid-template-columns: 1fr; }
+    .statStrip__inner { grid-template-columns: repeat(2, 1fr); }
+    .statCell:nth-child(2) { border-right: none; }
+    .statCell:nth-child(3) { border-top: 1px solid var(--border); }
+    .statCell:nth-child(4) { border-top: 1px solid var(--border); border-right: none; }
+    .ctaBand { padding: 50px 28px; margin: 0 16px 60px; }
+  }
+  @media (max-width: 600px) {
+    .servicesGrid { grid-template-columns: 1fr; }
+    .pageHero__ctas { flex-direction: column; }
+    .industriesBand { padding: 48px 0; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ══════════════════════════════════════════
+     PAGE HERO
+══════════════════════════════════════════ -->
+<div class="pageHero">
+  <div class="pageHero__bg"></div>
+  <div class="pageHero__grid" aria-hidden="true"></div>
+  <div class="container">
+    <div class="pageHero__inner">
+
+      <nav class="pageHero__breadcrumb reveal" aria-label="Breadcrumb">
+        <a href="{{ url_for('home') }}">Home</a>
+        <span class="pageHero__breadcrumb-sep">›</span>
+        <span>Services</span>
+      </nav>
+
+      <p class="pageHero__eyebrow reveal" data-delay="40">What we do</p>
+
+      <h1 class="pageHero__title reveal" data-delay="80">
+        A full stack of <em>SAP &amp; technology</em><br>services for the enterprise
+      </h1>
+
+      <p class="pageHero__sub reveal" data-delay="140">
+        From greenfield S/4HANA programmes to cyber security, 24×7 managed services,
+        AI automation, and specialist resourcing — we cover every layer of your technology landscape.
+      </p>
+
+      <div class="pageHero__ctas reveal" data-delay="200">
+        <a href="{{ url_for('contact_page') }}" class="btn btn--primary">
+          Request a consultation
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="{{ url_for('contact_page') }}" class="btn btn--outline-white">Talk to an expert</a>
+      </div>
+
+      <div class="pageHero__pills reveal" data-delay="280">
+        <span class="heroPill">SAP S/4HANA</span>
+        <span class="heroPill">Cyber Security</span>
+        <span class="heroPill">IT Managed Services</span>
+        <span class="heroPill">AI &amp; Automation</span>
+        <span class="heroPill">Cloud &amp; Infrastructure</span>
+        <span class="heroPill">Tech Resourcing</span>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SERVICES GRID
+══════════════════════════════════════════ -->
+<main id="main">
+  <section class="servicesSection">
+    <div class="container">
+
+      <div class="sectionHead reveal">
+        <p class="eyebrow">Our services</p>
+        <h2>Everything your enterprise needs, under one roof</h2>
+        <p>Specialist expertise across SAP, security, infrastructure, operations, AI, and talent — delivered as a unified partner, not a collection of vendors.</p>
+      </div>
+
+      <div class="servicesGrid">
+
+        <!-- SAP Solutions — WIDE featured card -->
+        <article class="svcCard svcCard--wide reveal" data-delay="60">
+          <div class="svcCard__img">
+            <img src="{{ url_for('static', filename='img/Services/Sap.jpeg') }}" alt="SAP Solutions" loading="lazy" />
+            <span class="svcCard__tag">SAP</span>
+          </div>
+          <div class="svcCard__body">
+            <h3>SAP Solutions</h3>
+            <p>Strategy, implementation, modernisation, and optimisation across S/4HANA, ECC, BTP, Fiori, CPI, and analytics. From greenfield programmes to complex multi-country rollouts and long-term managed support.</p>
+            <div class="svcCard__chips">
+              <span class="svcChip">S/4HANA</span>
+              <span class="svcChip">SAP BTP</span>
+              <span class="svcChip">SuccessFactors</span>
+              <span class="svcChip">Analytics Cloud</span>
+            </div>
+            <a class="svcCard__link" href="{{ url_for('service_detail', slug='sap-solutions') }}">
+              Explore SAP Solutions
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </article>
+
+        <!-- Cyber Security -->
+        <article class="svcCard reveal" data-delay="120">
+          <div class="svcCard__img">
+            <img src="{{ url_for('static', filename='img/Services/cyber.jpeg') }}" alt="Cyber Security" loading="lazy" />
+            <span class="svcCard__tag">Security</span>
+          </div>
+          <div class="svcCard__body">
+            <h3>Cyber Security</h3>
+            <p>End-to-end security services — from assessments and architecture to controls, monitoring, and incident response across SAP and your wider IT estate.</p>
+            <div class="svcCard__chips">
+              <span class="svcChip">ISO 27001</span>
+              <span class="svcChip">SOC / SIEM</span>
+              <span class="svcChip">Zero Trust</span>
+            </div>
+            <a class="svcCard__link" href="{{ url_for('service_detail', slug='cyber-security') }}">
+              Explore Cyber Security
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </article>
+
+        <!-- IT Managed Services -->
+        <article class="svcCard reveal" data-delay="140">
+          <div class="svcCard__img">
+            <img src="{{ url_for('static', filename='img/Services/itsm.jpeg') }}" alt="IT Managed Services" loading="lazy" />
+            <span class="svcCard__tag">Operations</span>
+          </div>
+          <div class="svcCard__body">
+            <h3>IT Managed Services</h3>
+            <p>24×7 managed IT operations with clear SLAs, proactive monitoring, helpdesk support, and a continuous improvement focus aligned to your business KPIs.</p>
+            <div class="svcCard__chips">
+              <span class="svcChip">24/7 NOC</span>
+              <span class="svcChip">ITIL Aligned</span>
+              <span class="svcChip">15min SLA</span>
+            </div>
+            <a class="svcCard__link" href="{{ url_for('service_detail', slug='it-managed-services') }}">
+              Explore Managed Services
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </article>
+
+        <!-- AI & Automation -->
+        <article class="svcCard reveal" data-delay="80">
+          <div class="svcCard__img">
+            <img src="{{ url_for('static', filename='img/Services/AI.png') }}" alt="AI and Automation" loading="lazy" />
+            <span class="svcCard__tag">AI</span>
+          </div>
+          <div class="svcCard__body">
+            <h3>AI &amp; Automation</h3>
+            <p>Practical AI and automation solutions — machine learning, RPA, intelligent document processing, and analytics — integrated with SAP and your enterprise systems.</p>
+            <div class="svcCard__chips">
+              <span class="svcChip">RPA / IPA</span>
+              <span class="svcChip">Azure OpenAI</span>
+              <span class="svcChip">SAP AI Core</span>
+            </div>
+            <a class="svcCard__link" href="{{ url_for('service_detail', slug='ai-automation') }}">
+              Explore AI &amp; Automation
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </article>
+
+        <!-- Resourcing -->
+        <article class="svcCard reveal" data-delay="160">
+          <div class="svcCard__img">
+            <img src="{{ url_for('static', filename='img/Services/Resource.jpeg') }}" alt="Resourcing" loading="lazy" />
+            <span class="svcCard__tag">Talent</span>
+          </div>
+          <div class="svcCard__body">
+            <h3>Resourcing</h3>
+            <p>Flexible access to experienced SAP, security, and IT talent — from individual expert contractors to full managed delivery teams placed rapidly and precisely.</p>
+            <div class="svcCard__chips">
+              <span class="svcChip">Contract</span>
+              <span class="svcChip">Permanent</span>
+              <span class="svcChip">Managed Teams</span>
+            </div>
+            <a class="svcCard__link" href="{{ url_for('service_detail', slug='resourcing') }}">
+              Explore Resourcing
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       INDUSTRIES WE SERVE
+  ══════════════════════════════════════════ -->
+  <section class="industriesBand">
+    <div class="container">
+      <div class="industriesBand__inner reveal">
+        <div class="industriesBand__copy">
+          <p class="eyebrow">Industries</p>
+          <h3>Built for your sector</h3>
+          <p>Deep vertical knowledge across six industries, so our solutions fit your regulatory, operational, and competitive context from day one.</p>
+        </div>
+        <div class="industryPills">
+          <a href="{{ url_for('industry_detail', slug='finance') }}" class="industryPill">
+            <span class="industryPill__icon">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
+            </span>
+            Finance
+          </a>
+          <a href="{{ url_for('industry_detail', slug='retail') }}" class="industryPill">
+            <span class="industryPill__icon">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+            </span>
+            Retail
+          </a>
+          <a href="{{ url_for('industry_detail', slug='hospitality') }}" class="industryPill">
+            <span class="industryPill__icon">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </span>
+            Hospitality
+          </a>
+          <a href="{{ url_for('industry_detail', slug='manufacturing') }}" class="industryPill">
+            <span class="industryPill__icon">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </span>
+            Manufacturing
+          </a>
+          <a href="{{ url_for('industry_detail', slug='oil-gas') }}" class="industryPill">
+            <span class="industryPill__icon">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </span>
+            Oil &amp; Gas
+          </a>
+          <a href="{{ url_for('industry_detail', slug='public-sector') }}" class="industryPill">
+            <span class="industryPill__icon">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+            </span>
+            Public Sector
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       HOW WE ENGAGE
+  ══════════════════════════════════════════ -->
+  <section class="engageSection">
+    <div class="container">
+      <div class="sectionHead reveal">
+        <p class="eyebrow">How we engage</p>
+        <h2>We adapt the model to your team</h2>
+        <p>Whether you need a short focused assessment or a long-term managed service, we shape the engagement around your needs — not a fixed delivery framework.</p>
+      </div>
+      <div class="engageGrid">
+
+        <article class="engageCard reveal" data-delay="60">
+          <div class="engageCard__icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          </div>
+          <h3>Advisory &amp; Assessments</h3>
+          <p>Rapid health-checks, roadmap exercises, and architecture reviews that give you a clear, prioritised view of risks and opportunities — fast.</p>
+          <ul class="engageCard__list">
+            <li>SAP landscape and security health-checks</li>
+            <li>IT infrastructure and cloud readiness reviews</li>
+            <li>AI and automation opportunity assessments</li>
+          </ul>
+        </article>
+
+        <article class="engageCard reveal" data-delay="140">
+          <div class="engageCard__icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <h3>Projects &amp; Transformations</h3>
+          <p>End-to-end programmes covering design, build, testing, cutover, and hypercare — delivered with proven methods and clear governance at every stage.</p>
+          <ul class="engageCard__list">
+            <li>S/4HANA greenfield and brownfield implementations</li>
+            <li>Cloud migrations and infrastructure modernisation</li>
+            <li>Cyber security uplift and compliance programmes</li>
+          </ul>
+        </article>
+
+        <article class="engageCard reveal" data-delay="220">
+          <div class="engageCard__icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          </div>
+          <h3>Managed Services &amp; Resourcing</h3>
+          <p>Ongoing operations, support, and capacity augmentation so you can scale SAP and IT capabilities without the complexity of building in-house.</p>
+          <ul class="engageCard__list">
+            <li>24×7 IT managed services with SLA guarantees</li>
+            <li>SAP AMS and application support</li>
+            <li>Contract, permanent, and managed team resourcing</li>
+          </ul>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       CTA BAND
+  ══════════════════════════════════════════ -->
+  <div class="ctaBand reveal">
+    <div class="ctaBand__inner">
+      <p class="ctaBand__eyebrow">Ready to start?</p>
+      <h2>Let's find the right service for your needs.</h2>
+      <p>Talk to our experts and get a tailored plan for your technology landscape — in as little as two weeks.</p>
+      <div class="ctaBand__actions">
+        <a class="btn btn--primary" href="{{ url_for('contact_page') }}">
+          Request a consultation
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a class="btn btn--outline-white" href="{{ url_for('contact_page') }}">Talk to an expert</a>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  (function () {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          var delay = entry.target.dataset.delay || 0;
+          setTimeout(function () { entry.target.classList.add('is-visible'); }, +delay);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.07, rootMargin: '0px 0px -28px 0px' });
+    document.querySelectorAll('.reveal').forEach(function (el) { observer.observe(el); });
+  })();
+</script>
+{% endblock %}

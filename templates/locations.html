@@ -1,0 +1,499 @@
+{% extends "base.html" %}
+{% block title %}Locations | Enmett{% endblock %}
+{% block meta_description %}Enmett operates from strategically located offices to serve clients across different industries and regions worldwide.{% endblock %}
+{% block extra_css %}
+<style>
+    /* ═══════════════════════════════════════
+       TOKENS
+    ═══════════════════════════════════════ */
+    :root {
+      --primary:        #08111f;
+      --accent:         #0ea5e9;
+      --accent-bright:  #38bdf8;
+      --accent-subtle:  rgba(14,165,233,0.07);
+      --accent-border:  rgba(14,165,233,0.22);
+      --surface:        #ffffff;
+      --surface-muted:  #f5f8fc;
+      --border:         #e2eaf3;
+      --border-dark:    rgba(255,255,255,0.08);
+      --text-primary:   #0b1421;
+      --text-secondary: #4b5a72;
+      --text-muted:     #8896a8;
+      --text-on-dark:   #dde6f0;
+      --font-display:   'Sora', sans-serif;
+      --font-body:      'DM Sans', sans-serif;
+      --r-sm: 6px; --r-md: 14px; --r-lg: 22px; --r-xl: 36px;
+      --shadow-sm:     0 1px 4px rgba(8,17,31,0.06);
+      --shadow-md:     0 4px 20px rgba(8,17,31,0.09), 0 1px 4px rgba(8,17,31,0.05);
+      --shadow-lg:     0 16px 52px rgba(8,17,31,0.13), 0 4px 16px rgba(8,17,31,0.06);
+      --shadow-accent: 0 8px 36px rgba(14,165,233,0.28);
+      --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-std:  cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ─── Reset ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-body); color: var(--text-primary); background: var(--surface); line-height: 1.65; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    img { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; }
+    ul { list-style: none; }
+    address { font-style: normal; }
+    .srOnly { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 28px; }
+
+    /* ─── Typography ─── */
+    h1,h2,h3,h4 { font-family: var(--font-display); font-weight: 700; line-height: 1.2; color: var(--text-primary); }
+    h2 { font-size: clamp(1.7rem,3vw,2.4rem); letter-spacing: -0.025em; }
+    h3 { font-size: 1.1rem; letter-spacing: -0.01em; }
+    p  { color: var(--text-secondary); font-size: 0.975rem; line-height: 1.8; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 1rem; }
+    .eyebrow::before { content: ''; display: inline-block; width: 18px; height: 2px; background: var(--accent); border-radius: 2px; }
+
+    /* ─── Buttons ─── */
+    .btn { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 0.875rem; font-weight: 600; padding: 12px 24px; border-radius: var(--r-sm); border: none; transition: all 0.22s var(--ease-std); letter-spacing: 0.01em; white-space: nowrap; cursor: pointer; }
+    .btn svg { transition: transform 0.2s; }
+    .btn:hover svg { transform: translateX(3px); }
+    .btn--primary { background: var(--accent); color: #fff; box-shadow: 0 4px 14px rgba(14,165,233,0.3); }
+    .btn--primary:hover { background: #0284c7; transform: translateY(-1px); box-shadow: var(--shadow-accent); }
+    .btn--ghost { background: transparent; color: var(--text-secondary); border: 1.5px solid var(--border); }
+    .btn--ghost:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-subtle); }
+    .btn--outline-white { background: transparent; color: rgba(255,255,255,0.8); border: 1.5px solid rgba(255,255,255,0.18); }
+    .btn--outline-white:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.4); color: #fff; }
+
+    /* ─── Reveal ─── */
+    .reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.7s var(--ease-expo), transform 0.7s var(--ease-expo); }
+    .reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+    /* Note: shared announcement/nav styles live in base.html */
+
+    /* ═══════════════════════════════════════
+       PAGE HERO
+    ═══════════════════════════════════════ */
+    .pageHero { background: var(--primary); position: relative; overflow: hidden; }
+    .pageHero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 80% at 85% 30%, rgba(14,165,233,0.13) 0%, transparent 65%), radial-gradient(ellipse 35% 55% at 5% 85%, rgba(14,165,233,0.06) 0%, transparent 60%); pointer-events: none; }
+    .pageHero__grid { position: absolute; inset: 0; pointer-events: none; }
+    .pageHero__grid::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(14,165,233,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(14,165,233,0.04) 1px, transparent 1px); background-size: 56px 56px; mask-image: radial-gradient(ellipse 90% 90% at 50% 50%, black 20%, transparent 75%); }
+
+    .pageHero__layout { position: relative; z-index: 2; display: grid; grid-template-columns: 1fr 1fr; min-height: 520px; }
+
+    /* Copy column */
+    .pageHero__copy { display: flex; flex-direction: column; justify-content: center; padding: 80px 64px 80px 0; }
+    .pageHero__breadcrumb { display: flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 0.75rem; font-weight: 500; color: rgba(255,255,255,0.4); margin-bottom: 20px; }
+    .pageHero__breadcrumb a { color: rgba(255,255,255,0.4); transition: color 0.2s; }
+    .pageHero__breadcrumb a:hover { color: var(--accent-bright); }
+    .pageHero__breadcrumb-sep { opacity: 0.3; }
+    .pageHero__label { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 1rem; }
+    .pageHero__label::before { content: ''; width: 18px; height: 2px; background: var(--accent); border-radius: 2px; }
+    .pageHero__title { font-family: var(--font-display); font-size: clamp(2rem,3.8vw,3rem); font-weight: 800; color: #fff; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 1.1rem; }
+    .pageHero__title em { font-style: normal; background: linear-gradient(135deg, var(--accent) 0%, var(--accent-bright) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .pageHero__sub { font-size: 1rem; color: rgba(255,255,255,0.5); max-width: 480px; line-height: 1.78; margin-bottom: 2rem; }
+    .pageHero__actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    /* Image column */
+    .pageHero__visual { position: relative; overflow: hidden; }
+    .pageHero__visual::before { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, var(--primary) 0%, transparent 28%), linear-gradient(0deg, rgba(8,17,31,0.4) 0%, transparent 60%); }
+    .pageHero__img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; transition: transform 0.8s var(--ease-expo); display: block; }
+    .pageHero__visual:hover .pageHero__img { transform: scale(1.04); }
+    /* Placeholder for demo */
+    .pageHero__imgPlaceholder { width: 100%; min-height: 520px; background: linear-gradient(140deg, #0a1a30 0%, #122642 50%, #0a1a30 100%); display: flex; align-items: center; justify-content: center; }
+
+    /* Globe badge */
+    .globeBadge { position: absolute; bottom: 32px; left: 32px; z-index: 3; display: flex; align-items: center; gap: 12px; background: rgba(8,17,31,0.82); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--r-lg); padding: 14px 20px; }
+    .globeBadge::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; border-radius: var(--r-lg) var(--r-lg) 0 0; background: linear-gradient(90deg, var(--accent), var(--accent-bright)); }
+    .globeBadge__icon { width: 36px; height: 36px; border-radius: var(--r-sm); background: rgba(14,165,233,0.15); border: 1px solid rgba(14,165,233,0.25); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .globeBadge__icon svg { color: var(--accent-bright); }
+    .globeBadge__label { font-family: var(--font-display); font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.35); display: block; margin-bottom: 2px; }
+    .globeBadge__value { font-family: var(--font-display); font-size: 0.88rem; font-weight: 700; color: #fff; }
+
+    /* ═══════════════════════════════════════
+       STATS BAND
+    ═══════════════════════════════════════ */
+    .statsBand { background: var(--surface-muted); border-bottom: 1px solid var(--border); }
+    .statsBandInner { display: grid; grid-template-columns: repeat(4, 1fr); }
+    .statCell { padding: 28px 24px; border-right: 1px solid var(--border); transition: background 0.22s; position: relative; }
+    .statCell:last-child { border-right: none; }
+    .statCell:hover { background: var(--surface); }
+    .statCell::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--accent-bright)); transform: scaleX(0); transform-origin: left; transition: transform 0.35s var(--ease-expo); }
+    .statCell:hover::after { transform: scaleX(1); }
+    .statCell__value { font-family: var(--font-display); font-size: 1.9rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.04em; line-height: 1; }
+    .statCell__value span { color: var(--accent); }
+    .statCell__label { font-family: var(--font-display); font-size: 0.74rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 6px; }
+
+    /* ═══════════════════════════════════════
+       BODY LAYOUT
+    ═══════════════════════════════════════ */
+    .locBody { padding: 80px 0 100px; }
+
+    /* Section intro */
+    .locIntro { margin-bottom: 64px; }
+    .locIntro__inner { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start; }
+    .locIntro__copy h2 { margin-bottom: 14px; }
+    .locIntro__copy p + p { margin-top: 12px; }
+
+    /* Quick-facts chips on the right */
+    .locFacts { display: flex; flex-direction: column; gap: 14px; }
+    .locFact { display: flex; align-items: center; gap: 14px; padding: 16px 18px; background: var(--surface-muted); border: 1px solid var(--border); border-radius: var(--r-md); transition: all 0.2s var(--ease-std); }
+    .locFact:hover { border-color: var(--accent-border); background: var(--accent-subtle); transform: translateX(4px); }
+    .locFact__icon { width: 38px; height: 38px; flex-shrink: 0; border-radius: var(--r-sm); background: var(--accent-subtle); border: 1px solid var(--accent-border); display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+    .locFact:hover .locFact__icon { background: var(--accent); }
+    .locFact:hover .locFact__icon svg { color: #fff; }
+    .locFact__icon svg { color: var(--accent); transition: color 0.2s; }
+    .locFact__text { font-family: var(--font-display); font-size: 0.88rem; font-weight: 600; color: var(--text-secondary); }
+
+    /* ─── Office section header ─── */
+    .officeHeader { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 36px; }
+    .officeHeader__copy { }
+    .officeHeader__copy h3 { font-size: clamp(1.3rem,2.5vw,1.75rem); letter-spacing: -0.02em; margin-top: 6px; }
+
+    /* ═══════════════════════════════════════
+       OFFICE CARD + MAP LAYOUT
+    ═══════════════════════════════════════ */
+    .officeLayout { display: grid; grid-template-columns: 480px 1fr; gap: 28px; align-items: start; }
+
+    /* Office info card */
+    .officeCard { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-xl); overflow: hidden; transition: box-shadow 0.35s var(--ease-expo), border-color 0.3s; }
+    .officeCard:hover { box-shadow: var(--shadow-lg); border-color: var(--accent-border); }
+
+    /* Card top strip */
+    .officeCard__header { background: var(--primary); padding: 28px 32px; position: relative; overflow: hidden; }
+    .officeCard__header::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent), var(--accent-bright)); }
+    .officeCard__headerGlow { position: absolute; width: 280px; height: 280px; border-radius: 50%; background: radial-gradient(circle, rgba(14,165,233,0.1) 0%, transparent 70%); top: -100px; right: -60px; pointer-events: none; }
+    .officeCard__locBadge { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-display); font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); background: rgba(14,165,233,0.12); border: 1px solid rgba(14,165,233,0.22); border-radius: 99px; padding: 5px 12px; margin-bottom: 14px; }
+    .officeCard__locBadge svg { width: 10px; height: 10px; }
+    .officeCard__officeName { font-family: var(--font-display); font-size: 1.2rem; font-weight: 800; color: #fff; letter-spacing: -0.02em; margin-bottom: 4px; }
+    .officeCard__company { font-family: var(--font-display); font-size: 0.78rem; font-weight: 500; color: rgba(255,255,255,0.4); }
+
+    /* Card body */
+    .officeCard__body { padding: 32px; }
+
+    .addressBlock { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 28px; }
+    .addressBlock__pin { width: 38px; height: 38px; flex-shrink: 0; border-radius: var(--r-sm); background: var(--accent-subtle); border: 1px solid var(--accent-border); display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+    .addressBlock__pin svg { color: var(--accent); }
+    .addressBlock__text { }
+    .addressBlock__label { font-family: var(--font-display); font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 6px; }
+    .addressBlock__lines { font-size: 0.925rem; color: var(--text-secondary); line-height: 1.75; }
+    .addressBlock__lines strong { font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 2px; }
+
+    /* Divider */
+    .officeCard__divider { height: 1px; background: var(--border); margin: 0 0 24px; }
+
+    /* Services provided */
+    .servicesLabel { font-family: var(--font-display); font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 14px; }
+    .serviceChips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+    .serviceChip { font-family: var(--font-display); font-size: 0.72rem; font-weight: 600; color: var(--text-secondary); background: var(--surface-muted); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 6px 12px; transition: all 0.18s; }
+    .serviceChip:hover { color: var(--accent); background: var(--accent-subtle); border-color: var(--accent-border); }
+
+    /* Contact rows */
+    .contactRows { display: flex; flex-direction: column; gap: 10px; }
+    .contactRow { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: var(--r-sm); background: var(--surface-muted); border: 1px solid transparent; transition: all 0.18s; }
+    .contactRow:hover { background: var(--accent-subtle); border-color: var(--accent-border); }
+    .contactRow__icon { width: 32px; height: 32px; flex-shrink: 0; border-radius: var(--r-sm); background: var(--accent-subtle); border: 1px solid var(--accent-border); display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+    .contactRow:hover .contactRow__icon { background: var(--accent); }
+    .contactRow:hover .contactRow__icon svg { color: #fff; }
+    .contactRow__icon svg { color: var(--accent); transition: color 0.2s; width: 14px; height: 14px; }
+    .contactRow__label { font-family: var(--font-display); font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); display: block; margin-bottom: 1px; }
+    .contactRow__value { font-size: 0.88rem; font-weight: 500; color: var(--text-secondary); }
+    .contactRow__value a { color: var(--accent); transition: color 0.18s; }
+    .contactRow__value a:hover { color: #0284c7; }
+
+    /* Card CTA */
+    .officeCard__cta { padding: 24px 32px; border-top: 1px solid var(--border); display: flex; gap: 10px; }
+
+    /* ─── Map panel ─── */
+    .mapPanel { border-radius: var(--r-xl); overflow: hidden; border: 1px solid var(--border); box-shadow: var(--shadow-sm); position: relative; display: flex; flex-direction: column; transition: box-shadow 0.35s var(--ease-expo), border-color 0.3s; }
+    .mapPanel:hover { box-shadow: var(--shadow-lg); border-color: var(--accent-border); }
+    .mapPanel__topbar { display: flex; align-items: center; justify-content: space-between; padding: 16px 22px; background: var(--surface); border-bottom: 1px solid var(--border); flex-shrink: 0; }
+    .mapPanel__title { display: flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 0.82rem; font-weight: 700; color: var(--text-primary); }
+    .mapPanel__title svg { color: var(--accent); }
+    .mapPanel__pill { display: inline-flex; align-items: center; gap: 5px; font-family: var(--font-display); font-size: 0.68rem; font-weight: 700; color: #16a34a; background: rgba(22,163,74,0.08); border: 1px solid rgba(22,163,74,0.2); border-radius: 99px; padding: 4px 10px; }
+    .mapPanel__pill::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #16a34a; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.85)} }
+    .mapPanel__iframe { flex: 1; min-height: 480px; }
+    .mapPanel__iframe iframe { display: block; width: 100%; height: 100%; border: 0; min-height: 480px; }
+    .mapPanel__footer { padding: 16px 22px; background: var(--surface-muted); border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-shrink: 0; }
+    .mapPanel__addr { font-size: 0.82rem; color: var(--text-muted); display: flex; align-items: center; gap: 7px; }
+    .mapPanel__addr svg { color: var(--accent); flex-shrink: 0; }
+    .mapPanel__directions { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-display); font-size: 0.78rem; font-weight: 700; color: var(--accent); transition: gap 0.2s; }
+    .mapPanel__directions svg { transition: transform 0.2s; }
+    .mapPanel__directions:hover { gap: 9px; }
+    .mapPanel__directions:hover svg { transform: translateX(2px); }
+
+    /* ═══════════════════════════════════════
+       EXPANDING BAND (future offices teaser)
+    ═══════════════════════════════════════ */
+    .expandBand { background: var(--primary); border-radius: var(--r-xl); padding: 56px 60px; position: relative; overflow: hidden; margin-top: 60px; }
+    .expandBand::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--accent), var(--accent-bright), var(--accent), transparent); }
+    .expandBand__glow { position: absolute; width: 600px; height: 600px; border-radius: 50%; background: radial-gradient(circle, rgba(14,165,233,0.09) 0%, transparent 70%); top: -200px; right: -100px; pointer-events: none; }
+    .expandBand__inner { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: center; }
+    .expandBand__eyebrow { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 12px; }
+    .expandBand__eyebrow::before { content: ''; width: 18px; height: 2px; background: var(--accent); border-radius: 2px; }
+    .expandBand h2 { font-size: clamp(1.5rem,2.8vw,2rem); color: #fff; margin-bottom: 10px; }
+    .expandBand p { font-size: 0.95rem; color: rgba(255,255,255,0.45); line-height: 1.78; max-width: 500px; }
+    .expandBand__actions { display: flex; gap: 12px; flex-direction: column; align-items: flex-end; flex-shrink: 0; }
+
+    /* Note: shared footer styles live in base.html */
+
+    /* ═══════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════ */
+    @media (max-width: 960px) {
+      /* Hero */
+      .pageHero__layout { grid-template-columns: 1fr; }
+      .pageHero__visual { display: none; }
+      .pageHero__copy { padding: 68px 0; }
+      /* Stats */
+      .statsBandInner { grid-template-columns: repeat(2,1fr); }
+      .statCell:nth-child(2) { border-right: none; }
+      .statCell:nth-child(3) { border-top: 1px solid var(--border); }
+      /* Body */
+      .locIntro__inner { grid-template-columns: 1fr; gap: 32px; }
+      .officeLayout { grid-template-columns: 1fr; }
+      .expandBand { padding: 40px 32px; }
+      .expandBand__inner { grid-template-columns: 1fr; }
+      .expandBand__actions { flex-direction: row; align-items: flex-start; }
+    }
+    @media (max-width: 600px) {
+      .statsBandInner { grid-template-columns: 1fr; }
+      .statCell { border-right: none; border-bottom: 1px solid var(--border); }
+      .statCell:last-child { border-bottom: none; }
+      .officeCard__cta { flex-direction: column; }
+      .expandBand { padding: 32px 24px; border-radius: var(--r-lg); }
+    }
+  </style>
+{% endblock %}
+{% block content %}
+
+  <!-- ══════════════ PAGE HERO ══════════════ -->
+  <div class="pageHero">
+    <div class="pageHero__grid" aria-hidden="true"></div>
+    <div class="container" style="display:contents;">
+      <div class="pageHero__layout container" style="display:grid;">
+
+        <!-- Copy -->
+        <div class="pageHero__copy reveal">
+          <nav class="pageHero__breadcrumb" aria-label="Breadcrumb">
+            <a href="/">Home</a>
+            <span class="pageHero__breadcrumb-sep">›</span>
+            <a href="/about">Company</a>
+            <span class="pageHero__breadcrumb-sep">›</span>
+            <span>Locations</span>
+          </nav>
+          <p class="pageHero__label">Company</p>
+          <h1 class="pageHero__title">Our <em>global presence</em></h1>
+          <p class="pageHero__sub">Enmett operates from strategically located offices to serve clients across different industries and regions — enabling us to collaborate closely, deliver innovative technology solutions, and provide reliable support worldwide.</p>
+          <div class="pageHero__actions">
+            <a href="#office" class="btn btn--primary">
+              View our office
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+            <a href="/contact" class="btn btn--outline-white">Contact us</a>
+          </div>
+        </div>
+
+        <!-- Visual side -->
+        <div class="pageHero__visual reveal" data-delay="160">
+          <img class="pageHero__img" src="{{ url_for('static', filename='img/Company/Location.jpeg') }}" alt="Enmett locations" loading="lazy">
+          <div class="globeBadge">
+            <div class="globeBadge__icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            </div>
+            <div>
+              <span class="globeBadge__label">Serving clients across</span>
+              <span class="globeBadge__value">6 industry verticals</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ BODY ══════════════ -->
+  <section class="locationsMain">
+    <div class="locBody">
+      <div class="container">
+
+        <!-- Intro copy + quick facts -->
+        <div class="locIntro">
+          <div class="locIntro__inner">
+            <div class="reveal">
+              <p class="eyebrow">Global presence</p>
+              <h2>Strategically located to serve you better</h2>
+              <p style="margin-top:12px;">Enmett operates from strategically located offices to serve clients across different industries and regions. Our locations enable us to collaborate closely with businesses, deliver innovative technology solutions, and provide reliable support to organisations worldwide.</p>
+              <p style="margin-top:12px;">With a strong presence and a growing network of professionals, Enmett continues to expand its reach while maintaining a commitment to excellence, innovation, and customer satisfaction.</p>
+            </div>
+            <div class="locFacts reveal" data-delay="120">
+              <div class="locFact">
+                <div class="locFact__icon">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                </div>
+                <span class="locFact__text">Head office in Singapore (Richfield Industrial Centre)</span>
+              </div>
+              <div class="locFact">
+                <div class="locFact__icon">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </div>
+                <span class="locFact__text">Mon–Fri, 9:00 AM – 6:00 PM (SGT)</span>
+              </div>
+              <div class="locFact">
+                <div class="locFact__icon">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                </div>
+                <span class="locFact__text">Reach us at <a href="mailto:contact@enmett.com" style="color:var(--accent);font-weight:600;">contact@enmett.com</a></span>
+              </div>
+              <div class="locFact">
+                <div class="locFact__icon">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </div>
+                <span class="locFact__text">Growing team of technology professionals</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Office section -->
+        <div id="office">
+          <div class="officeHeader reveal">
+            <div class="officeHeader__copy">
+              <p class="eyebrow">Our office location</p>
+              <h3>Head Office – Enmett Holdings Private LTD</h3>
+            </div>
+          </div>
+
+          <div class="officeLayout">
+
+            <!-- Info Card -->
+            <div class="officeCard reveal" data-delay="40">
+              <div class="officeCard__header">
+                <div class="officeCard__headerGlow" aria-hidden="true"></div>
+                <div class="officeCard__locBadge">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  Singapore
+                </div>
+                <div class="officeCard__officeName">Singapore (Head Office)</div>
+                <div class="officeCard__company">Enmett Holdings Pte. Ltd.</div>
+              </div>
+
+              <div class="officeCard__body">
+                <!-- Address -->
+                <div class="addressBlock">
+                  <div class="addressBlock__pin">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  </div>
+                  <address class="addressBlock__text">
+                    <div class="addressBlock__label">Address</div>
+                    <div class="addressBlock__lines">
+                      <strong>Enmett Holdings Pte. Ltd.</strong>
+                      122 Eunos Avenue 7, #06-04<br>
+                      Richfield Industrial Centre<br>
+                      Singapore – 409575
+                    </div>
+                  </address>
+                </div>
+
+                <div class="officeCard__divider"></div>
+
+                <!-- Services -->
+                <p class="servicesLabel">Services provided here</p>
+                <div class="serviceChips">
+                  <span class="serviceChip">SAP Solutions &amp; Consulting</span>
+                  <span class="serviceChip">Cyber Security</span>
+                  <span class="serviceChip">IT Managed Services</span>
+                  <span class="serviceChip">Managed IT Support</span>
+                  <span class="serviceChip">Digital Transformation</span>
+                  <span class="serviceChip">Resourcing &amp; Talent</span>
+                </div>
+
+                <div class="officeCard__divider"></div>
+
+                <!-- Contact rows -->
+                <div class="contactRows">
+                  <div class="contactRow">
+                    <div class="contactRow__icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    </div>
+                    <div>
+                      <span class="contactRow__label">Email</span>
+                      <div class="contactRow__value"><a href="mailto:contact@enmett.com">contact@enmett.com</a></div>
+                    </div>
+                  </div>
+                  <div class="contactRow">
+                    <div class="contactRow__icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    </div>
+                    <div>
+                      <span class="contactRow__label">Business Hours</span>
+                      <div class="contactRow__value">Mon–Fri, 9:00 AM – 6:00 PM (SGT)</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="officeCard__cta">
+                <a href="/contact" class="btn btn--primary" style="flex:1; justify-content:center;">
+                  Send a message
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </a>
+                <a href="https://maps.google.com/?q=122+Eunos+Ave+7+Singapore+409575" target="_blank" rel="noopener" class="btn btn--ghost">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  Directions
+                </a>
+              </div>
+            </div>
+
+            <!-- Map Panel -->
+            <div class="mapPanel reveal" data-delay="140">
+              <div class="mapPanel__topbar">
+                <div class="mapPanel__title">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  Richfield Industrial Centre, Singapore
+                </div>
+                <div class="mapPanel__pill">Open now</div>
+              </div>
+              <div class="mapPanel__iframe">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.7506979435334!2d103.8969371!3d1.3255153!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31da1823eb5ce827%3A0xcdecb542ecae8126!2s122%20Eunos%20Ave%207%2C%20%2306-04%20Richfield%20Industrial%20Centre%2C%20Singapore%20409575!5e0!3m2!1sen!2sus!4v1709414523000!5m2!1sen!2sus"
+                  width="100%" height="100%" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Enmett Head Office map">
+                </iframe>
+              </div>
+              <div class="mapPanel__footer">
+                <div class="mapPanel__addr">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  122 Eunos Ave 7, #06-04, Singapore 409575
+                </div>
+                <a class="mapPanel__directions" href="https://maps.google.com/?q=122+Eunos+Ave+7+Singapore+409575" target="_blank" rel="noopener">
+                  Get directions
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Expanding CTA Band -->
+        <div class="expandBand reveal" data-delay="60">
+          <div class="expandBand__glow" aria-hidden="true"></div>
+          <div class="expandBand__inner">
+            <div>
+              <p class="expandBand__eyebrow">Growing network</p>
+              <h2>Expanding our global reach</h2>
+              <p>With a strong presence and a growing network of professionals, Enmett continues to expand its reach while maintaining a commitment to excellence, innovation, and customer satisfaction.</p>
+            </div>
+            <div class="expandBand__actions">
+              <a href="/contact" class="btn btn--primary">
+                Get in touch
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </a>
+              <a href="/about" class="btn btn--outline-white">About Enmett</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+{% endblock %}

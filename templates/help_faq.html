@@ -1,0 +1,1130 @@
+{% extends "base.html" %}
+{% block title %}Help &amp; FAQ | Enmett{% endblock %}
+{% block meta_description %}Answers to common questions about how Enmett works with SAP and IT customers.{% endblock %}
+{% block extra_css %}
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600&display=swap');
+
+  :root {
+    --primary: #08111f;
+    --accent: #0ea5e9;
+    --accent-bright: #38bdf8;
+    --accent-subtle: rgba(14,165,233,0.07);
+    --accent-border: rgba(14,165,233,0.22);
+    --surface: #ffffff;
+    --surface-muted: #f5f8fc;
+    --border: #e2eaf3;
+    --border-dark: rgba(255,255,255,0.08);
+    --text-primary: #0b1421;
+    --text-secondary: #4b5a72;
+    --text-muted: #8896a8;
+    --text-on-dark: #dde6f0;
+    --font-display: 'Sora', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    --r-sm: 6px; --r-md: 14px; --r-lg: 22px; --r-xl: 36px;
+    --shadow-sm: 0 1px 4px rgba(8,17,31,0.06);
+    --shadow-md: 0 4px 20px rgba(8,17,31,0.09), 0 1px 4px rgba(8,17,31,0.05);
+    --shadow-lg: 0 16px 52px rgba(8,17,31,0.13), 0 4px 16px rgba(8,17,31,0.06);
+    --shadow-accent: 0 8px 36px rgba(14,165,233,0.28);
+    --ease-expo: cubic-bezier(0.16,1,0.3,1);
+    --ease-std: cubic-bezier(0.4,0,0.2,1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font-body);
+    color: var(--text-primary);
+    background: var(--surface);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  img { display: block; max-width: 100%; }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; }
+  ul { list-style: none; }
+  .srOnly { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 28px; }
+  h1,h2,h3,h4 { font-family: var(--font-display); font-weight:700; line-height:1.2; color:var(--text-primary); }
+  h2 { font-size: clamp(1.7rem,3vw,2.4rem); letter-spacing:-0.025em; }
+  h3 { font-size: 1.05rem; letter-spacing:-0.01em; }
+  p { color: var(--text-secondary); font-size: 0.975rem; line-height: 1.8; }
+  .eyebrow { display:inline-flex; align-items:center; gap:8px; font-family:var(--font-display); font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--accent); margin-bottom:1rem; }
+  .eyebrow::before { content:''; display:inline-block; width:18px; height:2px; background:var(--accent); border-radius:2px; }
+
+  .btn { display:inline-flex; align-items:center; gap:8px; font-family:var(--font-display); font-size:0.875rem; font-weight:600; padding:12px 24px; border-radius:var(--r-sm); border:none; transition:all 0.22s var(--ease-std); letter-spacing:0.01em; white-space:nowrap; cursor:pointer; }
+  .btn svg { transition:transform 0.2s; }
+  .btn:hover svg { transform:translateX(3px); }
+  .btn--primary { background:var(--accent); color:#fff; box-shadow:0 4px 14px rgba(14,165,233,0.3); }
+  .btn--primary:hover { background:#0284c7; transform:translateY(-1px); box-shadow:var(--shadow-accent); }
+  .btn--ghost { background:transparent; color:var(--text-secondary); border:1.5px solid var(--border); }
+  .btn--ghost:hover { border-color:var(--accent); color:var(--accent); background:var(--accent-subtle); }
+
+  .reveal { opacity:0; transform:translateY(22px); transition:opacity 0.7s var(--ease-expo), transform 0.7s var(--ease-expo); }
+  .reveal.is-visible { opacity:1; transform:translateY(0); }
+
+  /* ── PAGE HERO ── */
+  .pageHero { background:var(--primary); padding:76px 0 90px; position:relative; overflow:hidden; }
+  .pageHero::before { content:''; position:absolute; inset:0; background: radial-gradient(ellipse 55% 70% at 80% 40%, rgba(14,165,233,0.11) 0%, transparent 65%), radial-gradient(ellipse 30% 50% at 5% 85%, rgba(14,165,233,0.06) 0%, transparent 60%); }
+  .pageHero__grid { position:absolute; inset:0; pointer-events:none; }
+  .pageHero__grid::before { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(14,165,233,0.04) 1px, transparent 1px),linear-gradient(90deg, rgba(14,165,233,0.04) 1px, transparent 1px); background-size:56px 56px; mask-image:radial-gradient(ellipse 90% 90% at 50% 50%, black 20%, transparent 75%); }
+  .pageHero__inner { position:relative; z-index:2; display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:center; }
+  .pageHero__copy { display:flex; flex-direction:column; }
+  .pageHero__breadcrumb { display:flex; align-items:center; gap:8px; font-family:var(--font-display); font-size:0.75rem; font-weight:500; color:rgba(255,255,255,0.4); margin-bottom:20px; }
+  .pageHero__breadcrumb a { color:rgba(255,255,255,0.4); transition:color 0.2s; }
+  .pageHero__breadcrumb a:hover { color:var(--accent-bright); }
+  .pageHero__breadcrumb-sep { opacity:0.3; }
+  .pageHero__eyebrow { display:inline-flex; align-items:center; gap:8px; font-family:var(--font-display); font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--accent); margin-bottom:1rem; }
+  .pageHero__eyebrow::before { content:''; display:inline-block; width:18px; height:2px; background:var(--accent); border-radius:2px; }
+  .pageHero__title { font-family:var(--font-display); font-size:clamp(2rem,4vw,3rem); font-weight:800; color:#fff; letter-spacing:-0.03em; line-height:1.15; margin-bottom:1.1rem; }
+  .pageHero__title em { font-style:normal; background:linear-gradient(135deg, var(--accent) 0%, var(--accent-bright) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .pageHero__sub { font-size:1rem; color:rgba(255,255,255,0.5); max-width:480px; line-height:1.75; }
+
+  /* Search box */
+  .searchWrap { margin-top:2rem; max-width:460px; }
+  .pageHero__search { display:flex; align-items:center; gap:0; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:var(--r-sm); overflow:hidden; transition:border-color 0.2s, box-shadow 0.2s; }
+  .pageHero__search:focus-within { border-color:var(--accent-border); box-shadow:0 0 0 3px rgba(14,165,233,0.14); }
+  .pageHero__search input { flex:1; background:transparent; border:none; outline:none; font-family:var(--font-body); font-size:0.9rem; color:#fff; padding:13px 16px; }
+  .pageHero__search input::placeholder { color:rgba(255,255,255,0.35); }
+  .pageHero__search button { padding:10px 14px; background:var(--accent); border:none; color:#fff; cursor:pointer; transition:background 0.2s; display:flex; align-items:center; }
+  .pageHero__search button:hover { background:#0284c7; }
+
+  /* Search suggestions dropdown */
+  .searchSuggestions { background:rgba(255,255,255,0.07); backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,0.12); border-top:none; border-radius:0 0 var(--r-sm) var(--r-sm); overflow:hidden; display:none; }
+  .searchSuggestions.visible { display:block; }
+  .suggItem { padding:10px 16px; font-size:0.85rem; color:rgba(255,255,255,0.7); cursor:pointer; display:flex; align-items:center; gap:10px; transition:background 0.15s; }
+  .suggItem:hover { background:rgba(14,165,233,0.15); color:#fff; }
+  .suggItem svg { flex-shrink:0; opacity:0.5; }
+
+  /* Search results count badge */
+  .searchCount { margin-top:10px; font-size:0.8rem; color:rgba(255,255,255,0.45); font-family:var(--font-display); display:none; }
+  .searchCount.visible { display:block; }
+  .searchCount strong { color:var(--accent-bright); }
+
+  .pageHero__stats { display:flex; gap:10px; flex-wrap:wrap; margin-top:1.8rem; }
+  .pageHero__stat { display:inline-flex; align-items:center; gap:7px; padding:7px 14px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:99px; font-family:var(--font-display); font-size:0.78rem; font-weight:600; color:rgba(255,255,255,0.65); }
+  .pageHero__stat-dot { width:6px; height:6px; border-radius:50%; background:var(--accent); flex-shrink:0; }
+
+  /* Hero visual mockup */
+  .pageHero__visual { display:flex; align-items:center; justify-content:center; }
+  .faqMockup { width:100%; max-width:420px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:var(--r-lg); overflow:hidden; box-shadow:0 40px 80px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05); }
+  .faqMockup__bar { display:flex; align-items:center; gap:7px; padding:14px 18px; border-bottom:1px solid rgba(255,255,255,0.07); background:rgba(255,255,255,0.03); }
+  .faqMockup__dot { width:9px; height:9px; border-radius:50%; }
+  .faqMockup__dot:nth-child(1) { background:#ff5f57; }
+  .faqMockup__dot:nth-child(2) { background:#febc2e; }
+  .faqMockup__dot:nth-child(3) { background:#28c840; }
+  .faqMockup__body { padding:20px; display:flex; flex-direction:column; gap:10px; }
+  .faqMockup__item { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:var(--r-sm); padding:14px 16px; cursor:pointer; transition:border-color 0.2s; }
+  .faqMockup__item:hover { border-color:rgba(14,165,233,0.3); }
+  .faqMockup__q { font-family:var(--font-display); font-size:0.78rem; font-weight:600; color:rgba(255,255,255,0.7); display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .faqMockup__q-icon { width:20px; height:20px; border-radius:50%; flex-shrink:0; background:rgba(14,165,233,0.15); border:1px solid rgba(14,165,233,0.25); display:flex; align-items:center; justify-content:center; transition:transform 0.3s; }
+  .faqMockup__a { font-size:0.73rem; color:rgba(255,255,255,0.35); line-height:1.6; margin-top:9px; display:none; }
+  .faqMockup__item--open .faqMockup__a { display:block; animation:fadeIn 0.3s ease; }
+  .faqMockup__item--open .faqMockup__q { color:var(--accent-bright); }
+  .faqMockup__item--open .faqMockup__q-icon { transform:rotate(180deg); background:rgba(14,165,233,0.3); }
+  .faqMockup__progress { height:2px; background:rgba(255,255,255,0.06); margin-top:16px; border-radius:2px; overflow:hidden; }
+  .faqMockup__progress-bar { height:100%; background:linear-gradient(90deg, var(--accent), var(--accent-bright)); border-radius:2px; transition:width 0.5s var(--ease-expo); width:25%; }
+  .faqMockup__count { font-family:var(--font-display); font-size:0.7rem; color:rgba(255,255,255,0.3); text-align:right; margin-top:6px; }
+
+  @keyframes fadeIn { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:translateY(0); } }
+
+  /* ── CATEGORY TABS ── */
+  .tabsSection { padding:60px 0 0; }
+  .tabsRow { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:52px; }
+  .tab { display:inline-flex; align-items:center; gap:7px; padding:9px 18px; border-radius:var(--r-sm); font-family:var(--font-display); font-size:0.82rem; font-weight:600; color:var(--text-secondary); background:var(--surface-muted); border:1.5px solid var(--border); cursor:pointer; transition:all 0.2s var(--ease-std); position:relative; }
+  .tab:hover { border-color:var(--accent-border); color:var(--accent); background:var(--accent-subtle); }
+  .tab.active { background:var(--accent); color:#fff; border-color:var(--accent); box-shadow:0 4px 12px rgba(14,165,233,0.3); }
+  /* removed: tab counts */
+
+  /* ── FAQ LAYOUT ── */
+  .faqLayout { display:grid; grid-template-columns:260px 1fr; gap:48px; align-items:start; padding-bottom:100px; }
+
+  /* Sidebar */
+  .faqSidebar { position:sticky; top:90px; }
+  .faqSidebar__label { font-family:var(--font-display); font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--text-muted); margin-bottom:12px; display:block; }
+  .faqSideNav { display:flex; flex-direction:column; gap:2px; }
+  .faqSideNav__link { display:flex; align-items:center; gap:10px; padding:10px 14px; border-radius:var(--r-sm); font-family:var(--font-display); font-size:0.83rem; font-weight:600; color:var(--text-secondary); transition:all 0.18s; border:1px solid transparent; }
+  .faqSideNav__link:hover { color:var(--accent); background:var(--accent-subtle); border-color:var(--accent-border); }
+  .faqSideNav__link.active { color:var(--accent); background:var(--accent-subtle); border-color:var(--accent-border); }
+  .faqSideNav__link svg { flex-shrink:0; opacity:0.6; transition:opacity 0.2s; }
+  .faqSideNav__link:hover svg, .faqSideNav__link.active svg { opacity:1; }
+  /* removed: sidebar count badges */
+
+  .faqSidebar__contact { margin-top:28px; background:var(--primary); border-radius:var(--r-md); padding:22px 20px; position:relative; overflow:hidden; }
+  .faqSidebar__contact::after { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg, var(--accent), var(--accent-bright)); }
+  .faqSidebar__contact h4 { font-family:var(--font-display); font-size:0.88rem; font-weight:700; color:#fff; margin-bottom:6px; }
+  .faqSidebar__contact p { font-size:0.8rem; color:rgba(255,255,255,0.45); line-height:1.6; margin-bottom:14px; }
+  .faqSidebar__contact .btn { font-size:0.78rem; padding:9px 16px; width:100%; justify-content:center; }
+
+  /* Progress indicator */
+  .readProgress { margin-top:20px; }
+  .readProgress__label { font-family:var(--font-display); font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); margin-bottom:8px; display:flex; justify-content:space-between; }
+  .readProgress__bar { height:4px; background:var(--border); border-radius:4px; overflow:hidden; }
+  .readProgress__fill { height:100%; background:linear-gradient(90deg, var(--accent), var(--accent-bright)); border-radius:4px; transition:width 0.4s var(--ease-expo); width:0%; }
+
+  /* ── FAQ ACCORDION ── */
+  .faqGroup { margin-bottom:48px; }
+  .faqGroup:last-child { margin-bottom:0; }
+  .faqGroup__heading { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid var(--border); }
+  .faqGroup__heading-left { display:flex; align-items:center; gap:12px; }
+  .faqGroup__icon { width:40px; height:40px; border-radius:var(--r-sm); background:var(--accent-subtle); border:1px solid var(--accent-border); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .faqGroup__icon svg { color:var(--accent); }
+  .faqGroup__title { font-family:var(--font-display); font-size:1.1rem; font-weight:700; color:var(--text-primary); }
+  /* removed: group count meta */
+
+  .faqItem { border:1px solid var(--border); border-radius:var(--r-md); overflow:hidden; margin-bottom:10px; transition:border-color 0.2s, box-shadow 0.2s; }
+  .faqItem:last-child { margin-bottom:0; }
+  .faqItem.is-open { border-color:var(--accent-border); box-shadow:0 4px 20px rgba(14,165,233,0.09); }
+  .faqItem.is-highlighted { animation:highlight 1.5s ease; }
+  @keyframes highlight { 0%,100% { box-shadow:0 4px 20px rgba(14,165,233,0.09); } 50% { box-shadow:0 0 0 3px rgba(14,165,233,0.4); } }
+
+  .faqItem__q { display:flex; align-items:center; gap:14px; width:100%; padding:20px 24px; background:none; border:none; cursor:pointer; text-align:left; transition:background 0.2s; }
+  .faqItem__q:hover { background:var(--surface-muted); }
+  .faqItem.is-open .faqItem__q { background:var(--accent-subtle); }
+  .faqItem__q-icon { width:32px; height:32px; border-radius:var(--r-sm); flex-shrink:0; background:var(--surface-muted); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; transition:all 0.2s; }
+  .faqItem.is-open .faqItem__q-icon { background:var(--accent); border-color:var(--accent); }
+  .faqItem.is-open .faqItem__q-icon svg { color:#fff; }
+  .faqItem__q-icon svg { color:var(--accent); transition:color 0.2s; }
+  .faqItem__q-text { flex:1; font-family:var(--font-display); font-size:0.95rem; font-weight:600; color:var(--text-primary); line-height:1.4; }
+  .faqItem.is-open .faqItem__q-text { color:var(--accent); }
+  .faqItem__q-text mark { background:rgba(14,165,233,0.18); color:var(--accent); border-radius:3px; padding:0 2px; }
+
+  .faqItem__meta { display:flex; align-items:center; gap:8px; flex-shrink:0; }
+  .faqItem__tag { font-size:0.68rem; font-weight:700; padding:3px 9px; border-radius:99px; font-family:var(--font-display); text-transform:uppercase; letter-spacing:0.08em; }
+  .faqItem__tag--engagement { background:rgba(59,130,246,0.1); color:#3b82f6; }
+  .faqItem__tag--sap { background:rgba(139,92,246,0.1); color:#8b5cf6; }
+  .faqItem__tag--security { background:rgba(239,68,68,0.1); color:#ef4444; }
+  .faqItem__tag--services { background:rgba(16,185,129,0.1); color:#10b981; }
+
+  .faqItem__chevron { width:28px; height:28px; flex-shrink:0; border-radius:50%; border:1.5px solid var(--border); display:flex; align-items:center; justify-content:center; transition:all 0.3s var(--ease-expo); }
+  .faqItem__chevron svg { color:var(--text-muted); transition:transform 0.3s var(--ease-expo), color 0.2s; }
+  .faqItem.is-open .faqItem__chevron { border-color:var(--accent); background:var(--accent-subtle); }
+  .faqItem.is-open .faqItem__chevron svg { transform:rotate(180deg); color:var(--accent); }
+
+  .faqItem__body { display:grid; grid-template-rows:0fr; transition:grid-template-rows 0.35s var(--ease-expo); }
+  .faqItem.is-open .faqItem__body { grid-template-rows:1fr; }
+  .faqItem__body-inner { overflow:hidden; }
+  .faqItem__a { padding:0 24px 22px 70px; font-size:0.93rem; color:var(--text-secondary); line-height:1.8; }
+  .faqItem__a p + p { margin-top:10px; }
+  .faqItem__a a { color:var(--accent); font-weight:600; text-decoration:underline; text-underline-offset:3px; transition:color 0.2s; }
+  .faqItem__a a:hover { color:#0284c7; }
+
+  /* Answer footer: vote + share */
+  .faqItem__footer { padding:0 24px 18px 70px; display:flex; align-items:center; gap:16px; border-top:1px solid var(--border); padding-top:14px; margin-top:6px; }
+  .faqItem__vote { display:flex; align-items:center; gap:8px; }
+  .faqItem__vote-label { font-size:0.78rem; color:var(--text-muted); font-family:var(--font-display); }
+  .voteBtn { display:inline-flex; align-items:center; gap:5px; padding:5px 11px; border-radius:99px; border:1.5px solid var(--border); background:transparent; font-size:0.75rem; font-weight:600; font-family:var(--font-display); color:var(--text-muted); cursor:pointer; transition:all 0.2s; }
+  .voteBtn:hover { border-color:var(--accent); color:var(--accent); background:var(--accent-subtle); }
+  .voteBtn.voted-yes { border-color:#10b981; color:#10b981; background:rgba(16,185,129,0.08); }
+  .voteBtn.voted-no { border-color:#ef4444; color:#ef4444; background:rgba(239,68,68,0.08); }
+  .shareBtn { margin-left:auto; display:inline-flex; align-items:center; gap:6px; padding:5px 11px; border-radius:99px; border:1.5px solid var(--border); background:transparent; font-size:0.75rem; font-weight:600; font-family:var(--font-display); color:var(--text-muted); cursor:pointer; transition:all 0.2s; }
+  .shareBtn:hover { border-color:var(--accent); color:var(--accent); background:var(--accent-subtle); }
+  .shareBtn.copied { border-color:#10b981; color:#10b981; background:rgba(16,185,129,0.08); }
+
+  /* ── RELATED QUESTIONS ── */
+  .relatedSection { padding:0 24px 18px 70px; }
+  .relatedSection__label { font-family:var(--font-display); font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); margin-bottom:10px; }
+  .relatedChips { display:flex; flex-wrap:wrap; gap:8px; }
+  .relatedChip { display:inline-flex; align-items:center; gap:6px; padding:6px 12px; border-radius:99px; border:1px solid var(--border); font-size:0.78rem; font-family:var(--font-display); font-weight:500; color:var(--text-secondary); cursor:pointer; transition:all 0.18s; background:var(--surface); }
+  .relatedChip:hover { border-color:var(--accent-border); color:var(--accent); background:var(--accent-subtle); }
+
+  /* ── EMPTY STATE ── */
+  .faqEmpty { display:none; flex-direction:column; align-items:center; text-align:center; padding:60px 20px; }
+  .faqEmpty.visible { display:flex; }
+  .faqEmpty__icon { width:64px; height:64px; border-radius:50%; background:var(--surface-muted); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; margin-bottom:20px; }
+  .faqEmpty h3 { font-size:1.1rem; margin-bottom:8px; }
+  .faqEmpty p { font-size:0.9rem; color:var(--text-muted); max-width:360px; margin-bottom:20px; }
+
+  /* ── FLOATING ASK BUTTON ── */
+  .askFloat { position:fixed; bottom:32px; right:32px; z-index:800; }
+  .askFloat__btn { display:flex; align-items:center; gap:10px; padding:14px 22px; background:var(--primary); color:#fff; border:1px solid rgba(255,255,255,0.12); border-radius:99px; font-family:var(--font-display); font-size:0.85rem; font-weight:700; cursor:pointer; box-shadow:0 8px 32px rgba(8,17,31,0.3); transition:all 0.3s var(--ease-expo); }
+  .askFloat__btn:hover { transform:translateY(-3px); box-shadow:0 12px 40px rgba(8,17,31,0.4), 0 0 0 2px var(--accent); }
+  .askFloat__dot { width:8px; height:8px; border-radius:50%; background:var(--accent); animation:pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.7; transform:scale(1.3); } }
+
+  /* Ask panel */
+  .askPanel { position:fixed; bottom:90px; right:32px; z-index:801; width:340px; background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg); box-shadow:var(--shadow-lg); overflow:hidden; opacity:0; visibility:hidden; transform:translateY(16px) scale(0.97); transform-origin:bottom right; transition:all 0.3s var(--ease-expo); }
+  .askPanel.is-open { opacity:1; visibility:visible; transform:translateY(0) scale(1); }
+  .askPanel__header { display:flex; align-items:center; justify-content:space-between; padding:18px 20px 14px; border-bottom:1px solid var(--border); background:var(--surface-muted); }
+  .askPanel__title { font-family:var(--font-display); font-size:0.9rem; font-weight:700; color:var(--text-primary); display:flex; align-items:center; gap:8px; }
+  .askPanel__close { width:28px; height:28px; border-radius:50%; border:1px solid var(--border); background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--text-muted); transition:all 0.2s; }
+  .askPanel__close:hover { background:var(--border); color:var(--text-primary); }
+  .askPanel__body { padding:18px 20px; }
+  .askPanel__suggestions { display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }
+  .askPanel__sugg { padding:10px 14px; border:1px solid var(--border); border-radius:var(--r-sm); font-size:0.83rem; color:var(--text-secondary); cursor:pointer; transition:all 0.18s; display:flex; align-items:center; justify-content:space-between; gap:8px; font-family:var(--font-body); }
+  .askPanel__sugg:hover { border-color:var(--accent-border); color:var(--accent); background:var(--accent-subtle); }
+  .askPanel__input-row { display:flex; gap:8px; }
+  .askPanel__input { flex:1; border:1.5px solid var(--border); border-radius:var(--r-sm); padding:10px 14px; font-family:var(--font-body); font-size:0.875rem; color:var(--text-primary); outline:none; transition:border-color 0.2s; background:var(--surface); }
+  .askPanel__input:focus { border-color:var(--accent); }
+  .askPanel__send { padding:10px 14px; background:var(--accent); color:#fff; border:none; border-radius:var(--r-sm); cursor:pointer; transition:background 0.2s; display:flex; align-items:center; }
+  .askPanel__send:hover { background:#0284c7; }
+
+  /* ── STILL NEED HELP ── */
+  .helpCta { background:var(--surface-muted); border-top:1px solid var(--border); padding:80px 0; }
+  .helpCtaInner { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+  .helpCtaCard { background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg); padding:36px 32px; display:flex; flex-direction:column; gap:14px; transition:all 0.3s var(--ease-expo); position:relative; overflow:hidden; cursor:pointer; }
+  .helpCtaCard::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:var(--accent); transform:scaleX(0); transform-origin:left; transition:transform 0.3s var(--ease-expo); }
+  .helpCtaCard:hover { transform:translateY(-4px); box-shadow:var(--shadow-lg); border-color:var(--accent-border); }
+  .helpCtaCard:hover::before { transform:scaleX(1); }
+  .helpCtaCard__icon { width:48px; height:48px; border-radius:var(--r-sm); background:var(--accent-subtle); border:1px solid var(--accent-border); display:flex; align-items:center; justify-content:center; transition:background 0.2s; }
+  .helpCtaCard:hover .helpCtaCard__icon { background:var(--accent); }
+  .helpCtaCard:hover .helpCtaCard__icon svg { color:#fff; }
+  .helpCtaCard__icon svg { color:var(--accent); transition:color 0.2s; }
+  .helpCtaCard h3 { font-size:1rem; }
+  .helpCtaCard p { font-size:0.875rem; color:var(--text-secondary); line-height:1.7; flex:1; }
+  .helpCtaCard .btn { align-self:flex-start; font-size:0.82rem; padding:9px 18px; }
+
+  /* ── TOAST ── */
+  .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px); z-index:1000; background:var(--primary); color:#fff; padding:12px 22px; border-radius:99px; font-family:var(--font-display); font-size:0.82rem; font-weight:600; box-shadow:0 8px 32px rgba(8,17,31,0.3); transition:transform 0.4s var(--ease-expo), opacity 0.4s; opacity:0; pointer-events:none; display:flex; align-items:center; gap:10px; border:1px solid rgba(255,255,255,0.1); }
+  .toast.visible { transform:translateX(-50%) translateY(0); opacity:1; }
+  .toast__dot { width:8px; height:8px; border-radius:50%; background:var(--accent); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 960px) {
+    .pageHero__inner { grid-template-columns:1fr; }
+    .pageHero__visual { display:none; }
+    .faqLayout { grid-template-columns:1fr; }
+    .faqSidebar { position:static; }
+    .faqSideNav { flex-direction:row; flex-wrap:wrap; }
+    .helpCtaInner { grid-template-columns:1fr 1fr; }
+    .footer__top { grid-template-columns:1fr; gap:48px; }
+    .footerNav { grid-template-columns:repeat(2,1fr); }
+    .askFloat, .askPanel { display:none; }
+  }
+  @media (max-width: 600px) {
+    .faqItem__a { padding-left:24px; }
+    .relatedSection { padding-left:24px; }
+    .faqItem__footer { padding-left:24px; }
+    .helpCtaInner { grid-template-columns:1fr; }
+    .footerNav { grid-template-columns:1fr 1fr; }
+    .footer__bottom { flex-direction:column; align-items:flex-start; }
+    .pageHero__stats { flex-direction:column; gap:8px; }
+  }
+</style>
+{% endblock %}
+{% block content %}
+
+<!-- ── PAGE HERO ── -->
+<div class="pageHero">
+  <div class="pageHero__grid" aria-hidden="true"></div>
+  <div class="container">
+    <div class="pageHero__inner">
+      <div class="pageHero__copy reveal">
+        <nav class="pageHero__breadcrumb" aria-label="Breadcrumb">
+          <a href="{{ url_for('home') }}">Home</a>
+          <span class="pageHero__breadcrumb-sep">›</span>
+          <span>Support</span>
+          <span class="pageHero__breadcrumb-sep">›</span>
+          <span>Help &amp; FAQ</span>
+        </nav>
+        <p class="pageHero__eyebrow">Support</p>
+        <h1 class="pageHero__title">Answers to your <em>common questions</em></h1>
+        <p class="pageHero__sub">Everything you need to know about how we work with SAP and IT customers — from project kick-off to ongoing managed services.</p>
+
+        <div class="searchWrap">
+          <div class="pageHero__search" role="search">
+            <input type="search" placeholder="Search questions…" aria-label="Search FAQ" id="faqSearch" autocomplete="off" />
+            <button aria-label="Search">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            </button>
+          </div>
+          <div class="searchSuggestions" id="searchSugg" role="listbox"></div>
+        </div>
+        <div class="searchCount" id="searchCount"></div>
+
+        <div class="pageHero__stats">
+          <span class="pageHero__stat"><span class="pageHero__stat-dot"></span><span id="totalCount">15</span> questions answered</span>
+          <span class="pageHero__stat"><span class="pageHero__stat-dot"></span>4 topic categories</span>
+          <span class="pageHero__stat"><span class="pageHero__stat-dot"></span>Updated regularly</span>
+        </div>
+      </div>
+
+      <div class="pageHero__visual reveal" data-delay="180" aria-hidden="true">
+        <div class="faqMockup">
+          <div class="faqMockup__bar">
+            <span class="faqMockup__dot"></span><span class="faqMockup__dot"></span><span class="faqMockup__dot"></span>
+          </div>
+          <div class="faqMockup__body" id="mockupBody">
+            <!-- dynamically filled -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── MAIN ── -->
+<main id="main">
+  <div class="tabsSection">
+    <div class="container">
+      <div class="tabsRow" role="tablist" aria-label="FAQ categories" id="tabsRow"></div>
+
+      <div class="faqLayout">
+        <!-- Sidebar -->
+        <aside class="faqSidebar reveal">
+          <span class="faqSidebar__label">Jump to section</span>
+          <nav class="faqSideNav" aria-label="FAQ sections" id="sideNav"></nav>
+
+          <div class="readProgress">
+            <div class="readProgress__label">
+              <span>Reading progress</span>
+              <span id="readPct">0%</span>
+            </div>
+            <div class="readProgress__bar">
+              <div class="readProgress__fill" id="readFill"></div>
+            </div>
+          </div>
+
+          <div class="faqSidebar__contact">
+            <h4>Can't find your answer?</h4>
+            <p>Our team usually responds within 1–2 business days.</p>
+            <a class="btn btn--primary" href="{{ url_for('contact_page') }}">
+              Contact us
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </aside>
+
+        <!-- FAQ content -->
+        <div id="faqContent"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Still need help -->
+  <div class="helpCta">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:48px;" class="reveal">
+        <p class="eyebrow" style="justify-content:center">Still need help?</p>
+        <h2>We're here to answer your questions</h2>
+        <p style="margin-top:0.75rem;color:var(--text-secondary);max-width:520px;margin-left:auto;margin-right:auto;">Can't find what you're looking for? Our team is ready to help with any questions about our services, delivery approach, or how to get started.</p>
+      </div>
+      <div class="helpCtaInner">
+        <div class="helpCtaCard reveal helpCtaCard--contact" data-delay="60">
+          <div class="helpCtaCard__icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+          <h3>Send us a message</h3>
+          <p>Use our contact form to share your question or project brief. We usually respond within 1–2 business days.</p>
+          <a class="btn btn--primary" href="{{ url_for('contact_page') }}">Send us a message <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        </div>
+        <div class="helpCtaCard reveal" data-delay="140">
+          <div class="helpCtaCard__icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.18h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 21.73 14l.19 2.92z"/></svg></div>
+          <h3>Call us directly</h3>
+          <p>For urgent queries, call our Singapore office during business hours and speak with one of our team.</p>
+          <a class="btn btn--ghost" href="tel:+6590055817">+65 9005 5817 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        </div>
+        <div class="helpCtaCard reveal" data-delay="220">
+          <div class="helpCtaCard__icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></div>
+          <h3>Explore our services</h3>
+          <p>Browse our full range of SAP, cybersecurity, IT, and resourcing services to find the right fit.</p>
+          <a class="btn btn--ghost" href="/services">View services <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Floating ask button -->
+<div class="askFloat">
+  <button class="askFloat__btn" id="askFloatBtn" aria-label="Ask a question">
+    <span class="askFloat__dot"></span>
+    Ask a question
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+  </button>
+</div>
+
+<!-- Ask panel -->
+<div class="askPanel" id="askPanel" role="dialog" aria-label="Ask a question">
+  <div class="askPanel__header">
+    <span class="askPanel__title">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Quick search
+    </span>
+    <button class="askPanel__close" id="askPanelClose" aria-label="Close">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="askPanel__body">
+    <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:12px;">Frequently asked questions:</p>
+    <div class="askPanel__suggestions" id="askSuggestions"></div>
+    <div class="askPanel__input-row">
+      <input class="askPanel__input" type="text" id="askInput" placeholder="Type to search…" />
+      <button class="askPanel__send" id="askSend" aria-label="Search">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <span class="toast__dot"></span>
+  <span id="toastMsg"></span>
+</div>
+
+{% endblock %}
+{% block extra_js %}
+<script>
+(function () {
+
+/* ═══════════════════════════════════════════════
+   DATA — extend freely
+═══════════════════════════════════════════════ */
+const FAQ_DATA = [
+  {
+    id: 'engagement',
+    label: 'Engagement',
+    color: '#3b82f6',
+    tagClass: 'faqItem__tag--engagement',
+    icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>`,
+    sideIcon: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>`,
+    items: [
+      {
+        q: 'How do projects usually start?',
+        a: 'Most engagements begin with a short discovery to understand your current landscape, priorities, and constraints. We then propose a roadmap and delivery model — project‑based, managed service, or a blend of both.',
+        related: ['Can you work with existing partners?', 'How do you handle scope changes?'],
+        icon: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>`
+      },
+      {
+        q: 'Can you work with existing partners and teams?',
+        a: 'Yes. We regularly collaborate with in‑house teams, global system integrators, and specialist vendors. Our goal is to fit into your operating model while adding depth where you need it most.',
+        related: ['How do projects usually start?', 'Which time zones do you support?'],
+        icon: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`
+      },
+      {
+        q: 'Which time zones do you support?',
+        a: 'With teams across APAC and partner networks in EMEA and North America, we can design coverage windows and on‑call patterns that match your business day.',
+        related: ['What are your typical SLA response times?', 'What does a managed service look like?'],
+        icon: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`
+      },
+      {
+        q: 'How do you handle scope changes during a project?',
+        a: 'We use a transparent change management process. Any scope adjustment is documented, impact-assessed, and agreed before work proceeds. We aim to keep surprises to a minimum through regular sprint reviews and stakeholder check-ins.',
+        related: ['How do projects usually start?', 'What does a managed service look like?'],
+        icon: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>`
+      },
+      {
+        q: 'Do you offer fixed-price or time-and-materials engagements?',
+        a: 'Both. Fixed-price works well for clearly scoped deliverables like assessments, migrations, or implementations. Time-and-materials suits ongoing advisory work, staff augmentation, and agile programmes where requirements evolve. We agree the model upfront so there are no surprises.',
+        related: ['How do projects usually start?', 'Can you provide staff augmentation?'],
+        icon: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>`
+      }
+    ]
+  },
+  {
+    id: 'sap',
+    label: 'SAP & Tech',
+    color: '#8b5cf6',
+    tagClass: 'faqItem__tag--sap',
+    icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>`,
+    sideIcon: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>`,
+    items: [
+      {
+        q: 'What SAP certifications does Enmett hold?',
+        a: 'Our consultants hold certifications across SAP S/4HANA, SAP BTP, SAP Fiori, SAP GRC, and SAP Analytics Cloud. We maintain active SAP Partner status and regularly update our credentials as new modules are released.',
+        related: ['Do you support cloud and on-premise SAP?', 'How long does an S/4HANA migration take?'],
+        icon: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`
+      },
+      {
+        q: 'Do you support both cloud and on-premise SAP landscapes?',
+        a: 'Yes — we support RISE with SAP, private cloud, hybrid, and traditional on-premise deployments. Our architecture recommendations are always driven by your business requirements and total cost of ownership, not by vendor preference.',
+        related: ['What SAP certifications does Enmett hold?', 'Can you integrate SAP with third-party platforms?'],
+        icon: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>`
+      },
+      {
+        q: 'Can you integrate SAP with third-party platforms?',
+        a: 'Absolutely. We have deep experience integrating SAP with Salesforce, Microsoft 365, ServiceNow, and custom enterprise applications using SAP CPI, BTP Integration Suite, REST/SOAP APIs, and event-driven architectures.',
+        related: ['Do you support cloud and on-premise SAP?', 'What SAP certifications does Enmett hold?'],
+        icon: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>`
+      },
+      {
+        q: 'How long does an S/4HANA migration typically take?',
+        a: 'Timelines vary significantly by scope, landscape complexity, and data quality. A focused brownfield conversion for a mid-market company typically runs 6–12 months. Larger, multi-country programmes can span 18–24 months. We always start with a fit-gap and readiness assessment to give you a realistic estimate.',
+        related: ['What SAP certifications does Enmett hold?', 'How do projects usually start?'],
+        icon: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>`
+      },
+      {
+        q: 'Do you offer SAP training and change management?',
+        a: 'Yes. Effective adoption is as important as the technical implementation. We provide role-based training programmes, e-learning content, and change management planning aligned to Prosci and SAP Activate methodologies. We can also train your internal trainers for long-term self-sufficiency.',
+        related: ['How do projects usually start?', 'Can you provide staff augmentation?'],
+        icon: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>`
+      }
+    ]
+  },
+  {
+    id: 'security',
+    label: 'Security',
+    color: '#ef4444',
+    tagClass: 'faqItem__tag--security',
+    icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+    sideIcon: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+    items: [
+      {
+        q: 'How does Enmett approach SAP security?',
+        a: 'We follow a security-by-design principle, embedding GRC, identity and access management, and vulnerability assessments from the start of every engagement — not as an afterthought. Our approach covers SAP Basis hardening, role design, SoD conflict analysis, and continuous monitoring.',
+        related: ['Is Enmett ISO 27001 certified?', 'Do you offer penetration testing?'],
+        icon: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`
+      },
+      {
+        q: 'Is Enmett ISO 27001 certified?',
+        a: 'Yes. Enmett operates under an ISO 27001-aligned information security management system. Our processes for data handling, access control, incident response, and business continuity are reviewed and audited regularly.',
+        related: ['How does Enmett approach SAP security?', 'How do you handle data privacy and GDPR?'],
+        icon: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`
+      },
+      {
+        q: 'Do you offer penetration testing for SAP environments?',
+        a: 'Yes. We offer SAP-specific penetration testing covering ABAP code review, RFC gateway security, web interface assessments (Fiori, WebGUI), and user privilege escalation scenarios. All testing is conducted with explicit client authorisation and a detailed remediation report.',
+        related: ['How does Enmett approach SAP security?', 'Is Enmett ISO 27001 certified?'],
+        icon: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`
+      },
+      {
+        q: 'How do you handle data privacy and GDPR compliance?',
+        a: 'We implement SAP\'s Information Lifecycle Management and Data Privacy tools to support GDPR and regional data protection requirements. Our team advises on data retention policies, right-to-erasure workflows, and consent management within SAP landscapes.',
+        related: ['Is Enmett ISO 27001 certified?', 'How does Enmett approach SAP security?'],
+        icon: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>`
+      },
+      {
+        q: 'Can you help with SAP audit readiness?',
+        a: 'Absolutely. We help clients prepare for both internal and external SAP audits by reviewing role design, SoD conflicts, transport controls, system hardening, and user administration practices. We also support remediation activities post-audit to close identified gaps efficiently.',
+        related: ['Is Enmett ISO 27001 certified?', 'How does Enmett approach SAP security?'],
+        icon: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>`
+      }
+    ]
+  },
+  {
+    id: 'services',
+    label: 'Services & Support',
+    color: '#10b981',
+    tagClass: 'faqItem__tag--services',
+    icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>`,
+    sideIcon: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>`,
+    items: [
+      {
+        q: 'What does a managed service engagement look like?',
+        a: 'Our managed services operate on defined SLAs with clearly agreed response and resolution targets. You get a named service lead, regular service reviews, a live dashboard, and a proactive improvement backlog — so we\'re always working to improve, not just maintain.',
+        related: ['What are your typical SLA response times?', 'Which time zones do you support?'],
+        icon: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>`
+      },
+      {
+        q: 'What are your typical SLA response times?',
+        a: 'SLA tiers are tailored per engagement, but our standard framework defines: P1 (Critical) — 1-hour response, 4-hour resolution target; P2 (High) — 4-hour response; P3 (Medium) — next business day. We publish monthly SLA performance reports for all managed service clients.',
+        related: ['What does a managed service look like?', 'Which time zones do you support?'],
+        icon: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`
+      },
+      {
+        q: 'Can Enmett provide staff augmentation alongside a project?',
+        a: 'Yes. Through our Resourcing practice we can embed certified SAP consultants, security specialists, cloud engineers, and project managers directly into your teams — on a contract or fixed-term basis. Resourcing engagements are typically set up within 2–3 weeks.',
+        related: ['Do you offer fixed-price engagements?', 'How do projects usually start?'],
+        icon: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`
+      },
+      {
+        q: 'How do you measure and report service performance?',
+        a: 'All managed service clients receive a monthly service report covering incident volumes and resolution times, SLA performance, problem management activity, and a forward-looking improvement roadmap. We also provide a live portal for real-time ticket visibility and service metrics.',
+        related: ['What are your typical SLA response times?', 'What does a managed service look like?'],
+        icon: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>`
+      },
+      {
+        q: 'What is your onboarding process for a new managed service client?',
+        a: 'Onboarding typically runs over 4–6 weeks and covers knowledge transfer from your existing team or vendor, tooling integration (ITSM, monitoring), SLA and escalation path agreement, a joint service runbook, and a hypercare period before steady-state handover.',
+        related: ['How do projects usually start?', 'What does a managed service look like?'],
+        icon: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`
+      }
+    ]
+  }
+];
+
+/* ═══════════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════════ */
+function showToast(msg, duration = 2800) {
+  const toast = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  toast.classList.add('visible');
+  setTimeout(() => toast.classList.remove('visible'), duration);
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function highlightText(text, query) {
+  if (!query) return escapeHtml(text);
+  const escaped = escapeHtml(text);
+  const escapedQ = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return escaped.replace(new RegExp(`(${escapedQ})`, 'gi'), '<mark>$1</mark>');
+}
+
+/* ═══════════════════════════════════════════════
+   BUILD UI
+═══════════════════════════════════════════════ */
+const allQuestions = FAQ_DATA.flatMap(g => g.items.map(i => ({ ...i, category: g.id, tagClass: g.tagClass })));
+
+// Update total count stat
+document.getElementById('totalCount').textContent = allQuestions.length;
+
+// Build tabs (no counts)
+const tabsRow = document.getElementById('tabsRow');
+[{ id:'all', label:'All questions' }, ...FAQ_DATA].forEach(cat => {
+  const btn = document.createElement('button');
+  btn.className = 'tab' + (cat.id === 'all' ? ' active' : '');
+  btn.dataset.category = cat.id;
+  btn.setAttribute('role', 'tab');
+  btn.textContent = (cat.label || cat.id);
+  tabsRow.appendChild(btn);
+});
+
+// Build sidebar (no counts)
+const sideNav = document.getElementById('sideNav');
+FAQ_DATA.forEach((group, i) => {
+  const a = document.createElement('a');
+  a.className = 'faqSideNav__link' + (i === 0 ? ' active' : '');
+  a.href = '#' + group.id;
+  a.innerHTML = `${group.sideIcon} ${group.label}`;
+  sideNav.appendChild(a);
+});
+
+// Build FAQ content
+const faqContent = document.getElementById('faqContent');
+
+FAQ_DATA.forEach((group, gi) => {
+  const groupEl = document.createElement('div');
+  groupEl.className = 'faqGroup reveal';
+  groupEl.id = group.id;
+  groupEl.dataset.category = group.id;
+  if (gi > 0) groupEl.dataset.delay = String(gi * 60);
+
+  groupEl.innerHTML = `
+    <div class="faqGroup__heading">
+      <div class="faqGroup__heading-left">
+        <div class="faqGroup__icon">${group.icon}</div>
+        <span class="faqGroup__title">${group.label}</span>
+      </div>
+    </div>`;
+
+  group.items.forEach((item, ii) => {
+    const itemEl = document.createElement('div');
+    itemEl.className = 'faqItem' + (gi === 0 && ii === 0 ? ' is-open' : '');
+    itemEl.dataset.category = group.id;
+    itemEl.dataset.qid = `${group.id}-${ii}`;
+
+    itemEl.innerHTML = `
+      <button class="faqItem__q" aria-expanded="${gi === 0 && ii === 0 ? 'true' : 'false'}">
+        <span class="faqItem__q-icon">${item.icon}</span>
+        <span class="faqItem__q-text">${escapeHtml(item.q)}</span>
+        <span class="faqItem__meta">
+          <span class="faqItem__tag ${item.tagClass}">${group.label}</span>
+        </span>
+        <span class="faqItem__chevron">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </span>
+      </button>
+      <div class="faqItem__body">
+        <div class="faqItem__body-inner">
+          <div class="faqItem__a"><p>${escapeHtml(item.a)}</p></div>
+          ${item.related && item.related.length ? `
+          <div class="relatedSection">
+            <p class="relatedSection__label">Related questions</p>
+            <div class="relatedChips">
+              ${item.related.map(r => `<button class="relatedChip" data-jump="${escapeHtml(r)}">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                ${escapeHtml(r)}
+              </button>`).join('')}
+            </div>
+          </div>` : ''}
+          <div class="faqItem__footer">
+            <div class="faqItem__vote">
+              <span class="faqItem__vote-label">Helpful?</span>
+              <button class="voteBtn" data-vote="yes" title="Yes, helpful">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+                Yes
+              </button>
+              <button class="voteBtn" data-vote="no" title="No, not helpful">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z"/><path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg>
+                No
+              </button>
+            </div>
+            <button class="shareBtn" data-qid="${group.id}-${ii}">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+              Copy link
+            </button>
+          </div>
+        </div>
+      </div>`;
+
+    groupEl.appendChild(itemEl);
+  });
+
+  faqContent.appendChild(groupEl);
+});
+
+/* ═══════════════════════════════════════════════
+   HERO MOCKUP — auto-rotates
+═══════════════════════════════════════════════ */
+(function() {
+  const items = allQuestions.slice(0, 4);
+  let openIdx = 0;
+  const body = document.getElementById('mockupBody');
+
+  function render() {
+    body.innerHTML = items.map((item, i) => `
+      <div class="faqMockup__item${i === openIdx ? ' faqMockup__item--open' : ''}" data-mi="${i}">
+        <div class="faqMockup__q">
+          ${escapeHtml(item.q.length > 45 ? item.q.slice(0,45)+'…' : item.q)}
+          <div class="faqMockup__q-icon">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="${i===openIdx?'var(--accent)':'rgba(255,255,255,0.4)'}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="${i===openIdx?'18 15 12 9 6 15':'6 9 12 15 18 9'}"/></svg>
+          </div>
+        </div>
+        ${i === openIdx ? `<div class="faqMockup__a">${escapeHtml(item.a.slice(0,100))}…</div>` : ''}
+      </div>`).join('') +
+      `<div class="faqMockup__progress"><div class="faqMockup__progress-bar" style="width:${((openIdx+1)/items.length)*100}%"></div></div>
+       <div class="faqMockup__count">${openIdx+1} / ${items.length}</div>`;
+
+    body.querySelectorAll('[data-mi]').forEach(el => {
+      el.addEventListener('click', () => { openIdx = +el.dataset.mi; render(); });
+    });
+  }
+
+  render();
+  setInterval(() => { openIdx = (openIdx + 1) % items.length; render(); }, 3500);
+})();
+
+/* ═══════════════════════════════════════════════
+   ACCORDION
+═══════════════════════════════════════════════ */
+document.getElementById('faqContent').addEventListener('click', e => {
+  const btn = e.target.closest('.faqItem__q');
+  if (btn) {
+    const item = btn.closest('.faqItem');
+    const isOpen = item.classList.contains('is-open');
+    item.closest('.faqGroup')?.querySelectorAll('.faqItem.is-open').forEach(el => {
+      el.classList.remove('is-open');
+      el.querySelector('.faqItem__q')?.setAttribute('aria-expanded', 'false');
+    });
+    if (!isOpen) { item.classList.add('is-open'); btn.setAttribute('aria-expanded', 'true'); }
+    return;
+  }
+
+  // Vote buttons
+  const voteBtn = e.target.closest('.voteBtn');
+  if (voteBtn) {
+    const footer = voteBtn.closest('.faqItem__footer');
+    footer.querySelectorAll('.voteBtn').forEach(b => b.classList.remove('voted-yes','voted-no'));
+    voteBtn.classList.add(voteBtn.dataset.vote === 'yes' ? 'voted-yes' : 'voted-no');
+    showToast(voteBtn.dataset.vote === 'yes' ? '👍 Thanks for the feedback!' : '📩 We\'ll improve this answer.');
+    return;
+  }
+
+  // Share button
+  const shareBtn = e.target.closest('.shareBtn');
+  if (shareBtn) {
+    const qid = shareBtn.dataset.qid;
+    const url = window.location.href.split('#')[0] + '#' + qid;
+    navigator.clipboard?.writeText(url).then(() => {
+      shareBtn.classList.add('copied');
+      shareBtn.querySelector('svg + span') || (shareBtn.innerHTML = shareBtn.innerHTML.replace('Copy link','Copied!'));
+      showToast('🔗 Link copied to clipboard');
+      setTimeout(() => { shareBtn.classList.remove('copied'); shareBtn.innerHTML = shareBtn.innerHTML.replace('Copied!','Copy link'); }, 2000);
+    });
+    return;
+  }
+
+  // Related chips
+  const chip = e.target.closest('.relatedChip');
+  if (chip) {
+    const target = chip.dataset.jump;
+    jumpToQuestion(target);
+    return;
+  }
+});
+
+function jumpToQuestion(queryText) {
+  const items = document.querySelectorAll('.faqItem');
+  for (const item of items) {
+    const qText = item.querySelector('.faqItem__q-text')?.textContent?.trim();
+    if (qText && qText.toLowerCase().includes(queryText.toLowerCase().slice(0,20))) {
+      // Make sure group is visible
+      const group = item.closest('.faqGroup');
+      if (group) group.style.display = '';
+      item.classList.add('is-open');
+      item.querySelector('.faqItem__q')?.setAttribute('aria-expanded','true');
+      item.scrollIntoView({ behavior:'smooth', block:'center' });
+      setTimeout(() => { item.classList.add('is-highlighted'); setTimeout(() => item.classList.remove('is-highlighted'), 1600); }, 400);
+      break;
+    }
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   TABS
+═══════════════════════════════════════════════ */
+document.getElementById('tabsRow').addEventListener('click', e => {
+  const tab = e.target.closest('.tab');
+  if (!tab) return;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+  const cat = tab.dataset.category;
+  document.querySelectorAll('.faqGroup').forEach(g => {
+    g.style.display = (cat === 'all' || g.dataset.category === cat) ? '' : 'none';
+  });
+  document.querySelectorAll('.faqSideNav__link').forEach(l => l.classList.remove('active'));
+  if (cat !== 'all') document.querySelector(`.faqSideNav__link[href="#${cat}"]`)?.classList.add('active');
+  // Clear search
+  document.getElementById('faqSearch').value = '';
+  document.getElementById('searchSugg').classList.remove('visible');
+  document.getElementById('searchCount').classList.remove('visible');
+  document.querySelectorAll('.faqItem').forEach(i => { i.style.display = ''; });
+  document.getElementById('faqEmpty')?.classList.remove('visible');
+});
+
+/* ═══════════════════════════════════════════════
+   SEARCH
+═══════════════════════════════════════════════ */
+const searchInput = document.getElementById('faqSearch');
+const searchSugg = document.getElementById('searchSugg');
+const searchCount = document.getElementById('searchCount');
+
+// Build empty state
+const emptyState = document.createElement('div');
+emptyState.className = 'faqEmpty';
+emptyState.id = 'faqEmpty';
+emptyState.innerHTML = `
+  <div class="faqEmpty__icon">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+  </div>
+  <h3>No results found</h3>
+  <p>Try a different keyword or reach out directly.</p>
+  <a class="btn btn--primary" href="{{ url_for('contact_page') }}">Send us a message <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>`;
+document.getElementById('faqContent').appendChild(emptyState);
+
+function doSearch(q) {
+  const query = q.trim().toLowerCase();
+  let totalVisible = 0;
+
+  // Reset all groups visible
+  document.querySelectorAll('.faqGroup').forEach(g => g.style.display = '');
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelector('.tab[data-category="all"]')?.classList.add('active');
+
+  document.querySelectorAll('.faqItem').forEach(item => {
+    if (!query) { item.style.display = ''; totalVisible++; return; }
+    const text = (item.querySelector('.faqItem__q-text')?.textContent || '') +
+                 (item.querySelector('.faqItem__a')?.textContent || '');
+    const match = text.toLowerCase().includes(query);
+    item.style.display = match ? '' : 'none';
+    if (match) {
+      totalVisible++;
+      // Highlight in question text
+      const qText = item.querySelector('.faqItem__q-text');
+      if (qText) qText.innerHTML = highlightText(qText.dataset.raw || qText.textContent, query);
+      if (!qText.dataset.raw) qText.dataset.raw = qText.textContent;
+    } else {
+      const qText = item.querySelector('.faqItem__q-text');
+      if (qText?.dataset.raw) { qText.innerHTML = escapeHtml(qText.dataset.raw); }
+    }
+  });
+
+  // Clear highlights when no query
+  if (!query) {
+    document.querySelectorAll('.faqItem__q-text').forEach(el => {
+      if (el.dataset.raw) { el.innerHTML = escapeHtml(el.dataset.raw); }
+    });
+  }
+
+  // Hide groups with no visible items
+  document.querySelectorAll('.faqGroup').forEach(g => {
+    if (g.id === 'faqEmpty') return;
+    const visItems = [...g.querySelectorAll('.faqItem')].filter(i => i.style.display !== 'none');
+    g.style.display = visItems.length ? '' : 'none';
+  });
+
+  emptyState.classList.toggle('visible', totalVisible === 0 && !!query);
+
+  if (query) {
+    searchCount.innerHTML = `Found <strong>${totalVisible}</strong> matching question${totalVisible !== 1 ? 's' : ''}`;
+    searchCount.classList.add('visible');
+  } else {
+    searchCount.classList.remove('visible');
+  }
+}
+
+searchInput.addEventListener('input', e => {
+  const q = e.target.value;
+  doSearch(q);
+
+  // Suggestions
+  if (q.trim().length < 2) { searchSugg.classList.remove('visible'); return; }
+  const matches = allQuestions.filter(item =>
+    item.q.toLowerCase().includes(q.toLowerCase())
+  ).slice(0, 5);
+
+  if (!matches.length) { searchSugg.classList.remove('visible'); return; }
+  searchSugg.innerHTML = matches.map(item => `
+    <div class="suggItem" data-q="${escapeHtml(item.q)}">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      ${highlightText(item.q, q)}
+    </div>`).join('');
+  searchSugg.classList.add('visible');
+});
+
+searchSugg.addEventListener('click', e => {
+  const item = e.target.closest('.suggItem');
+  if (item) {
+    const q = item.dataset.q;
+    searchInput.value = q;
+    doSearch(q);
+    searchSugg.classList.remove('visible');
+    jumpToQuestion(q);
+  }
+});
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.searchWrap')) searchSugg.classList.remove('visible');
+});
+
+searchInput.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { searchInput.value = ''; doSearch(''); searchSugg.classList.remove('visible'); }
+});
+
+/* ═══════════════════════════════════════════════
+   FLOATING ASK PANEL
+═══════════════════════════════════════════════ */
+const askFloat = document.getElementById('askFloatBtn');
+const askPanel = document.getElementById('askPanel');
+const askClose = document.getElementById('askPanelClose');
+const askInput = document.getElementById('askInput');
+const askSend = document.getElementById('askSend');
+const askSuggestions = document.getElementById('askSuggestions');
+
+// Populate ask panel suggestions
+const panelSuggs = allQuestions.slice(0, 4);
+askSuggestions.innerHTML = panelSuggs.map(item => `
+  <button class="askPanel__sugg" data-q="${escapeHtml(item.q)}">
+    ${escapeHtml(item.q.length > 55 ? item.q.slice(0,55)+'…' : item.q)}
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+  </button>`).join('');
+
+askFloat.addEventListener('click', () => askPanel.classList.toggle('is-open'));
+askClose.addEventListener('click', () => askPanel.classList.remove('is-open'));
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.askPanel') && !e.target.closest('.askFloat')) askPanel.classList.remove('is-open');
+});
+
+function doAskSearch() {
+  const q = askInput.value.trim();
+  if (!q) return;
+  askPanel.classList.remove('is-open');
+  searchInput.value = q;
+  doSearch(q);
+  searchInput.scrollIntoView({ behavior:'smooth', block:'center' });
+}
+
+askSend.addEventListener('click', doAskSearch);
+askInput.addEventListener('keydown', e => { if (e.key === 'Enter') doAskSearch(); });
+
+// Live update ask panel suggestions
+askInput.addEventListener('input', () => {
+  const q = askInput.value.toLowerCase();
+  if (!q) {
+    askSuggestions.innerHTML = panelSuggs.map(item => `
+      <button class="askPanel__sugg" data-q="${escapeHtml(item.q)}">
+        ${escapeHtml(item.q.length > 55 ? item.q.slice(0,55)+'…' : item.q)}
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>`).join('');
+    return;
+  }
+  const filtered = allQuestions.filter(i => i.q.toLowerCase().includes(q)).slice(0,4);
+  if (!filtered.length) {
+    askSuggestions.innerHTML = `<div style="font-size:0.8rem;color:var(--text-muted);padding:8px 14px;">No matches — press Enter to search</div>`;
+    return;
+  }
+  askSuggestions.innerHTML = filtered.map(item => `
+    <button class="askPanel__sugg" data-q="${escapeHtml(item.q)}">
+      ${highlightText(item.q.length > 55 ? item.q.slice(0,55)+'…' : item.q, askInput.value)}
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>`).join('');
+});
+
+document.getElementById('askPanel').addEventListener('click', e => {
+  const sugg = e.target.closest('.askPanel__sugg');
+  if (sugg) {
+    const q = sugg.dataset.q;
+    askPanel.classList.remove('is-open');
+    searchInput.value = q;
+    doSearch(q);
+    jumpToQuestion(q);
+  }
+});
+
+/* ═══════════════════════════════════════════════
+   SCROLL: sidebar active, reading progress
+═══════════════════════════════════════════════ */
+window.addEventListener('scroll', () => {
+  const sections = document.querySelectorAll('.faqGroup[id]:not(#faqEmpty)');
+  let current = '';
+  sections.forEach(s => { if (scrollY >= s.offsetTop - 120) current = s.id; });
+  document.querySelectorAll('.faqSideNav__link').forEach(l => {
+    l.classList.toggle('active', l.getAttribute('href') === `#${current}`);
+  });
+
+  // Reading progress
+  const doc = document.documentElement;
+  const scrolled = doc.scrollTop;
+  const total = doc.scrollHeight - doc.clientHeight;
+  const pct = total > 0 ? Math.round((scrolled / total) * 100) : 0;
+  document.getElementById('readFill').style.width = pct + '%';
+  document.getElementById('readPct').textContent = pct + '%';
+}, { passive: true });
+
+/* ═══════════════════════════════════════════════
+   TOPBAR SCROLL
+═══════════════════════════════════════════════ */
+const topbar = document.getElementById('top');
+if (topbar) window.addEventListener('scroll', () => topbar.classList.toggle('scrolled', scrollY > 20), { passive: true });
+
+/* ═══════════════════════════════════════════════
+   REVEAL
+═══════════════════════════════════════════════ */
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const delay = entry.target.dataset.delay || 0;
+      setTimeout(() => entry.target.classList.add('is-visible'), +delay);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -32px 0px' });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+/* ═══════════════════════════════════════════════
+   Help CTA: clickable card
+═══════════════════════════════════════════════ */
+document.querySelector('.helpCtaCard--contact')?.addEventListener('click', (e) => {
+  const a = e.target.closest('a');
+  if (a) return;
+  window.location.href = "{{ url_for('contact_page') }}";
+});
+
+/* ═══════════════════════════════════════════════
+   URL HASH — deep link to a question
+═══════════════════════════════════════════════ */
+if (location.hash) {
+  const qid = location.hash.slice(1);
+  // Try as group id first
+  const group = document.getElementById(qid);
+  if (group && group.classList.contains('faqGroup')) {
+    setTimeout(() => group.scrollIntoView({ behavior:'smooth', block:'start' }), 500);
+  } else {
+    // Try as question id (format: categoryId-index)
+    const itemEl = document.querySelector(`[data-qid="${qid}"]`);
+    if (itemEl) {
+      itemEl.classList.add('is-open');
+      itemEl.querySelector('.faqItem__q')?.setAttribute('aria-expanded','true');
+      setTimeout(() => itemEl.scrollIntoView({ behavior:'smooth', block:'center' }), 500);
+    }
+  }
+}
+
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,743 @@
+{% extends "base.html" %}
+{% block title %}About | Enmett{% endblock %}
+{% block meta_description %}Enmett delivers SAP, cybersecurity, IT services, managed services, and resourcing for modern enterprises.{% endblock %}
+{% block extra_css %}
+  <style>
+    /* ═══════════════════════════════════════
+       TOKENS
+    ═══════════════════════════════════════ */
+    :root {
+      --primary:        #08111f;
+      --accent:         #0ea5e9;
+      --accent-bright:  #38bdf8;
+      --accent-subtle:  rgba(14,165,233,0.07);
+      --accent-border:  rgba(14,165,233,0.22);
+      --accent-glow:    rgba(14,165,233,0.18);
+
+      --surface:        #ffffff;
+      --surface-muted:  #f5f8fc;
+      --border:         #e2eaf3;
+      --border-dark:    rgba(255,255,255,0.08);
+
+      --text-primary:   #0b1421;
+      --text-secondary: #4b5a72;
+      --text-muted:     #8896a8;
+      --text-on-dark:   #dde6f0;
+
+      --font-display: 'Sora', sans-serif;
+      --font-body:    'DM Sans', sans-serif;
+
+      --r-sm:  6px;
+      --r-md:  14px;
+      --r-lg:  22px;
+      --r-xl:  36px;
+
+      --shadow-sm:     0 1px 4px rgba(8,17,31,0.06);
+      --shadow-md:     0 4px 20px rgba(8,17,31,0.09), 0 1px 4px rgba(8,17,31,0.05);
+      --shadow-lg:     0 16px 52px rgba(8,17,31,0.13), 0 4px 16px rgba(8,17,31,0.06);
+      --shadow-accent: 0 8px 36px rgba(14,165,233,0.28);
+
+      --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-std:  cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ═══════════════════════════════════════
+       RESET
+    ═══════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      color: var(--text-primary);
+      background: var(--surface);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    img  { display: block; max-width: 100%; }
+    a    { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; }
+    ul { list-style: none; }
+
+    .srOnly {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+
+    /* ═══════════════════════════════════════
+       LAYOUT
+    ═══════════════════════════════════════ */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 28px; }
+
+    /* ═══════════════════════════════════════
+       TYPOGRAPHY
+    ═══════════════════════════════════════ */
+    h1,h2,h3,h4 { font-family: var(--font-display); font-weight: 700; line-height: 1.2; color: var(--text-primary); }
+    h1 { font-size: clamp(2rem,4.5vw,3.2rem); letter-spacing: -0.03em; }
+    h2 { font-size: clamp(1.7rem,3vw,2.4rem); letter-spacing: -0.025em; }
+    h3 { font-size: 1.1rem; letter-spacing: -0.01em; }
+    p  { color: var(--text-secondary); font-size: 0.975rem; line-height: 1.8; }
+
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--font-display);
+      font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--accent); margin-bottom: 1rem;
+    }
+    .eyebrow::before {
+      content: '';
+      display: inline-block; width: 18px; height: 2px;
+      background: var(--accent); border-radius: 2px;
+    }
+
+    /* ═══════════════════════════════════════
+       BUTTONS
+    ═══════════════════════════════════════ */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--font-display);
+      font-size: 0.875rem; font-weight: 600;
+      padding: 12px 24px; border-radius: var(--r-sm);
+      border: none; transition: all 0.22s var(--ease-std);
+      letter-spacing: 0.01em; white-space: nowrap; cursor: pointer;
+    }
+    .btn svg { transition: transform 0.2s; }
+    .btn:hover svg { transform: translateX(3px); }
+    .btn--primary {
+      background: var(--accent); color: #fff;
+      box-shadow: 0 4px 14px rgba(14,165,233,0.3);
+    }
+    .btn--primary:hover { background: #0284c7; transform: translateY(-1px); box-shadow: var(--shadow-accent); }
+    .btn--ghost {
+      background: transparent; color: var(--text-secondary);
+      border: 1.5px solid var(--border);
+    }
+    .btn--ghost:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-subtle); }
+
+    /* ═══════════════════════════════════════
+       REVEAL
+    ═══════════════════════════════════════ */
+    .reveal {
+      opacity: 0; transform: translateY(22px);
+      transition: opacity 0.7s var(--ease-expo), transform 0.7s var(--ease-expo);
+    }
+    .reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+    /* ═══════════════════════════════════════
+       ANNOUNCEMENT BAR
+    ═══════════════════════════════════════ */
+    .announcementBar {
+      background: var(--primary); color: rgba(255,255,255,0.7);
+      text-align: center;
+      font-family: var(--font-display); font-size: 0.78rem; font-weight: 500;
+      letter-spacing: 0.04em; padding: 10px 24px;
+      position: relative; overflow: hidden;
+    }
+    .announcementBar::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(14,165,233,0.1) 50%, transparent 100%);
+      animation: shimBar 5s ease-in-out infinite;
+    }
+    @keyframes shimBar {
+      0%,100% { opacity:0; transform:translateX(-100%); }
+      50%      { opacity:1; transform:translateX(100%);  }
+    }
+    .announcementBar a { color: var(--accent-bright); font-weight: 700; margin-left: 6px; }
+
+    /* ═══════════════════════════════════════
+       TOPBAR
+    ═══════════════════════════════════════ */
+    .topbar {
+      position: sticky; top: 0; z-index: 900;
+      background: rgba(255,255,255,0.94);
+      backdrop-filter: blur(20px) saturate(160%);
+      -webkit-backdrop-filter: blur(20px) saturate(160%);
+      border-bottom: 1px solid var(--border);
+      transition: box-shadow 0.3s var(--ease-std);
+    }
+    .topbar.scrolled { box-shadow: var(--shadow-md); }
+    .topbar__inner {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 70px; gap: 16px;
+    }
+    .brand { display: flex; align-items: center; flex-shrink: 0; }
+    .brand__name {
+      font-family: var(--font-display); font-size: 1.4rem; font-weight: 800;
+      color: var(--primary); letter-spacing: -0.03em;
+    }
+    .brand__name span { color: var(--accent); }
+
+    .nav { display: flex; align-items: center; gap: 2px; flex: 1; justify-content: center; }
+    .nav__item { position: relative; }
+    .nav__link {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: none; border: none;
+      font-family: var(--font-display); font-size: 0.875rem; font-weight: 600;
+      color: var(--text-secondary); padding: 8px 14px; border-radius: var(--r-sm);
+      transition: color 0.2s, background 0.2s; white-space: nowrap;
+    }
+    .nav__link:hover, .nav__item--open .nav__link { color: var(--accent); background: var(--accent-subtle); }
+    .navDropdown {
+      position: absolute; top: calc(100% + 10px); left: 50%;
+      transform: translateX(-50%) translateY(8px);
+      background: var(--surface); min-width: 220px; border-radius: var(--r-md);
+      box-shadow: var(--shadow-lg), 0 0 0 1px var(--border);
+      opacity: 0; visibility: hidden;
+      transition: all 0.25s var(--ease-expo);
+      padding: 8px; z-index: 901;
+    }
+    .nav__item--open .navDropdown { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+    .navDropdown::before {
+      content: ''; position: absolute; top: -5px; left: 50%;
+      transform: translateX(-50%) rotate(45deg);
+      width: 10px; height: 10px; background: var(--surface);
+      border-top: 1px solid var(--border); border-left: 1px solid var(--border);
+    }
+    .navDropdown a {
+      display: flex; align-items: center; padding: 10px 14px;
+      border-radius: var(--r-sm); font-size: 0.875rem; font-weight: 500;
+      color: var(--text-secondary); transition: all 0.18s;
+    }
+    .navDropdown a:hover { background: var(--accent-subtle); color: var(--accent); padding-left: 18px; }
+    .headerCta { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .navToggle {
+      display: none; align-items: center; justify-content: center;
+      width: 40px; height: 40px;
+      border: 1.5px solid var(--border); border-radius: var(--r-sm);
+      background: transparent; transition: all 0.2s;
+    }
+    .navToggle:hover { border-color: var(--accent); background: var(--accent-subtle); }
+    .navToggle__bars,
+    .navToggle__bars::before,
+    .navToggle__bars::after {
+      display: block; width: 18px; height: 1.5px;
+      background: var(--text-primary); border-radius: 2px;
+      transition: all 0.3s var(--ease-expo);
+    }
+    .navToggle__bars { position: relative; }
+    .navToggle__bars::before, .navToggle__bars::after { content: ''; position: absolute; left: 0; }
+    .navToggle__bars::before { top: -5px; }
+    .navToggle__bars::after  { top: 5px; width: 12px; }
+    .navToggle[aria-expanded="true"] .navToggle__bars { background: transparent; }
+    .navToggle[aria-expanded="true"] .navToggle__bars::before { transform: rotate(45deg) translate(3.5px,3.5px); }
+    .navToggle[aria-expanded="true"] .navToggle__bars::after  { transform: rotate(-45deg) translate(3.5px,-3.5px); width: 18px; }
+
+    /* ═══════════════════════════════════════
+       PAGE HERO (breadcrumb band)
+    ═══════════════════════════════════════ */
+    .pageHero {
+      background: var(--primary);
+      padding: 72px 0 80px;
+      position: relative; overflow: hidden;
+    }
+    .pageHero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 55% 70% at 80% 50%, rgba(14,165,233,0.1) 0%, transparent 65%),
+        radial-gradient(ellipse 30% 50% at 5%  80%, rgba(14,165,233,0.06) 0%, transparent 60%);
+    }
+    .pageHero__grid {
+      position: absolute; inset: 0; pointer-events: none;
+    }
+    .pageHero__grid::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(14,165,233,0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(14,165,233,0.045) 1px, transparent 1px);
+      background-size: 56px 56px;
+      mask-image: radial-gradient(ellipse 90% 90% at 50% 50%, black 20%, transparent 75%);
+    }
+    .pageHero__inner {
+      position: relative; z-index: 2;
+      display: flex; flex-direction: column; gap: 14px;
+    }
+    .pageHero__breadcrumb {
+      display: flex; align-items: center; gap: 8px;
+      font-family: var(--font-display); font-size: 0.75rem; font-weight: 500;
+      color: rgba(255,255,255,0.4);
+    }
+    .pageHero__breadcrumb a { color: rgba(255,255,255,0.45); transition: color 0.2s; }
+    .pageHero__breadcrumb a:hover { color: var(--accent-bright); }
+    .pageHero__breadcrumb span { color: var(--accent); }
+    .pageHero__breadcrumb-sep { opacity: 0.3; }
+    .pageHero__eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--font-display); font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent);
+    }
+    .pageHero__eyebrow::before {
+      content: ''; display: inline-block; width: 18px; height: 2px;
+      background: var(--accent); border-radius: 2px;
+    }
+    .pageHero__title {
+      font-family: var(--font-display); font-size: clamp(2rem,4vw,3rem);
+      font-weight: 800; color: #fff; letter-spacing: -0.03em; line-height: 1.15;
+      max-width: 640px;
+    }
+    .pageHero__title em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-bright) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .pageHero__sub {
+      font-size: 1rem; color: rgba(255,255,255,0.5); max-width: 520px; line-height: 1.75;
+    }
+
+    /* ═══════════════════════════════════════
+       ABOUT CONTENT
+    ═══════════════════════════════════════ */
+    .aboutSection {
+      padding: 96px 0;
+    }
+    .aboutLayout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    /* ── Image Column ── */
+    .aboutMedia { position: relative; }
+    .aboutMedia__frame {
+      position: relative;
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg), 0 0 0 1px rgba(8,17,31,0.06);
+    }
+    .aboutMedia__img {
+      width: 100%; height: 520px;
+      object-fit: cover; display: block;
+      transition: transform 0.6s var(--ease-expo);
+    }
+    .aboutMedia__frame:hover .aboutMedia__img { transform: scale(1.03); }
+    .aboutMedia__overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(8,17,31,0.55) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    /* Floating badge */
+    .aboutMedia__badge {
+      position: absolute; bottom: -22px; right: -22px;
+      background: var(--primary); color: #fff;
+      border-radius: var(--r-md); padding: 20px 24px;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid rgba(255,255,255,0.06);
+      text-align: center; min-width: 130px;
+      animation: floatBadge 4s ease-in-out infinite;
+    }
+    @keyframes floatBadge {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-6px); }
+    }
+    .aboutMedia__badge-value {
+      font-family: var(--font-display); font-size: 2rem; font-weight: 800;
+      color: var(--accent); line-height: 1; display: block;
+    }
+    .aboutMedia__badge-label {
+      font-size: 0.75rem; color: rgba(255,255,255,0.5);
+      margin-top: 4px; display: block; line-height: 1.4;
+    }
+
+    /* Accent corner */
+    .aboutMedia__corner {
+      position: absolute; top: -14px; left: -14px;
+      width: 56px; height: 56px;
+      border-top: 3px solid var(--accent); border-left: 3px solid var(--accent);
+      border-radius: 4px 0 0 0; pointer-events: none;
+    }
+
+    /* ── Copy Column ── */
+    .aboutCopy { display: flex; flex-direction: column; gap: 32px; }
+    .aboutCopy__intro h2 { margin-bottom: 1.2rem; }
+    .aboutCopy__intro p { font-size: 1rem; color: var(--text-secondary); line-height: 1.8; }
+    .aboutCopy__intro p + p { margin-top: 1rem; }
+
+    /* Divider */
+    .aboutCopy__divider {
+      height: 1px; background: var(--border);
+      position: relative; overflow: visible;
+    }
+    .aboutCopy__divider::after {
+      content: ''; position: absolute;
+      left: 0; top: -1px; width: 48px; height: 3px;
+      background: var(--accent); border-radius: 2px;
+    }
+
+    /* Pillars */
+    .aboutCopy__pillars {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    }
+    .pillar {
+      padding: 20px 22px;
+      background: var(--surface-muted);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+    .pillar:hover {
+      border-color: var(--accent-border);
+      box-shadow: var(--shadow-md);
+      background: #fff;
+    }
+    .pillar__icon {
+      width: 40px; height: 40px;
+      border-radius: var(--r-sm);
+      background: var(--accent-subtle);
+      border: 1px solid var(--accent-border);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 12px;
+      transition: background 0.2s;
+    }
+    .pillar:hover .pillar__icon { background: var(--accent); }
+    .pillar:hover .pillar__icon svg { color: #fff; }
+    .pillar__icon svg { color: var(--accent); transition: color 0.2s; }
+    .pillar h4 {
+      font-family: var(--font-display); font-size: 0.9rem; font-weight: 700;
+      color: var(--text-primary); margin-bottom: 6px; letter-spacing: -0.01em;
+    }
+    .pillar p { font-size: 0.825rem; color: var(--text-muted); line-height: 1.6; }
+
+    /* Capability list */
+    .aboutCopy__capabilities {}
+    .aboutCopy__capabilities h3 {
+      font-size: 1rem; margin-bottom: 14px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .aboutCopy__capabilities h3::before {
+      content: ''; width: 4px; height: 18px;
+      background: var(--accent); border-radius: 2px; flex-shrink: 0;
+    }
+    .capList {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+    }
+    .capList li {
+      display: flex; align-items: center; gap: 9px;
+      font-size: 0.875rem; color: var(--text-secondary);
+    }
+    .capList li::before {
+      content: '';
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent); flex-shrink: 0;
+    }
+
+    /* CTA row */
+    .aboutCopy__cta { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+    /* ═══════════════════════════════════════
+       STATS BAND
+    ═══════════════════════════════════════ */
+    .statsBand {
+      background: var(--primary);
+      padding: 72px 0;
+      position: relative; overflow: hidden;
+    }
+    .statsBand::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 80% at 50% 50%, rgba(14,165,233,0.08) 0%, transparent 70%);
+    }
+    .statsBand::after {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), var(--accent-bright), var(--accent), transparent);
+    }
+    .statsGrid {
+      position: relative; z-index: 1;
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 1px; background: rgba(255,255,255,0.07);
+      border-radius: var(--r-lg); overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.07);
+    }
+    .statItem {
+      padding: 44px 36px; background: rgba(255,255,255,0.02);
+      text-align: center; transition: background 0.2s;
+    }
+    .statItem:hover { background: rgba(14,165,233,0.07); }
+    .statItem__value {
+      font-family: var(--font-display); font-size: clamp(2rem,3.5vw,2.8rem);
+      font-weight: 800; color: #fff; letter-spacing: -0.04em; line-height: 1;
+      margin-bottom: 8px;
+    }
+    .statItem__value span { color: var(--accent); }
+    .statItem__label {
+      font-size: 0.82rem; color: rgba(255,255,255,0.4);
+      text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600;
+    }
+
+    /* ═══════════════════════════════════════
+       VALUES
+    ═══════════════════════════════════════ */
+    .valuesSection { padding: 96px 0; background: var(--surface-muted); }
+    .sectionHead {
+      text-align: center; max-width: 640px;
+      margin: 0 auto 56px;
+    }
+    .sectionHead h2 { margin-bottom: 1rem; }
+    .sectionHead p { color: var(--text-secondary); font-size: 1rem; }
+    .valuesGrid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+    }
+    .valueCard {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: 40px 32px;
+      position: relative; overflow: hidden;
+      transition: all 0.3s var(--ease-expo);
+    }
+    .valueCard::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+      background: var(--accent); transform: scaleX(0);
+      transform-origin: left; transition: transform 0.3s var(--ease-expo);
+    }
+    .valueCard:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--accent-border); }
+    .valueCard:hover::before { transform: scaleX(1); }
+    .valueCard__num {
+      font-family: var(--font-display); font-size: 3.5rem; font-weight: 800;
+      color: rgba(14,165,233,0.07); line-height: 1;
+      position: absolute; top: 20px; right: 24px;
+      letter-spacing: -0.05em; transition: color 0.3s;
+    }
+    .valueCard:hover .valueCard__num { color: rgba(14,165,233,0.12); }
+    .valueCard__icon {
+      width: 48px; height: 48px; border-radius: var(--r-sm);
+      background: var(--accent-subtle); border: 1px solid var(--accent-border);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px; transition: background 0.2s;
+    }
+    .valueCard:hover .valueCard__icon { background: var(--accent); }
+    .valueCard:hover .valueCard__icon svg { color: #fff; }
+    .valueCard__icon svg { color: var(--accent); transition: color 0.2s; }
+    .valueCard h3 { font-size: 1.1rem; margin-bottom: 10px; }
+    .valueCard p { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.75; }
+
+    /* ═══════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════ */
+    @media (max-width: 960px) {
+      .navToggle    { display: inline-flex; }
+      .headerCta    { display: none; }
+      .nav {
+        position: fixed; top: 70px; left: 12px; right: 12px;
+        background: var(--surface); border: 1px solid var(--border);
+        border-radius: var(--r-lg); box-shadow: var(--shadow-lg);
+        padding: 12px; flex-direction: column; align-items: stretch; gap: 4px;
+        opacity: 0; visibility: hidden;
+        transform: translateY(-8px) scale(0.98); pointer-events: none;
+        z-index: 902; max-height: calc(100vh - 90px); overflow-y: auto;
+        transition: all 0.3s var(--ease-expo);
+      }
+      .nav.is-open { opacity: 1; visibility: visible; transform: translateY(0) scale(1); pointer-events: auto; }
+      .nav__link { width: 100%; padding: 12px 14px; font-size: 0.925rem; color: var(--text-primary); }
+      .navDropdown {
+        position: static; transform: none; box-shadow: none;
+        border: 1px solid var(--border); border-radius: var(--r-sm);
+        background: var(--surface-muted); margin-top: 4px;
+        opacity: 1; visibility: visible; display: none; padding: 6px;
+      }
+      .navDropdown::before { display: none; }
+      .nav__item--open .navDropdown { display: flex; flex-direction: column; }
+      .aboutLayout { grid-template-columns: 1fr; gap: 56px; }
+      .aboutMedia__badge { right: 0; }
+      .statsGrid { grid-template-columns: repeat(2,1fr); }
+      .valuesGrid { grid-template-columns: 1fr 1fr; }
+      .footer__top { grid-template-columns: 1fr; gap: 48px; }
+      .footerNav { grid-template-columns: repeat(2,1fr); }
+    }
+    @media (max-width: 600px) {
+      .aboutCopy__pillars { grid-template-columns: 1fr; }
+      .capList { grid-template-columns: 1fr; }
+      .statsGrid { grid-template-columns: 1fr 1fr; }
+      .valuesGrid { grid-template-columns: 1fr; }
+      .footerNav { grid-template-columns: 1fr 1fr; }
+      .footer__bottom { flex-direction: column; align-items: flex-start; }
+      .pageHero { padding: 52px 0 60px; }
+    }
+  </style>
+{% endblock %}
+{% block content %}
+  <!-- Page Hero -->
+  <div class="pageHero">
+    <div class="pageHero__grid" aria-hidden="true"></div>
+    <div class="container">
+      <div class="pageHero__inner">
+        <nav class="pageHero__breadcrumb" aria-label="Breadcrumb">
+          <a href="{{ url_for('home') }}">Home</a>
+          <span class="pageHero__breadcrumb-sep">›</span>
+          <span>Company</span>
+          <span class="pageHero__breadcrumb-sep">›</span>
+          <span>About</span>
+        </nav>
+        <p class="pageHero__eyebrow">About Enmett</p>
+        <h1 class="pageHero__title">Transforming Businesses with <em>Intelligent SAP</em> Solutions</h1>
+        <p class="pageHero__sub">
+          A focused SAP and IT partner that blends enterprise-grade governance with the speed and pragmatism of a specialist team.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <main id="main">
+
+    <!-- ── About Split ─────────────────── -->
+    <section class="aboutSection">
+      <div class="container">
+        <div class="aboutLayout">
+
+          <!-- Image -->
+          <div class="aboutMedia reveal">
+            <div class="aboutMedia__corner" aria-hidden="true"></div>
+            <div class="aboutMedia__frame">
+              <img src="{{ url_for('static', filename='img/About.png') }}"
+                   alt="Enmett Solutions strategic SAP &amp; IT team"
+                   style="width:100%;height:520px;object-fit:cover;" />
+              <div class="aboutMedia__overlay" aria-hidden="true"></div>
+            </div>
+          </div>
+
+          <!-- Copy -->
+          <div class="aboutCopy">
+
+            <div class="aboutCopy__intro reveal" data-delay="80">
+              <p class="eyebrow">Our story</p>
+              <h2>Where enterprise rigour meets specialist speed.</h2>
+            </div>
+
+            <div class="aboutCopy__intro reveal" data-delay="120">
+              <p>
+                At Enmett, we deliver comprehensive SAP solutions that help organizations streamline operations,
+                improve decision-making, and accelerate digital transformation. Our services are designed to support
+                businesses across the entire lifecycle—from strategic planning and implementation to system
+                optimization and ongoing support.
+              </p>
+              <p>
+                With deep expertise in enterprise technologies, our team helps companies implement scalable and
+                secure SAP platforms that enhance operational efficiency and business agility. We work closely with
+                clients to understand their unique business processes and deliver customized solutions that drive
+                measurable results.
+              </p>
+            </div>
+
+            <div class="aboutCopy__divider reveal" data-delay="140"></div>
+
+            <div class="aboutCopy__pillars reveal" data-delay="160">
+              <div class="pillar">
+                <div class="pillar__icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                </div>
+                <h4>SAP-First Approach</h4>
+                <p>Clean-core S/4HANA designs built for longevity and modern integration patterns.</p>
+              </div>
+              <div class="pillar">
+                <div class="pillar__icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <h4>Security by Design</h4>
+                <p>GRC, IAM, and continuous monitoring baked into every engagement from day one.</p>
+              </div>
+              <div class="pillar">
+                <div class="pillar__icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+                </div>
+                <h4>Transparent Governance</h4>
+                <p>Clear reporting, run-books, and knowledge transfer so you stay in control.</p>
+              </div>
+              <div class="pillar">
+                <div class="pillar__icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                </div>
+                <h4>Continuous Improvement</h4>
+                <p>Proactive backlogs and SLA-driven operations that improve month over month.</p>
+              </div>
+            </div>
+
+            <div class="aboutCopy__capabilities reveal" data-delay="200">
+              <h3>SAP Capabilities</h3>
+              <ul class="capList">
+                <li>SAP S/4HANA Implementation</li>
+                <li>SAP ECC to S/4HANA Migration</li>
+                <li>SAP BTP &amp; Integration Suite</li>
+                <li>SAP Fiori &amp; UX Design</li>
+                <li>SAP GRC &amp; Security</li>
+                <li>SAP Analytics Cloud</li>
+                <li>Managed Application Support</li>
+                <li>SAP Basis &amp; Infrastructure</li>
+              </ul>
+            </div>
+
+            <div class="aboutCopy__cta reveal" data-delay="240">
+              <a class="btn btn--primary" href="/contact">
+                Start a conversation
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </a>
+              <a class="btn btn--ghost" href="/services">View all services</a>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats band removed as requested -->
+
+    <!-- ── Values ───────────────────────── -->
+    <section class="valuesSection">
+      <div class="container">
+        <div class="sectionHead reveal">
+          <p class="eyebrow" style="justify-content:center">What drives us</p>
+          <h2>Our core values</h2>
+          <p>The principles that guide how we engage with clients, deliver projects, and build long-term partnerships.</p>
+        </div>
+        <div class="valuesGrid">
+          <div class="valueCard reveal" data-delay="60">
+            <span class="valueCard__num">01</span>
+            <div class="valueCard__icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <h3>Client Partnership</h3>
+            <p>We treat every engagement as a long-term partnership, not a transaction. Your success is the only metric that matters to us.</p>
+          </div>
+          <div class="valueCard reveal" data-delay="140">
+            <span class="valueCard__num">02</span>
+            <div class="valueCard__icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <h3>Excellence in Delivery</h3>
+            <p>Quality gates, iterative builds, and transparent reporting ensure every milestone is delivered to the highest standard.</p>
+          </div>
+          <div class="valueCard reveal" data-delay="220">
+            <span class="valueCard__num">03</span>
+            <div class="valueCard__icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+            </div>
+            <h3>Innovation &amp; Agility</h3>
+            <p>We stay ahead of the SAP roadmap so your systems are always positioned to adopt new capabilities without disruption.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  {% endblock %}
+  {% block extra_js %}
+  <script>
+    (function() {
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            var delay = entry.target.dataset.delay || 0;
+            setTimeout(function() { entry.target.classList.add('is-visible'); }, +delay);
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+      document.querySelectorAll('.reveal').forEach(function(el) { observer.observe(el); });
+    })();
+  </script>
+  {% endblock %}

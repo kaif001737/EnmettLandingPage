@@ -1,0 +1,820 @@
+{% extends "base.html" %}
+{% block title %}Contact Us | Enmett{% endblock %}
+{% block meta_description %}Get in touch with Enmett — SAP, cybersecurity, managed services, AI &amp; automation, and resourcing.{% endblock %}
+{% block extra_css %}
+  <style>
+    /* ═══════════════════════════════════════
+       TOKENS
+    ═══════════════════════════════════════ */
+    :root {
+      --primary:        #08111f;
+      --accent:         #0ea5e9;
+      --accent-bright:  #38bdf8;
+      --accent-subtle:  rgba(14,165,233,0.07);
+      --accent-border:  rgba(14,165,233,0.22);
+
+      --surface:        #ffffff;
+      --surface-muted:  #f5f8fc;
+      --border:         #e2eaf3;
+      --border-dark:    rgba(255,255,255,0.08);
+
+      --text-primary:   #0b1421;
+      --text-secondary: #4b5a72;
+      --text-muted:     #8896a8;
+      --text-on-dark:   #dde6f0;
+
+      --font-display: 'Sora', sans-serif;
+      --font-body:    'DM Sans', sans-serif;
+
+      --r-sm: 6px;
+      --r-md: 14px;
+      --r-lg: 22px;
+      --r-xl: 36px;
+
+      --shadow-sm:     0 1px 4px rgba(8,17,31,0.06);
+      --shadow-md:     0 4px 20px rgba(8,17,31,0.09), 0 1px 4px rgba(8,17,31,0.05);
+      --shadow-lg:     0 16px 52px rgba(8,17,31,0.13), 0 4px 16px rgba(8,17,31,0.06);
+      --shadow-accent: 0 8px 36px rgba(14,165,233,0.28);
+
+      --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-std:  cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ═══════════════════════════════════════
+       RESET
+    ═══════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      color: var(--text-primary);
+      background: var(--surface);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    img    { display: block; max-width: 100%; }
+    a      { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; }
+    ul     { list-style: none; }
+
+    .srOnly {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+
+    /* ═══════════════════════════════════════
+       LAYOUT
+    ═══════════════════════════════════════ */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 28px; }
+
+    /* ═══════════════════════════════════════
+       TYPOGRAPHY
+    ═══════════════════════════════════════ */
+    h1,h2,h3,h4 {
+      font-family: var(--font-display); font-weight: 700;
+      line-height: 1.2; color: var(--text-primary);
+    }
+    h1 { font-size: clamp(2rem,4.5vw,3.2rem); letter-spacing: -0.03em; }
+    h2 { font-size: clamp(1.7rem,3vw,2.4rem); letter-spacing: -0.025em; }
+    h3 { font-size: 1.05rem; letter-spacing: -0.01em; }
+    p  { color: var(--text-secondary); font-size: 0.975rem; line-height: 1.8; }
+
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--font-display); font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--accent); margin-bottom: 1rem;
+    }
+    .eyebrow::before {
+      content: ''; display: inline-block; width: 18px; height: 2px;
+      background: var(--accent); border-radius: 2px;
+    }
+
+    /* ═══════════════════════════════════════
+       BUTTONS
+    ═══════════════════════════════════════ */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--font-display); font-size: 0.875rem; font-weight: 600;
+      padding: 12px 24px; border-radius: var(--r-sm);
+      border: none; transition: all 0.22s var(--ease-std);
+      letter-spacing: 0.01em; white-space: nowrap; cursor: pointer;
+    }
+    .btn svg { transition: transform 0.2s; }
+    .btn:hover svg { transform: translateX(3px); }
+    .btn--primary {
+      background: var(--accent); color: #fff;
+      box-shadow: 0 4px 14px rgba(14,165,233,0.3);
+    }
+    .btn--primary:hover {
+      background: #0284c7; transform: translateY(-1px);
+      box-shadow: var(--shadow-accent);
+    }
+    .btn--ghost {
+      background: transparent; color: var(--text-secondary);
+      border: 1.5px solid var(--border);
+    }
+    .btn--ghost:hover {
+      border-color: var(--accent); color: var(--accent);
+      background: var(--accent-subtle);
+    }
+    .btn--outline-white {
+      background: transparent; color: rgba(255,255,255,0.8);
+      border: 1.5px solid rgba(255,255,255,0.18);
+    }
+    .btn--outline-white:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.4); color: #fff;
+    }
+
+    /* ═══════════════════════════════════════
+       REVEAL
+    ═══════════════════════════════════════ */
+    .reveal {
+      opacity: 0; transform: translateY(22px);
+      transition: opacity 0.7s var(--ease-expo), transform 0.7s var(--ease-expo);
+    }
+    .reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+    /* ═══════════════════════════════════════
+       ANNOUNCEMENT BAR
+    ═══════════════════════════════════════ */
+    .announcementBar {
+      background: var(--primary); color: rgba(255,255,255,0.7);
+      text-align: center; font-family: var(--font-display);
+      font-size: 0.78rem; font-weight: 500;
+      letter-spacing: 0.04em; padding: 10px 24px;
+      position: relative; overflow: hidden;
+    }
+    .announcementBar::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(14,165,233,0.1), transparent);
+      animation: shimBar 5s ease-in-out infinite;
+    }
+    @keyframes shimBar {
+      0%,100% { opacity:0; transform:translateX(-100%); }
+      50%      { opacity:1; transform:translateX(100%); }
+    }
+    .announcementBar a { color: var(--accent-bright); font-weight: 700; margin-left: 6px; }
+
+    /* ═══════════════════════════════════════
+       TOPBAR
+    ═══════════════════════════════════════ */
+    .topbar {
+      position: sticky; top: 0; z-index: 900;
+      background: rgba(255,255,255,0.94);
+      backdrop-filter: blur(20px) saturate(160%);
+      -webkit-backdrop-filter: blur(20px) saturate(160%);
+      border-bottom: 1px solid var(--border);
+      transition: box-shadow 0.3s var(--ease-std);
+    }
+    .topbar.scrolled { box-shadow: var(--shadow-md); }
+    .topbar__inner {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 70px; gap: 16px;
+    }
+    .brand { display: flex; align-items: center; flex-shrink: 0; }
+    .brand__name {
+      font-family: var(--font-display); font-size: 1.4rem; font-weight: 800;
+      color: var(--primary); letter-spacing: -0.03em;
+    }
+    .brand__name span { color: var(--accent); }
+    .nav { display: flex; align-items: center; gap: 2px; flex: 1; justify-content: center; }
+    .nav__item { position: relative; }
+    .nav__link {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: none; border: none;
+      font-family: var(--font-display); font-size: 0.875rem; font-weight: 600;
+      color: var(--text-secondary); padding: 8px 14px;
+      border-radius: var(--r-sm);
+      transition: color 0.2s, background 0.2s; white-space: nowrap;
+    }
+    .nav__link:hover, .nav__item--open .nav__link { color: var(--accent); background: var(--accent-subtle); }
+    .navDropdown {
+      position: absolute; top: calc(100% + 10px); left: 50%;
+      transform: translateX(-50%) translateY(8px);
+      background: var(--surface); min-width: 220px; border-radius: var(--r-md);
+      box-shadow: var(--shadow-lg), 0 0 0 1px var(--border);
+      opacity: 0; visibility: hidden;
+      transition: all 0.25s var(--ease-expo); padding: 8px; z-index: 901;
+    }
+    .nav__item--open .navDropdown { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+    .navDropdown::before {
+      content: ''; position: absolute; top: -5px; left: 50%;
+      transform: translateX(-50%) rotate(45deg); width: 10px; height: 10px;
+      background: var(--surface); border-top: 1px solid var(--border); border-left: 1px solid var(--border);
+    }
+    .navDropdown a {
+      display: flex; align-items: center; padding: 10px 14px;
+      border-radius: var(--r-sm); font-size: 0.875rem; font-weight: 500;
+      color: var(--text-secondary); transition: all 0.18s;
+    }
+    .navDropdown a:hover { background: var(--accent-subtle); color: var(--accent); padding-left: 18px; }
+    .headerCta { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .navToggle {
+      display: none; align-items: center; justify-content: center;
+      width: 40px; height: 40px; border: 1.5px solid var(--border);
+      border-radius: var(--r-sm); background: transparent; transition: all 0.2s;
+    }
+    .navToggle:hover { border-color: var(--accent); background: var(--accent-subtle); }
+    .navToggle__bars,
+    .navToggle__bars::before,
+    .navToggle__bars::after {
+      display: block; width: 18px; height: 1.5px;
+      background: var(--text-primary); border-radius: 2px;
+      transition: all 0.3s var(--ease-expo);
+    }
+    .navToggle__bars { position: relative; }
+    .navToggle__bars::before, .navToggle__bars::after { content: ''; position: absolute; left: 0; }
+    .navToggle__bars::before { top: -5px; }
+    .navToggle__bars::after  { top: 5px; width: 12px; }
+    .navToggle[aria-expanded="true"] .navToggle__bars { background: transparent; }
+    .navToggle[aria-expanded="true"] .navToggle__bars::before { transform: rotate(45deg) translate(3.5px,3.5px); }
+    .navToggle[aria-expanded="true"] .navToggle__bars::after  { transform: rotate(-45deg) translate(3.5px,-3.5px); width: 18px; }
+
+    /* ═══════════════════════════════════════
+       PAGE HERO
+    ═══════════════════════════════════════ */
+    .pageHero {
+      background: var(--primary); padding: 76px 0 88px;
+      position: relative; overflow: hidden;
+    }
+    .pageHero::before {
+      content: ''; position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 70% at 80% 40%, rgba(14,165,233,0.11) 0%, transparent 65%),
+        radial-gradient(ellipse 30% 50% at 5%  85%, rgba(14,165,233,0.06) 0%, transparent 60%);
+    }
+    .pageHero__grid { position: absolute; inset: 0; pointer-events: none; }
+    .pageHero__grid::before {
+      content: ''; position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(14,165,233,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(14,165,233,0.04) 1px, transparent 1px);
+      background-size: 56px 56px;
+      mask-image: radial-gradient(ellipse 90% 90% at 50% 50%, black 20%, transparent 75%);
+    }
+    .pageHero__inner {
+      position: relative; z-index: 2;
+      max-width: 720px;
+    }
+    .pageHero__breadcrumb {
+      display: flex; align-items: center; gap: 8px;
+      font-family: var(--font-display); font-size: 0.75rem; font-weight: 500;
+      color: rgba(255,255,255,0.4); margin-bottom: 20px;
+    }
+    .pageHero__breadcrumb a { color: rgba(255,255,255,0.4); transition: color 0.2s; }
+    .pageHero__breadcrumb a:hover { color: var(--accent-bright); }
+    .pageHero__breadcrumb-sep { opacity: 0.3; }
+    .pageHero__eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--font-display); font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--accent); margin-bottom: 1rem;
+    }
+    .pageHero__eyebrow::before {
+      content: ''; display: inline-block; width: 18px; height: 2px;
+      background: var(--accent); border-radius: 2px;
+    }
+    .pageHero__title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem,4vw,3rem); font-weight: 800;
+      color: #fff; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 1.1rem;
+    }
+    .pageHero__title em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-bright) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .pageHero__sub {
+      font-size: 1.05rem; color: rgba(255,255,255,0.5);
+      max-width: 560px; line-height: 1.75;
+    }
+
+    /* ═══════════════════════════════════════
+       HIGHLIGHTS STRIP
+    ═══════════════════════════════════════ */
+    .highlightsStrip {
+      background: var(--surface-muted);
+      border-bottom: 1px solid var(--border);
+      padding: 0;
+    }
+    .highlightsInner {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+    }
+    .highlight {
+      display: flex; align-items: flex-start; gap: 16px;
+      padding: 32px 36px;
+      border-right: 1px solid var(--border);
+      transition: background 0.2s;
+    }
+    .highlight:last-child { border-right: none; }
+    .highlight:hover { background: #fff; }
+    .highlight__icon {
+      width: 44px; height: 44px; flex-shrink: 0;
+      border-radius: var(--r-sm);
+      background: var(--accent-subtle); border: 1px solid var(--accent-border);
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
+    }
+    .highlight:hover .highlight__icon { background: var(--accent); }
+    .highlight:hover .highlight__icon svg { color: #fff; }
+    .highlight__icon svg { color: var(--accent); transition: color 0.2s; }
+    .highlight__body h4 {
+      font-family: var(--font-display); font-size: 0.9rem; font-weight: 700;
+      color: var(--text-primary); margin-bottom: 4px; letter-spacing: -0.01em;
+    }
+    .highlight__body p { font-size: 0.855rem; color: var(--text-muted); line-height: 1.6; }
+
+    /* ═══════════════════════════════════════
+       MAIN CONTACT LAYOUT
+    ═══════════════════════════════════════ */
+    .contactSection { padding: 80px 0 100px; }
+    .contactLayout {
+      display: grid; grid-template-columns: 1fr 400px;
+      gap: 40px; align-items: start;
+    }
+
+    /* ═══════════════════════════════════════
+       FORM PANEL
+    ═══════════════════════════════════════ */
+    .formPanel {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: 48px 44px;
+      box-shadow: var(--shadow-sm);
+    }
+    .formPanel__head { margin-bottom: 32px; }
+    .formPanel__head h2 { font-size: 1.8rem; margin-bottom: 8px; }
+    .formPanel__head p { font-size: 0.92rem; color: var(--text-secondary); }
+
+    /* Form fields */
+    .form__row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    }
+    .form label {
+      display: flex; flex-direction: column; gap: 7px;
+      font-family: var(--font-display); font-size: 0.8rem; font-weight: 600;
+      color: var(--text-primary); letter-spacing: 0.01em;
+      margin-bottom: 16px;
+    }
+    .form label:last-of-type { margin-bottom: 0; }
+
+    .form input,
+    .form select,
+    .form textarea {
+      font-family: var(--font-body); font-size: 0.925rem;
+      color: var(--text-primary);
+      background: var(--surface-muted);
+      border: 1.5px solid var(--border);
+      border-radius: var(--r-sm); padding: 11px 14px;
+      width: 100%; outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+      appearance: none; -webkit-appearance: none;
+    }
+    .form input::placeholder,
+    .form textarea::placeholder { color: var(--text-muted); }
+    .form input:focus,
+    .form select:focus,
+    .form textarea:focus {
+      border-color: var(--accent);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(14,165,233,0.12);
+    }
+    .form input:invalid:not(:placeholder-shown),
+    .form textarea:invalid:not(:placeholder-shown) {
+      border-color: #f87171;
+    }
+
+    /* Custom select arrow */
+    .selectWrap { position: relative; }
+    .selectWrap select { padding-right: 36px; cursor: pointer; }
+    .selectWrap::after {
+      content: '';
+      position: absolute; right: 14px; top: 50%;
+      transform: translateY(-50%);
+      width: 7px; height: 7px;
+      border-right: 1.5px solid var(--text-muted);
+      border-bottom: 1.5px solid var(--text-muted);
+      rotate: 45deg; pointer-events: none;
+      margin-top: -2px;
+    }
+
+    .form textarea { resize: vertical; min-height: 140px; line-height: 1.65; }
+
+    /* Honeypot */
+    .hp { display: none !important; }
+
+    .form__submit { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; margin-top: 24px; }
+    .form__submitNote { font-size: 0.8rem; color: var(--text-muted); }
+    .form__submitNote a { color: var(--accent); font-weight: 600; transition: color 0.2s; }
+    .form__submitNote a:hover { color: #0284c7; }
+
+    /* Status message */
+    .status {
+      margin-top: 16px; font-size: 0.875rem; font-weight: 500;
+      min-height: 1.4em; transition: opacity 0.3s;
+    }
+    .status--success { color: #059669; }
+    .status--error   { color: #dc2626; }
+
+    /* ═══════════════════════════════════════
+       ASIDE COLUMN
+    ═══════════════════════════════════════ */
+    .asideCol { display: flex; flex-direction: column; gap: 20px; }
+
+    /* Contact info card */
+    .infoCard {
+      background: var(--primary); border-radius: var(--r-lg);
+      padding: 36px 32px; position: relative; overflow: hidden;
+    }
+    .infoCard::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 80% at 100% 0%, rgba(14,165,233,0.12) 0%, transparent 65%);
+    }
+    .infoCard::after {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), var(--accent-bright), var(--accent), transparent);
+    }
+    .infoCard__inner { position: relative; z-index: 1; }
+    .infoCard h3 {
+      font-family: var(--font-display); font-size: 1.1rem; font-weight: 700;
+      color: #fff; margin-bottom: 6px;
+    }
+    .infoCard__sub { font-size: 0.85rem; color: rgba(255,255,255,0.45); margin-bottom: 28px; line-height: 1.6; }
+
+    /* KV rows */
+    .kvList { display: flex; flex-direction: column; gap: 0; }
+    .kvRow {
+      display: flex; gap: 14px; align-items: flex-start;
+      padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .kvRow:last-child { border-bottom: none; padding-bottom: 0; }
+    .kvRow__icon {
+      width: 34px; height: 34px; flex-shrink: 0;
+      border-radius: var(--r-sm);
+      background: rgba(14,165,233,0.12); border: 1px solid rgba(14,165,233,0.2);
+      display: flex; align-items: center; justify-content: center; margin-top: 1px;
+    }
+    .kvRow__icon svg { color: var(--accent-bright); }
+    .kvRow__label {
+      font-family: var(--font-display); font-size: 0.68rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.3); margin-bottom: 3px; display: block;
+    }
+    .kvRow__value {
+      font-size: 0.875rem; color: rgba(255,255,255,0.7); line-height: 1.6;
+    }
+    .kvRow__value a {
+      color: var(--accent-bright); transition: color 0.2s;
+      text-decoration: underline; text-underline-offset: 3px;
+    }
+    .kvRow__value a:hover { color: #fff; }
+
+    /* Hours card */
+    .hoursCard {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: 24px 28px;
+      display: flex; align-items: center; gap: 16px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .hoursCard:hover { border-color: var(--accent-border); box-shadow: var(--shadow-md); }
+    .hoursCard__icon {
+      width: 44px; height: 44px; flex-shrink: 0; border-radius: var(--r-sm);
+      background: var(--accent-subtle); border: 1px solid var(--accent-border);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .hoursCard__icon svg { color: var(--accent); }
+    .hoursCard__label {
+      font-family: var(--font-display); font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--text-muted); margin-bottom: 3px;
+    }
+    .hoursCard__value {
+      font-family: var(--font-display); font-size: 0.9rem; font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    /* Map card */
+    .mapCard {
+      border-radius: var(--r-lg); overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      position: relative;
+    }
+    .mapCard iframe {
+      display: block; width: 100%; height: 220px; border: none;
+    }
+    .mapCard__footer {
+      padding: 14px 18px; background: var(--surface);
+      border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .mapCard__address { font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; }
+    .mapCard__link {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-family: var(--font-display); font-size: 0.78rem; font-weight: 700;
+      color: var(--accent); white-space: nowrap; flex-shrink: 0;
+      transition: gap 0.2s;
+    }
+    .mapCard__link:hover { gap: 8px; }
+
+    /* ═══════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════ */
+    @media (max-width: 960px) {
+      .navToggle { display: inline-flex; }
+      .headerCta { display: none; }
+      .nav {
+        position: fixed; top: 70px; left: 12px; right: 12px;
+        background: var(--surface); border: 1px solid var(--border);
+        border-radius: var(--r-lg); box-shadow: var(--shadow-lg);
+        padding: 12px; flex-direction: column; align-items: stretch; gap: 4px;
+        opacity: 0; visibility: hidden;
+        transform: translateY(-8px) scale(0.98); pointer-events: none;
+        z-index: 902; max-height: calc(100vh - 90px); overflow-y: auto;
+        transition: all 0.3s var(--ease-expo);
+      }
+      .nav.is-open { opacity: 1; visibility: visible; transform: translateY(0) scale(1); pointer-events: auto; }
+      .nav__link { width: 100%; padding: 12px 14px; font-size: 0.925rem; color: var(--text-primary); }
+      .navDropdown {
+        position: static; transform: none; box-shadow: none;
+        border: 1px solid var(--border); border-radius: var(--r-sm);
+        background: var(--surface-muted); margin-top: 4px;
+        opacity: 1; visibility: visible; display: none; padding: 6px;
+      }
+      .navDropdown::before { display: none; }
+      .nav__item--open .navDropdown { display: flex; flex-direction: column; }
+      .contactLayout { grid-template-columns: 1fr; }
+      .asideCol { order: -1; }
+      .highlightsInner { grid-template-columns: 1fr; }
+      .highlight { border-right: none; border-bottom: 1px solid var(--border); }
+      .highlight:last-child { border-bottom: none; }
+      .footer__top { grid-template-columns: 1fr; gap: 48px; }
+      .footerNav { grid-template-columns: repeat(2,1fr); }
+      .formPanel { padding: 32px 24px; }
+    }
+    @media (max-width: 640px) {
+      .form__row { grid-template-columns: 1fr; }
+      .footerNav { grid-template-columns: 1fr 1fr; }
+      .footer__bottom { flex-direction: column; align-items: flex-start; }
+      .mapCard__footer { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .form__submit { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+{% endblock %}
+{% block content %}
+  <!-- ── PAGE HERO ──────────────────────── -->
+  <div class="pageHero">
+    <div class="pageHero__grid" aria-hidden="true"></div>
+    <div class="container">
+      <div class="pageHero__inner reveal">
+        <nav class="pageHero__breadcrumb" aria-label="Breadcrumb">
+          <a href="{{ url_for('home') }}">Home</a>
+          <span class="pageHero__breadcrumb-sep">›</span>
+          <span>Support</span>
+          <span class="pageHero__breadcrumb-sep">›</span>
+          <span>Contact Us</span>
+        </nav>
+        <p class="pageHero__eyebrow">Get in touch</p>
+        <h1 class="pageHero__title">Let's talk about <em>your next project</em></h1>
+        <p class="pageHero__sub">
+          Tell us what you're trying to achieve — SAP programmes, cyber security, IT services, managed services, or resourcing — and we'll come back with clear next steps.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── HIGHLIGHTS STRIP ──────────────── -->
+  <div class="highlightsStrip">
+    <div class="container" style="padding:0 28px;">
+      <div class="highlightsInner">
+        <div class="highlight reveal">
+          <div class="highlight__icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.18h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 21.73 14l.19 2.92z"/></svg>
+          </div>
+          <div class="highlight__body">
+            <h4>Fast response</h4>
+            <p>We usually respond within 1–2 business days.</p>
+          </div>
+        </div>
+        <div class="highlight reveal" data-delay="80">
+          <div class="highlight__icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div class="highlight__body">
+            <h4>Share context</h4>
+            <p>Tell us your landscape, goals, timeline, and constraints.</p>
+          </div>
+        </div>
+        <div class="highlight reveal" data-delay="160">
+          <div class="highlight__icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+          <div class="highlight__body">
+            <h4>Clear next steps</h4>
+            <p>We'll propose a short call or a focused assessment plan.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MAIN ──────────────────────────── -->
+  <main id="main">
+    <section class="contactSection">
+      <div class="container">
+        <div class="contactLayout">
+
+          <!-- FORM -->
+          <div class="formPanel reveal" data-delay="60">
+            <div class="formPanel__head">
+              <p class="eyebrow">Send a message</p>
+              <h2>How can we help?</h2>
+              <p>Fill in the form and a member of our team will be in touch shortly.</p>
+            </div>
+
+            <form id="contactForm" class="form" novalidate>
+
+              <div class="form__row">
+                <label>
+                  Full name *
+                  <input name="name" autocomplete="name" placeholder="Your full name" required />
+                </label>
+                <label>
+                  Email address *
+                  <input name="email" type="email" autocomplete="email" placeholder="you@company.com" required />
+                </label>
+              </div>
+
+              <div class="form__row">
+                <label>
+                  Company
+                  <input name="company" autocomplete="organization" placeholder="Company name" />
+                </label>
+                <label>
+                  Phone number
+                  <input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+65 9000 0000" />
+                </label>
+              </div>
+
+              <label>
+                Service area
+                <div class="selectWrap">
+                  <select name="service">
+                    <option value="">Select a service (optional)</option>
+                    <option value="SAP Solutions">SAP Solutions</option>
+                    <option value="Cyber Security">Cyber Security</option>
+                    <option value="IT Managed Services">IT Managed Services</option>
+                    <option value="AI & Automation">AI &amp; Automation</option>
+                    <option value="Resourcing">Resourcing</option>
+                  </select>
+                </div>
+              </label>
+
+              <label>
+                Message *
+                <textarea name="message" rows="6" required
+                  placeholder="Tell us about your goals, current setup, timeline, and what success looks like."></textarea>
+              </label>
+
+              <!-- Honeypot -->
+              <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+              <div class="form__submit">
+                <button class="btn btn--primary" type="submit">
+                  Send message
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2L15 22l-4-9-9-4 20-7z"/></svg>
+                </button>
+                <p class="form__submitNote">
+                  Prefer email?&nbsp;
+                  <a href="mailto:contact@enmett.com">contact@enmett.com</a>
+                </p>
+              </div>
+              <p id="formStatus" class="status" aria-live="polite"></p>
+            </form>
+          </div>
+
+          <!-- ASIDE -->
+          <aside class="asideCol reveal" data-delay="160">
+
+            <!-- Contact info dark card -->
+            <div class="infoCard">
+              <div class="infoCard__inner">
+                <h3>Reach us directly</h3>
+                <p class="infoCard__sub">For urgent requests, reach out directly and include your service area and timeline.</p>
+                <div class="kvList">
+                  <div class="kvRow">
+                    <div class="kvRow__icon">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    </div>
+                    <div>
+                      <span class="kvRow__label">Email</span>
+                      <div class="kvRow__value"><a href="mailto:contact@enmett.com">contact@enmett.com</a></div>
+                    </div>
+                  </div>
+                  <div class="kvRow">
+                    <div class="kvRow__icon">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.18h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 21.73 14l.19 2.92z"/></svg>
+                    </div>
+                    <div>
+                      <span class="kvRow__label">Phone</span>
+                      <div class="kvRow__value"><a href="tel:+6590055817">+65 9005 5817</a></div>
+                    </div>
+                  </div>
+                  <div class="kvRow">
+                    <div class="kvRow__icon">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    </div>
+                    <div>
+                      <span class="kvRow__label">Address</span>
+                      <div class="kvRow__value">
+                        122 Eunos Avenue 7, #06‑04<br />
+                        Richfield Industrial Centre<br />
+                        Singapore 409575
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Hours card -->
+            <div class="hoursCard">
+              <div class="hoursCard__icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <div>
+                <div class="hoursCard__label">Business hours</div>
+                <div class="hoursCard__value">Mon–Fri, 9:00 AM – 6:00 PM (SGT)</div>
+              </div>
+            </div>
+
+            <!-- Map -->
+            <div class="mapCard">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.7506979435334!2d103.8969371!3d1.3255153!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31da1823eb5ce827%3A0xcdecb542ecae8126!2s122%20Eunos%20Ave%207%2C%20%2306-04%20Richfield%20Industrial%20Centre%2C%20Singapore%20409575!5e0!3m2!1sen!2sus!4v1709414523000!5m2!1sen!2sus"
+                width="100%" height="220" style="border:0;" allowfullscreen="" loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade" title="Enmett office location">
+              </iframe>
+              <div class="mapCard__footer">
+                <p class="mapCard__address">122 Eunos Ave 7, Singapore 409575</p>
+                <a class="mapCard__link" href="https://maps.google.com/?q=122+Eunos+Ave+7+Singapore+409575" target="_blank" rel="noopener">
+                  Get directions
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </a>
+              </div>
+            </div>
+
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  {% endblock %}
+  {% block extra_js %}
+  <script>
+    (function() {
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            var delay = entry.target.dataset.delay || 0;
+            setTimeout(function() { entry.target.classList.add('is-visible'); }, +delay);
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.08, rootMargin: '0px 0px -32px 0px' });
+      document.querySelectorAll('.reveal').forEach(function(el) { observer.observe(el); });
+    })();
+    var form = document.getElementById('contactForm');
+    var statusEl = document.getElementById('formStatus');
+    if (form) {
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        if (form.website && form.website.value) return;
+        var btn = form.querySelector('button[type="submit"]');
+        btn.disabled = true;
+        btn.textContent = 'Sending…';
+        if (statusEl) { statusEl.className = 'status'; statusEl.textContent = ''; }
+        fetch('{{ url_for("contact") }}', { method: 'POST', body: new FormData(form) })
+          .then(function(res) {
+            if (res.ok) {
+              if (statusEl) { statusEl.className = 'status status--success'; statusEl.textContent = "✓ Message sent! We'll be in touch within 1–2 business days."; }
+              form.reset();
+            } else { throw new Error('Server error'); }
+          })
+          .catch(function() {
+            if (statusEl) { statusEl.className = 'status status--error'; statusEl.textContent = 'Something went wrong. Please email us directly at contact@enmett.com'; }
+          })
+          .finally(function() {
+            btn.disabled = false;
+            btn.innerHTML = 'Send message <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2L15 22l-4-9-9-4 20-7z"/></svg>';
+          });
+      });
+    }
+  </script>
+  {% endblock %}

@@ -1,0 +1,1058 @@
+{% extends "base.html" %}
+{% block title %}{{ industry.title }} | Enmett{% endblock %}
+{% block meta_description %}Enmett technology solutions for {{ industry.title }}.{% endblock %}
+{% block extra_css %}
+  <style>
+    /* ═══════════════════════════════════════
+       TOKENS
+    ═══════════════════════════════════════ */
+    :root {
+      --primary:        #08111f;
+      --accent:         #0ea5e9;
+      --accent-bright:  #38bdf8;
+      --accent-subtle:  rgba(14,165,233,0.07);
+      --accent-border:  rgba(14,165,233,0.22);
+      --accent-glow:    rgba(14,165,233,0.28);
+
+      --surface:        #ffffff;
+      --surface-muted:  #f5f8fc;
+      --border:         #e2eaf3;
+      --border-dark:    rgba(255,255,255,0.08);
+
+      --text-primary:   #0b1421;
+      --text-secondary: #4b5a72;
+      --text-muted:     #8896a8;
+      --text-on-dark:   #dde6f0;
+
+      --font-display: 'Sora', sans-serif;
+      --font-body:    'DM Sans', sans-serif;
+
+      --r-sm: 6px;
+      --r-md: 14px;
+      --r-lg: 22px;
+      --r-xl: 36px;
+
+      --shadow-sm:     0 1px 4px rgba(8,17,31,0.06);
+      --shadow-md:     0 4px 20px rgba(8,17,31,0.09), 0 1px 4px rgba(8,17,31,0.05);
+      --shadow-lg:     0 16px 52px rgba(8,17,31,0.13), 0 4px 16px rgba(8,17,31,0.06);
+      --shadow-accent: 0 8px 36px rgba(14,165,233,0.28);
+
+      --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-std:  cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ═══════════════════════════════════════
+       RESET
+    ═══════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      color: var(--text-primary);
+      background: var(--surface);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    img    { display: block; max-width: 100%; }
+    a      { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; }
+    ul     { list-style: none; }
+    .srOnly {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+
+    /* ═══════════════════════════════════════
+       LAYOUT
+    ═══════════════════════════════════════ */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 28px; }
+
+    /* ═══════════════════════════════════════
+       TYPOGRAPHY
+    ═══════════════════════════════════════ */
+    h1,h2,h3,h4 {
+      font-family: var(--font-display); font-weight: 700;
+      line-height: 1.2; color: var(--text-primary);
+    }
+    h1 { font-size: clamp(2rem,4.5vw,3.2rem); letter-spacing: -0.03em; }
+    h2 { font-size: clamp(1.7rem,3vw,2.4rem); letter-spacing: -0.025em; }
+    h3 { font-size: 1.05rem; letter-spacing: -0.01em; }
+    p  { color: var(--text-secondary); font-size: 0.975rem; line-height: 1.8; }
+
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--font-display); font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--accent); margin-bottom: 1rem;
+    }
+    .eyebrow::before {
+      content: ''; display: inline-block; width: 18px; height: 2px;
+      background: var(--accent); border-radius: 2px;
+    }
+
+    /* ═══════════════════════════════════════
+       BUTTONS
+    ═══════════════════════════════════════ */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--font-display); font-size: 0.875rem; font-weight: 600;
+      padding: 12px 24px; border-radius: var(--r-sm);
+      border: none; transition: all 0.22s var(--ease-std);
+      letter-spacing: 0.01em; white-space: nowrap; cursor: pointer;
+    }
+    .btn svg { transition: transform 0.2s; }
+    .btn:hover svg { transform: translateX(3px); }
+    .btn--primary {
+      background: var(--accent); color: #fff;
+      box-shadow: 0 4px 14px rgba(14,165,233,0.3);
+    }
+    .btn--primary:hover { background: #0284c7; transform: translateY(-1px); box-shadow: var(--shadow-accent); }
+    .btn--ghost {
+      background: transparent; color: var(--text-secondary);
+      border: 1.5px solid var(--border);
+    }
+    .btn--ghost:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-subtle); }
+    .btn--outline-white {
+      background: transparent; color: rgba(255,255,255,0.8);
+      border: 1.5px solid rgba(255,255,255,0.18);
+    }
+    .btn--outline-white:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.4); color: #fff; }
+
+    /* ═══════════════════════════════════════
+       REVEAL ANIMATION
+    ═══════════════════════════════════════ */
+    .reveal {
+      opacity: 0; transform: translateY(22px);
+      transition: opacity 0.7s var(--ease-expo), transform 0.7s var(--ease-expo);
+    }
+    .reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+    /* ═══════════════════════════════════════
+       ANNOUNCEMENT BAR
+    ═══════════════════════════════════════ */
+    .announcementBar {
+      background: var(--primary); color: rgba(255,255,255,0.7);
+      text-align: center; font-family: var(--font-display);
+      font-size: 0.78rem; font-weight: 500;
+      letter-spacing: 0.04em; padding: 10px 24px;
+      position: relative; overflow: hidden;
+    }
+    .announcementBar::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(14,165,233,0.1), transparent);
+      animation: shimBar 5s ease-in-out infinite;
+    }
+    @keyframes shimBar {
+      0%,100% { opacity:0; transform:translateX(-100%); }
+      50%      { opacity:1; transform:translateX(100%); }
+    }
+    .announcementBar a { color: var(--accent-bright); font-weight: 700; margin-left: 6px; }
+
+    /* ═══════════════════════════════════════
+       TOPBAR / NAV
+    ═══════════════════════════════════════ */
+    .topbar {
+      position: sticky; top: 0; z-index: 900;
+      background: rgba(255,255,255,0.94);
+      backdrop-filter: blur(20px) saturate(160%);
+      -webkit-backdrop-filter: blur(20px) saturate(160%);
+      border-bottom: 1px solid var(--border);
+      transition: box-shadow 0.3s var(--ease-std);
+    }
+    .topbar.scrolled { box-shadow: var(--shadow-md); }
+    .topbar__inner {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 70px; gap: 16px;
+    }
+    .brand { display: flex; align-items: center; flex-shrink: 0; }
+    .brand__name {
+      font-family: var(--font-display); font-size: 1.4rem; font-weight: 800;
+      color: var(--primary); letter-spacing: -0.03em;
+    }
+    .brand__name span { color: var(--accent); }
+    .nav { display: flex; align-items: center; gap: 2px; flex: 1; justify-content: center; }
+    .nav__item { position: relative; }
+    .nav__link {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: none; border: none;
+      font-family: var(--font-display); font-size: 0.875rem; font-weight: 600;
+      color: var(--text-secondary); padding: 8px 14px; border-radius: var(--r-sm);
+      transition: color 0.2s, background 0.2s; white-space: nowrap;
+    }
+    .nav__link:hover, .nav__item--open .nav__link { color: var(--accent); background: var(--accent-subtle); }
+    .navDropdown {
+      position: absolute; top: calc(100% + 10px); left: 50%;
+      transform: translateX(-50%) translateY(8px);
+      background: var(--surface); min-width: 220px; border-radius: var(--r-md);
+      box-shadow: var(--shadow-lg), 0 0 0 1px var(--border);
+      opacity: 0; visibility: hidden;
+      transition: all 0.25s var(--ease-expo); padding: 8px; z-index: 901;
+    }
+    .nav__item--open .navDropdown { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+    .navDropdown::before {
+      content: ''; position: absolute; top: -5px; left: 50%;
+      transform: translateX(-50%) rotate(45deg); width: 10px; height: 10px;
+      background: var(--surface); border-top: 1px solid var(--border); border-left: 1px solid var(--border);
+    }
+    .navDropdown a {
+      display: flex; align-items: center; padding: 10px 14px; border-radius: var(--r-sm);
+      font-size: 0.875rem; font-weight: 500; color: var(--text-secondary); transition: all 0.18s;
+    }
+    .navDropdown a:hover { background: var(--accent-subtle); color: var(--accent); padding-left: 18px; }
+    .headerCta { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .navToggle {
+      display: none; align-items: center; justify-content: center;
+      width: 40px; height: 40px; border: 1.5px solid var(--border);
+      border-radius: var(--r-sm); background: transparent; transition: all 0.2s;
+    }
+    .navToggle:hover { border-color: var(--accent); background: var(--accent-subtle); }
+    .navToggle__bars,
+    .navToggle__bars::before,
+    .navToggle__bars::after {
+      display: block; width: 18px; height: 1.5px;
+      background: var(--text-primary); border-radius: 2px;
+      transition: all 0.3s var(--ease-expo);
+    }
+    .navToggle__bars { position: relative; }
+    .navToggle__bars::before, .navToggle__bars::after { content: ''; position: absolute; left: 0; }
+    .navToggle__bars::before { top: -5px; }
+    .navToggle__bars::after  { top: 5px; width: 12px; }
+    .navToggle[aria-expanded="true"] .navToggle__bars { background: transparent; }
+    .navToggle[aria-expanded="true"] .navToggle__bars::before { transform: rotate(45deg) translate(3.5px,3.5px); }
+    .navToggle[aria-expanded="true"] .navToggle__bars::after  { transform: rotate(-45deg) translate(3.5px,-3.5px); width: 18px; }
+
+    /* ═══════════════════════════════════════
+       PAGE HERO
+    ═══════════════════════════════════════ */
+    .pageHero {
+      background: var(--primary);
+      padding: 0;
+      position: relative; overflow: hidden;
+      min-height: 520px;
+      display: flex; align-items: stretch;
+    }
+    .pageHero__bg {
+      position: absolute; inset: 0; z-index: 0;
+    }
+    .pageHero__bg img {
+      width: 100%; height: 100%; object-fit: cover;
+      opacity: 0.18; filter: saturate(0.4) contrast(1.1);
+    }
+    .pageHero__bg::after {
+      content: ''; position: absolute; inset: 0;
+      background:
+        linear-gradient(110deg, var(--primary) 42%, rgba(8,17,31,0.65) 100%),
+        radial-gradient(ellipse 70% 80% at 85% 40%, rgba(14,165,233,0.1) 0%, transparent 65%);
+    }
+    .pageHero__grid {
+      position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    }
+    .pageHero__grid::before {
+      content: ''; position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(14,165,233,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(14,165,233,0.04) 1px, transparent 1px);
+      background-size: 56px 56px;
+      mask-image: radial-gradient(ellipse 90% 90% at 30% 50%, black 20%, transparent 75%);
+    }
+    .pageHero__inner {
+      position: relative; z-index: 2;
+      display: grid; grid-template-columns: 1fr 420px;
+      gap: 60px; align-items: center;
+      padding: 80px 0 88px;
+      width: 100%;
+    }
+    .pageHero__copy {}
+    .pageHero__breadcrumb {
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      font-family: var(--font-display); font-size: 0.75rem; font-weight: 500;
+      color: rgba(255,255,255,0.4); margin-bottom: 20px;
+    }
+    .pageHero__breadcrumb a { color: rgba(255,255,255,0.4); transition: color 0.2s; }
+    .pageHero__breadcrumb a:hover { color: var(--accent-bright); }
+    .pageHero__breadcrumb-sep { opacity: 0.3; }
+    .pageHero__eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--font-display); font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--accent); margin-bottom: 1rem;
+    }
+    .pageHero__eyebrow::before {
+      content: ''; display: inline-block; width: 18px; height: 2px;
+      background: var(--accent); border-radius: 2px;
+    }
+    .pageHero__title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 3.8vw, 2.9rem); font-weight: 800;
+      color: #fff; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 1.1rem;
+    }
+    .pageHero__title em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-bright) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .pageHero__sub {
+      font-size: 1rem; color: rgba(255,255,255,0.5);
+      max-width: 500px; line-height: 1.75; margin-bottom: 2rem;
+    }
+    .pageHero__ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    /* Hero image card */
+    .pageHero__imageCard {
+      position: relative; border-radius: var(--r-lg); overflow: hidden;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.07);
+      aspect-ratio: 4/3;
+    }
+    .pageHero__imageCard img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 8s var(--ease-expo);
+    }
+    .pageHero__imageCard:hover img { transform: scale(1.04); }
+    .pageHero__imageCard::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(180deg, transparent 50%, rgba(8,17,31,0.6) 100%);
+    }
+    /* Floating industry badge */
+    .pageHero__badge {
+      position: absolute; bottom: 20px; left: 20px; z-index: 2;
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(8,17,31,0.78);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: var(--r-sm); padding: 10px 14px;
+    }
+    .pageHero__badge-icon {
+      width: 32px; height: 32px; border-radius: 6px;
+      background: var(--accent-subtle); border: 1px solid var(--accent-border);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .pageHero__badge-icon svg { color: var(--accent-bright); }
+    .pageHero__badge-label {
+      font-family: var(--font-display); font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.09em;
+      color: rgba(255,255,255,0.4); display: block; margin-bottom: 1px;
+    }
+    .pageHero__badge-value {
+      font-family: var(--font-display); font-size: 0.85rem; font-weight: 700;
+      color: #fff;
+    }
+
+    /* ═══════════════════════════════════════
+       INDUSTRY STAT STRIP
+    ═══════════════════════════════════════ */
+    .statStrip {
+      background: var(--surface-muted);
+      border-bottom: 1px solid var(--border);
+    }
+    .statStrip__inner {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+    }
+    .statCell {
+      padding: 28px 32px; border-right: 1px solid var(--border);
+      transition: background 0.2s;
+    }
+    .statCell:last-child { border-right: none; }
+    .statCell:hover { background: var(--surface); }
+    .statCell__num {
+      font-family: var(--font-display); font-size: 1.9rem; font-weight: 800;
+      color: var(--text-primary); letter-spacing: -0.03em; line-height: 1;
+      margin-bottom: 4px;
+    }
+    .statCell__num span { color: var(--accent); }
+    .statCell__label {
+      font-size: 0.8rem; color: var(--text-muted);
+      font-family: var(--font-display); font-weight: 500;
+    }
+
+    /* ═══════════════════════════════════════
+       MAIN CONTENT LAYOUT
+    ═══════════════════════════════════════ */
+    .industryBody { padding: 80px 0; }
+
+    /* Section title */
+    .sectionTitle {
+      margin-bottom: 40px;
+    }
+    .sectionTitle h2 {
+      font-size: clamp(1.5rem, 2.5vw, 2rem);
+      margin-bottom: 8px;
+    }
+    .sectionTitle p { max-width: 580px; }
+
+    /* Overview + Solutions grid */
+    .twoColGrid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 24px; margin-bottom: 24px;
+    }
+
+    /* Panel cards */
+    .panel {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: 36px 32px;
+      transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+      position: relative; overflow: hidden;
+    }
+    .panel::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-bright));
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.35s var(--ease-expo);
+    }
+    .panel:hover { border-color: var(--accent-border); box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .panel:hover::before { transform: scaleX(1); }
+    .panel h3 {
+      font-size: 1rem; margin-bottom: 16px; padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .panel h3 .panelIcon {
+      width: 34px; height: 34px; border-radius: var(--r-sm); flex-shrink: 0;
+      background: var(--accent-subtle); border: 1px solid var(--accent-border);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .panel h3 .panelIcon svg { color: var(--accent); }
+    .panel p + p { margin-top: 12px; }
+
+    /* Solution list */
+    .solutionList { display: flex; flex-direction: column; gap: 14px; margin-top: 4px; }
+    .solutionItem {
+      display: flex; gap: 14px; align-items: flex-start;
+      padding: 14px 16px; border-radius: var(--r-sm);
+      background: var(--surface-muted); border: 1px solid var(--border);
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .solutionItem:hover { background: #fff; border-color: var(--accent-border); }
+    .solutionItem__dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--accent); flex-shrink: 0; margin-top: 6px;
+    }
+    .solutionItem__title {
+      font-family: var(--font-display); font-size: 0.85rem; font-weight: 700;
+      color: var(--text-primary); margin-bottom: 2px;
+    }
+    .solutionItem__desc {
+      font-size: 0.82rem; color: var(--text-muted); line-height: 1.55;
+    }
+
+    /* Tech capabilities */
+    .techGrid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 12px; margin-top: 4px;
+    }
+    .techChip {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 14px; border-radius: var(--r-sm);
+      background: var(--surface-muted); border: 1px solid var(--border);
+      font-family: var(--font-display); font-size: 0.78rem; font-weight: 600;
+      color: var(--text-secondary); transition: all 0.2s;
+    }
+    .techChip:hover { background: var(--accent-subtle); border-color: var(--accent-border); color: var(--accent); }
+    .techChip::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent); flex-shrink: 0;
+    }
+
+    /* Benefits list */
+    .benefitList { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+    .benefitRow {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 14px; border-radius: var(--r-sm);
+      transition: background 0.2s;
+    }
+    .benefitRow:hover { background: var(--surface-muted); }
+    .benefitRow__check {
+      width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+      background: rgba(5,150,105,0.1); border: 1px solid rgba(5,150,105,0.25);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .benefitRow__check svg { color: #059669; }
+    .benefitRow__text {
+      font-size: 0.88rem; color: var(--text-secondary); font-weight: 500;
+    }
+
+    /* Why Enmett full-width panel */
+    .whyPanel {
+      background: var(--primary); border-radius: var(--r-xl);
+      padding: 60px 60px; margin-top: 24px;
+      position: relative; overflow: hidden;
+    }
+    .whyPanel::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), var(--accent-bright), var(--accent), transparent);
+    }
+    .whyPanel::after {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 80% at 100% 0%, rgba(14,165,233,0.1) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .whyPanel__inner { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+    .whyPanel__copy h3 {
+      font-family: var(--font-display); font-size: 1.5rem; font-weight: 800;
+      color: #fff; letter-spacing: -0.02em; margin-bottom: 16px;
+    }
+    .whyPanel__copy h3 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--accent), var(--accent-bright));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .whyPanel__copy p { color: rgba(255,255,255,0.5); font-size: 0.93rem; line-height: 1.8; }
+    .whyPanel__copy p + p { margin-top: 10px; }
+    .whyPanel__copy .btn { margin-top: 24px; }
+    .whyPanel__pillars { display: flex; flex-direction: column; gap: 14px; }
+    .pillar {
+      display: flex; gap: 16px; align-items: flex-start;
+      padding: 18px 20px; border-radius: var(--r-md);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .pillar:hover { background: rgba(14,165,233,0.07); border-color: rgba(14,165,233,0.2); }
+    .pillar__icon {
+      width: 38px; height: 38px; border-radius: var(--r-sm); flex-shrink: 0;
+      background: rgba(14,165,233,0.12); border: 1px solid rgba(14,165,233,0.2);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .pillar__icon svg { color: var(--accent-bright); }
+    .pillar__title {
+      font-family: var(--font-display); font-size: 0.85rem; font-weight: 700;
+      color: #fff; margin-bottom: 3px;
+    }
+    .pillar__desc { font-size: 0.8rem; color: rgba(255,255,255,0.4); line-height: 1.55; }
+
+    /* Related industries nav */
+    .relatedSection { padding: 60px 0 80px; background: var(--surface-muted); border-top: 1px solid var(--border); }
+    .relatedSection .sectionTitle { margin-bottom: 28px; }
+    .relatedGrid {
+      display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px;
+    }
+    .relatedCard {
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+      padding: 20px 16px; border-radius: var(--r-md);
+      background: var(--surface); border: 1.5px solid var(--border);
+      font-family: var(--font-display); font-size: 0.8rem; font-weight: 700;
+      color: var(--text-secondary); text-align: center;
+      transition: all 0.2s var(--ease-std);
+    }
+    .relatedCard.active { border-color: var(--accent); background: var(--accent-subtle); color: var(--accent); }
+    .relatedCard:hover:not(.active) { border-color: var(--accent-border); color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .relatedCard__icon {
+      width: 40px; height: 40px; border-radius: var(--r-sm);
+      background: var(--surface-muted); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
+    }
+    .relatedCard.active .relatedCard__icon { background: var(--accent); border-color: var(--accent); }
+    .relatedCard.active .relatedCard__icon svg { color: #fff; }
+    .relatedCard:hover:not(.active) .relatedCard__icon { background: var(--accent-subtle); }
+    .relatedCard__icon svg { color: var(--text-muted); transition: color 0.2s; }
+    .relatedCard:hover:not(.active) .relatedCard__icon svg { color: var(--accent); }
+
+    /* ═══════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════ */
+    @media (max-width: 1024px) {
+      .relatedGrid { grid-template-columns: repeat(3,1fr); }
+      .whyPanel { padding: 44px 36px; }
+      .whyPanel__inner { grid-template-columns: 1fr; gap: 36px; }
+    }
+    @media (max-width: 960px) {
+      .navToggle { display: inline-flex; }
+      .headerCta { display: none; }
+      .nav {
+        position: fixed; top: 70px; left: 12px; right: 12px;
+        background: var(--surface); border: 1px solid var(--border);
+        border-radius: var(--r-lg); box-shadow: var(--shadow-lg);
+        padding: 12px; flex-direction: column; align-items: stretch; gap: 4px;
+        opacity: 0; visibility: hidden;
+        transform: translateY(-8px) scale(0.98); pointer-events: none;
+        z-index: 902; max-height: calc(100vh - 90px); overflow-y: auto;
+        transition: all 0.3s var(--ease-expo);
+      }
+      .nav.is-open { opacity: 1; visibility: visible; transform: translateY(0) scale(1); pointer-events: auto; }
+      .nav__link { width: 100%; padding: 12px 14px; font-size: 0.925rem; color: var(--text-primary); }
+      .navDropdown {
+        position: static; transform: none; box-shadow: none;
+        border: 1px solid var(--border); border-radius: var(--r-sm);
+        background: var(--surface-muted); margin-top: 4px;
+        opacity: 1; visibility: visible; display: none; padding: 6px;
+      }
+      .navDropdown::before { display: none; }
+      .nav__item--open .navDropdown { display: flex; flex-direction: column; }
+      .pageHero__inner { grid-template-columns: 1fr; }
+      .pageHero__imageCard { display: none; }
+      .statStrip__inner { grid-template-columns: repeat(2,1fr); }
+      .statCell:nth-child(2) { border-right: none; }
+      .statCell:nth-child(3) { border-top: 1px solid var(--border); }
+      .statCell:nth-child(4) { border-top: 1px solid var(--border); border-right: none; }
+      .twoColGrid { grid-template-columns: 1fr; }
+      .techGrid { grid-template-columns: repeat(2,1fr); }
+      .footer__top { grid-template-columns: 1fr; gap: 48px; }
+      .footerNav { grid-template-columns: repeat(2,1fr); }
+    }
+    @media (max-width: 640px) {
+      .statStrip__inner { grid-template-columns: 1fr 1fr; }
+      .relatedGrid { grid-template-columns: repeat(2,1fr); }
+      .techGrid { grid-template-columns: 1fr 1fr; }
+      .whyPanel { padding: 32px 22px; }
+      .footer__bottom { flex-direction: column; align-items: flex-start; }
+      .pageHero__ctas { flex-direction: column; }
+    }
+  </style>
+{% endblock %}
+{% block content %}
+  <!-- ══════════════════════════════════════════════
+       PAGE HERO  (Jinja2 dynamic per industry)
+  ══════════════════════════════════════════════ -->
+  <div class="pageHero">
+    {# Background photo — swapped per industry #}
+    <div class="pageHero__bg">
+      {% if industry.title == "Finance" %}
+        <img src="{{ url_for('static', filename='img/Industry/Finance.jpeg') }}" alt="" />
+      {% elif industry.title == "Retail" %}
+        <img src="{{ url_for('static', filename='img/Industry/Retail.png') }}" alt="" />
+      {% elif industry.title == "Hospitality" %}
+        <img src="{{ url_for('static', filename='img/Industry/Hospital.jpeg') }}" alt="" />
+      {% elif industry.title == "Manufacturing" %}
+        <img src="{{ url_for('static', filename='img/Industry/manu.jpeg') }}" alt="" />
+      {% elif industry.title == "Oil & Gas" %}
+        <img src="{{ url_for('static', filename='img/Industry/oil&gas.jpeg') }}" alt="" />
+      {% elif industry.title == "Public Sector" %}
+        <img src="{{ url_for('static', filename='img/Industry/Public sector.jpeg') }}" alt="" />
+      {% endif %}
+    </div>
+    <div class="pageHero__grid" aria-hidden="true"></div>
+    <div class="container" style="position:relative;z-index:2;width:100%;">
+      <div class="pageHero__inner">
+        <div class="pageHero__copy reveal">
+          <nav class="pageHero__breadcrumb" aria-label="Breadcrumb">
+            <a href="{{ url_for('home') }}">Home</a>
+            <span class="pageHero__breadcrumb-sep">›</span>
+            <a href="/industry">Industry</a>
+            <span class="pageHero__breadcrumb-sep">›</span>
+            <span>{{ industry.title }}</span>
+          </nav>
+          <p class="pageHero__eyebrow">Industry</p>
+
+          {# Dynamic headline per industry #}
+          {% if industry.title == "Finance" %}
+            <h1 class="pageHero__title">Technology Solutions for <em>Financial Services</em></h1>
+            <p class="pageHero__sub">Empowering financial institutions with secure, scalable, and intelligent digital solutions that drive growth and compliance.</p>
+          {% elif industry.title == "Retail" %}
+            <h1 class="pageHero__title">Digital Innovation for <em>Retail</em></h1>
+            <p class="pageHero__sub">Helping retailers enhance customer experiences and optimize operations through modern, data-driven technology solutions.</p>
+          {% elif industry.title == "Hospitality" %}
+            <h1 class="pageHero__title">Smarter Technology for <em>Hospitality</em></h1>
+            <p class="pageHero__sub">Enhancing guest experiences and operational efficiency through smart digital platforms tailored for hospitality businesses.</p>
+          {% elif industry.title == "Manufacturing" %}
+            <h1 class="pageHero__title">Smart Solutions for <em>Manufacturing</em></h1>
+            <p class="pageHero__sub">Helping manufacturers improve efficiency, optimize production, and accelerate digital transformation across operations.</p>
+          {% elif industry.title == "Oil & Gas" %}
+            <h1 class="pageHero__title">Digital Solutions for <em>Oil &amp; Gas</em></h1>
+            <p class="pageHero__sub">Enhancing operational efficiency, safety, and decision-making through advanced technology platforms for energy companies.</p>
+          {% elif industry.title == "Public Sector" %}
+            <h1 class="pageHero__title">Technology for the <em>Public Sector</em></h1>
+            <p class="pageHero__sub">Supporting government and public organizations with secure, efficient, and innovative digital solutions for better citizen service.</p>
+          {% else %}
+            <h1 class="pageHero__title">{{ industry.title }}</h1>
+            <p class="pageHero__sub">{{ industry.tagline }}</p>
+          {% endif %}
+
+          <div class="pageHero__ctas">
+            <a href="/contact" class="btn btn--primary">
+              Discuss your project
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+            <a href="/services" class="btn btn--outline-white">View all services</a>
+          </div>
+        </div>
+
+        {# Right-side image card with overlay badge #}
+        <div class="pageHero__imageCard reveal" data-delay="200">
+          {% if industry.title == "Finance" %}
+            <img src="{{ url_for('static', filename='img/Industry/Finance.jpeg') }}" alt="Finance" />
+            <div class="pageHero__badge">
+              <div class="pageHero__badge-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+              </div>
+              <div><span class="pageHero__badge-label">Sector</span><span class="pageHero__badge-value">Financial Services</span></div>
+            </div>
+          {% elif industry.title == "Retail" %}
+            <img src="{{ url_for('static', filename='img/Industry/Retail.png') }}" alt="Retail" />
+            <div class="pageHero__badge">
+              <div class="pageHero__badge-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+              </div>
+              <div><span class="pageHero__badge-label">Sector</span><span class="pageHero__badge-value">Retail &amp; Commerce</span></div>
+            </div>
+          {% elif industry.title == "Hospitality" %}
+            <img src="{{ url_for('static', filename='img/Industry/Hospital.jpeg') }}" alt="Hospitality" />
+            <div class="pageHero__badge">
+              <div class="pageHero__badge-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              </div>
+              <div><span class="pageHero__badge-label">Sector</span><span class="pageHero__badge-value">Hospitality &amp; Tourism</span></div>
+            </div>
+          {% elif industry.title == "Manufacturing" %}
+            <img src="{{ url_for('static', filename='img/Industry/manu.jpeg') }}" alt="Manufacturing" />
+            <div class="pageHero__badge">
+              <div class="pageHero__badge-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+              </div>
+              <div><span class="pageHero__badge-label">Sector</span><span class="pageHero__badge-value">Manufacturing</span></div>
+            </div>
+          {% elif industry.title == "Oil & Gas" %}
+            <img src="{{ url_for('static', filename='img/Industry/oil&gas.jpeg') }}" alt="Oil and Gas" />
+            <div class="pageHero__badge">
+              <div class="pageHero__badge-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              </div>
+              <div><span class="pageHero__badge-label">Sector</span><span class="pageHero__badge-value">Oil &amp; Gas / Energy</span></div>
+            </div>
+          {% elif industry.title == "Public Sector" %}
+            <img src="{{ url_for('static', filename='img/Industry/Public sector.jpeg') }}" alt="Public Sector" />
+            <div class="pageHero__badge">
+              <div class="pageHero__badge-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+              </div>
+              <div><span class="pageHero__badge-label">Sector</span><span class="pageHero__badge-value">Government &amp; Public</span></div>
+            </div>
+          {% endif %}
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  {# Stat strip removed as requested #}
+
+  <!-- ════════════════════════════════════════════
+       MAIN BODY
+  ════════════════════════════════════════════ -->
+  <main id="main">
+    <div class="industryBody">
+      <div class="container">
+
+        {# ── ROW 1: Overview + Solutions ── #}
+        <div class="twoColGrid">
+
+          {# Overview panel #}
+          <article class="panel reveal" data-delay="40">
+            <h3>
+              <span class="panelIcon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              </span>
+              Overview
+            </h3>
+            {% if industry.title == "Finance" %}
+            <p>The financial services industry is rapidly evolving due to digital transformation, regulatory changes, and growing customer expectations. Banks, financial institutions, and fintech companies must adopt modern technologies to remain competitive while maintaining strong security and compliance.</p>
+            <p>Enmett provides advanced IT solutions that help financial organizations streamline operations, strengthen data security, and improve decision-making through real-time insights and automation.</p>
+            <p>Our expertise in enterprise technologies, cyber security, and digital transformation enables financial institutions to deliver reliable, secure, and customer-focused services.</p>
+            {% elif industry.title == "Retail" %}
+            <p>The retail industry is undergoing significant transformation due to changing consumer behaviors, digital commerce, and technological innovation. Retailers must adopt modern solutions to deliver seamless shopping experiences across physical and digital channels.</p>
+            <p>Enmett provides technology solutions that help retailers modernize operations, optimize supply chains, and gain deeper insights into customer preferences — building efficient, scalable, and secure systems for a competitive marketplace.</p>
+            {% elif industry.title == "Hospitality" %}
+            <p>The hospitality industry relies heavily on seamless guest experiences. With the rapid growth of digital technologies and evolving customer expectations, hospitality businesses must adopt innovative solutions to stay competitive.</p>
+            <p>Enmett provides reliable IT solutions that help hospitality organizations improve operational efficiency, manage guest services effectively, and gain valuable insights into customer preferences while maintaining secure and efficient technology systems.</p>
+            {% elif industry.title == "Manufacturing" %}
+            <p>The manufacturing industry is evolving rapidly with adoption of automation, digital technologies, and data-driven decision-making. To remain competitive, manufacturers must modernize operations, optimize production, and maintain strong supply chain management.</p>
+            <p>Enmett supports manufacturing companies with reliable IT solutions that enhance operational performance and provide real-time insights into production and logistics, helping manufacturers improve productivity and reduce costs.</p>
+            {% elif industry.title == "Oil & Gas" %}
+            <p>The oil and gas industry operates in a highly complex environment where efficiency, safety, and reliability are critical. With increasing operational challenges and evolving market conditions, energy companies are adopting advanced technologies to improve performance and reduce risks.</p>
+            <p>Enmett delivers technology-driven solutions that help oil and gas organizations modernize operations, manage large volumes of operational data, and enhance collaboration across teams and facilities.</p>
+            {% else %}
+            <p>Public sector organizations play a critical role in delivering essential services to citizens. With increasing demands for transparency, efficiency, and digital accessibility, government institutions are adopting modern technologies to transform their operations.</p>
+            <p>Enmett provides reliable IT solutions that support digital transformation in the public sector — helping government agencies improve operational efficiency, manage data effectively, and implement secure digital platforms for public services.</p>
+            {% endif %}
+          </article>
+
+          {# Solutions panel #}
+          <article class="panel reveal" data-delay="120">
+            <h3>
+              <span class="panelIcon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+              </span>
+              {% if industry.title == "Finance" %}Our Solutions for Finance
+              {% elif industry.title == "Retail" %}Our Retail Solutions
+              {% elif industry.title == "Hospitality" %}Our Hospitality Solutions
+              {% elif industry.title == "Manufacturing" %}Our Manufacturing Solutions
+              {% elif industry.title == "Oil & Gas" %}Our Oil &amp; Gas Solutions
+              {% else %}Our Public Sector Solutions{% endif %}
+            </h3>
+            <div class="solutionList">
+              {% if industry.title == "Finance" %}
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Digital Banking Solutions</div><div class="solutionItem__desc">Secure and scalable platforms that improve customer experiences and simplify financial services.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Financial Data Analytics</div><div class="solutionItem__desc">Insights, risk detection, and decision support across large volumes of financial data.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Cyber Security for Finance</div><div class="solutionItem__desc">Frameworks to protect sensitive data, prevent threats, and secure digital transactions.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">SAP Solutions for Finance</div><div class="solutionItem__desc">Streamlined operations, improved reporting accuracy, and efficient financial process management.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Payment System Integration</div><div class="solutionItem__desc">Fast, reliable, and secure digital payment processing at scale.</div></div></div>
+              {% elif industry.title == "Retail" %}
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">E-Commerce Platforms</div><div class="solutionItem__desc">Scalable and secure platforms for seamless online shopping experiences.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Retail Data Analytics</div><div class="solutionItem__desc">Customer insights, sales trends, and inventory optimization tools.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Supply Chain Optimization</div><div class="solutionItem__desc">Tools that enhance visibility and logistics management across the supply chain.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Customer Experience Solutions</div><div class="solutionItem__desc">Personalization through data-driven customer engagement platforms.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Cyber Security for Retail</div><div class="solutionItem__desc">Protection for payment platforms and sensitive customer data.</div></div></div>
+              {% elif industry.title == "Hospitality" %}
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Hotel Management Systems</div><div class="solutionItem__desc">Digital platforms for reservations, guest management, and daily operations.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Guest Experience Solutions</div><div class="solutionItem__desc">Personalized guest experiences using digital platforms and analytics.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Hospitality Data Analytics</div><div class="solutionItem__desc">Pricing optimization, behavior insights, and service improvement tools.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Secure Payment Systems</div><div class="solutionItem__desc">Reliable payment processing for hotels, restaurants, and service operations.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">IT Infrastructure</div><div class="solutionItem__desc">Robust infrastructure and connectivity solutions for daily hospitality operations.</div></div></div>
+              {% elif industry.title == "Manufacturing" %}
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Smart Manufacturing Systems</div><div class="solutionItem__desc">Automation and digital solutions to improve operational efficiency on the factory floor.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Supply Chain Management</div><div class="solutionItem__desc">Enhanced visibility and coordination across suppliers, production, and distribution.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Data Analytics</div><div class="solutionItem__desc">Monitor performance, identify inefficiencies, and improve operational decision-making.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">SAP for Manufacturing</div><div class="solutionItem__desc">ERP support for operations, inventory management, and financial processes.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Industrial Cyber Security</div><div class="solutionItem__desc">Protect manufacturing systems and critical infrastructure from cyber threats.</div></div></div>
+              {% elif industry.title == "Oil & Gas" %}
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Energy Data Analytics</div><div class="solutionItem__desc">Monitor performance, analyze production data, and improve operational decisions.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Asset Management Systems</div><div class="solutionItem__desc">Efficient monitoring and management of critical equipment and energy assets.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Supply Chain Optimization</div><div class="solutionItem__desc">Improved logistics, resource management, and cross-facility coordination.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Cyber Security for Energy</div><div class="solutionItem__desc">Protect operational technologies and critical infrastructure from threats.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Enterprise Systems Integration</div><div class="solutionItem__desc">Connect operational systems for efficient data flow and collaboration.</div></div></div>
+              {% else %}
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Digital Government Platforms</div><div class="solutionItem__desc">Improved access to services and enhanced citizen engagement online.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Data Management Solutions</div><div class="solutionItem__desc">Secure and efficient handling of large volumes of government data.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Cyber Security for Government</div><div class="solutionItem__desc">Protect critical infrastructure and sensitive citizen information.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">Smart Infrastructure Solutions</div><div class="solutionItem__desc">Support for smart systems that improve urban services and efficiency.</div></div></div>
+              <div class="solutionItem"><div class="solutionItem__dot"></div><div><div class="solutionItem__title">IT Infrastructure Modernization</div><div class="solutionItem__desc">Upgrade legacy systems and adopt modern digital infrastructure at scale.</div></div></div>
+              {% endif %}
+            </div>
+          </article>
+        </div>
+
+        {# ── ROW 2: Tech Capabilities + Benefits ── #}
+        <div class="twoColGrid">
+          <article class="panel reveal" data-delay="60">
+            <h3>
+              <span class="panelIcon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              </span>
+              Technology Capabilities
+            </h3>
+            <p style="margin-bottom:16px;">Our solutions leverage modern technologies including:</p>
+            <div class="techGrid">
+              {% if industry.title == "Finance" %}
+              <div class="techChip">SAP Enterprise</div>
+              <div class="techChip">Cyber Security</div>
+              <div class="techChip">Cloud Platforms</div>
+              <div class="techChip">Data Analytics</div>
+              <div class="techChip">Payment Systems</div>
+              <div class="techChip">Managed Services</div>
+              {% elif industry.title == "Retail" %}
+              <div class="techChip">SAP Retail</div>
+              <div class="techChip">Cloud Platforms</div>
+              <div class="techChip">Data Analytics</div>
+              <div class="techChip">Digital Commerce</div>
+              <div class="techChip">Cyber Security</div>
+              <div class="techChip">Managed Services</div>
+              {% elif industry.title == "Hospitality" %}
+              <div class="techChip">SAP Enterprise</div>
+              <div class="techChip">Cloud Platforms</div>
+              <div class="techChip">Data Analytics</div>
+              <div class="techChip">Cyber Security</div>
+              <div class="techChip">Guest Engagement</div>
+              <div class="techChip">IT Management</div>
+              {% elif industry.title == "Manufacturing" %}
+              <div class="techChip">SAP Enterprise</div>
+              <div class="techChip">Cloud Platforms</div>
+              <div class="techChip">Industrial Analytics</div>
+              <div class="techChip">Cyber Security</div>
+              <div class="techChip">Managed Services</div>
+              <div class="techChip">Digital Transform.</div>
+              {% elif industry.title == "Oil & Gas" %}
+              <div class="techChip">SAP Enterprise</div>
+              <div class="techChip">Cloud Platforms</div>
+              <div class="techChip">Data Analytics</div>
+              <div class="techChip">Cyber Security</div>
+              <div class="techChip">Managed Services</div>
+              <div class="techChip">Digital Transform.</div>
+              {% else %}
+              <div class="techChip">SAP Enterprise</div>
+              <div class="techChip">Cloud Platforms</div>
+              <div class="techChip">Data Analytics</div>
+              <div class="techChip">Cyber Security</div>
+              <div class="techChip">Gov. Platforms</div>
+              <div class="techChip">Managed Services</div>
+              {% endif %}
+            </div>
+          </article>
+
+          <article class="panel reveal" data-delay="140">
+            <h3>
+              <span class="panelIcon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              </span>
+              Benefits
+            </h3>
+            <p style="margin-bottom:16px;">Organisations partnering with Enmett benefit from:</p>
+            <div class="benefitList">
+              {% if industry.title == "Finance" %}
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Enhanced security and fraud prevention</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Improved operational efficiency</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Faster financial data analysis</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Better regulatory compliance</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Improved customer digital experience</span></div>
+              {% elif industry.title == "Retail" %}
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Improved customer engagement</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Better inventory and supply chain management</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Increased operational efficiency</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Enhanced data-driven decision making</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Secure digital transactions &amp; data protection</span></div>
+              {% elif industry.title == "Hospitality" %}
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Improved guest satisfaction and engagement</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Efficient reservation and service management</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Better data-driven decision making</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Enhanced operational efficiency</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Secure and reliable digital payment systems</span></div>
+              {% elif industry.title == "Manufacturing" %}
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Improved production efficiency</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Better supply chain visibility</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Reduced operational costs</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Enhanced data-driven decision making</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Secure and reliable manufacturing systems</span></div>
+              {% elif industry.title == "Oil & Gas" %}
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Improved operational efficiency</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Better monitoring of energy assets</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Enhanced safety and compliance</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Data-driven operational insights</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Secure and reliable technology systems</span></div>
+              {% else %}
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Improved public service delivery</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Enhanced operational efficiency</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Secure management of citizen data</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Greater transparency and accountability</span></div>
+              <div class="benefitRow"><div class="benefitRow__check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="benefitRow__text">Reliable and scalable digital infrastructure</span></div>
+              {% endif %}
+            </div>
+          </article>
+        </div>
+
+        {# ── WHY ENMETT dark panel ── #}
+        <div class="whyPanel reveal" data-delay="80">
+          <div class="whyPanel__inner">
+            <div class="whyPanel__copy">
+              <h3>Why Enmett for <em>{{ industry.title }}</em></h3>
+              {% if industry.title == "Finance" %}
+              <p>Enmett combines deep technology expertise with industry knowledge to deliver tailored solutions for financial institutions. Our team builds secure, scalable, and high-performance systems that support the evolving needs of the finance sector.</p>
+              <p>By leveraging modern technologies and strategic consulting, we help financial organizations accelerate digital transformation and achieve long-term growth.</p>
+              {% elif industry.title == "Retail" %}
+              <p>Our retail specialists bring deep knowledge of omnichannel commerce, supply chain dynamics, and customer engagement platforms. We don't just implement technology — we help you build the competitive advantage that drives sustainable growth.</p>
+              {% elif industry.title == "Hospitality" %}
+              <p>We understand the hospitality sector's unique pressures: peak-season scalability, guest data sensitivity, and the need for 24/7 reliability. Our approach ensures your systems work as well as your service team does.</p>
+              {% elif industry.title == "Manufacturing" %}
+              <p>From shopfloor automation to enterprise ERP, our manufacturing consultants deliver solutions that bridge operational technology and IT — helping you hit production targets while building the data foundation for Industry 4.0.</p>
+              {% elif industry.title == "Oil & Gas" %}
+              <p>We bring specialist knowledge of energy sector compliance, SCADA integration, and operational resilience. Our solutions are built for the demanding environments of upstream, midstream, and downstream operations.</p>
+              {% else %}
+              <p>We understand the public sector's unique obligations around procurement, data sovereignty, and citizen privacy. Our solutions are designed to meet government standards while delivering modern digital experiences to both staff and citizens.</p>
+              {% endif %}
+              <a href="/contact" class="btn btn--primary">
+                Start a conversation
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </a>
+            </div>
+            <div class="whyPanel__pillars">
+              <div class="pillar">
+                <div class="pillar__icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </div>
+                <div>
+                  <div class="pillar__title">Certified expertise</div>
+                  <div class="pillar__desc">SAP-certified consultants and ITIL-aligned delivery teams with deep industry experience.</div>
+                </div>
+              </div>
+              <div class="pillar">
+                <div class="pillar__icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <div>
+                  <div class="pillar__title">Security-first approach</div>
+                  <div class="pillar__desc">ISO 27001-aligned processes with security embedded in every engagement, not bolted on.</div>
+                </div>
+              </div>
+              <div class="pillar">
+                <div class="pillar__icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </div>
+                <div>
+                  <div class="pillar__title">APAC coverage &amp; beyond</div>
+                  <div class="pillar__desc">Teams across Singapore and APAC, with partner networks in EMEA and North America.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    {# ── RELATED INDUSTRIES ── #}
+    <div class="relatedSection">
+      <div class="container">
+        <div class="sectionTitle reveal">
+          <p class="eyebrow">More industries</p>
+          <h2>Other sectors we serve</h2>
+        </div>
+        <div class="relatedGrid">
+          <a href="/industry/finance" class="relatedCard {% if industry.title == 'Finance' %}active{% endif %}">
+            <div class="relatedCard__icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
+            </div>
+            Finance
+          </a>
+          <a href="/industry/retail" class="relatedCard {% if industry.title == 'Retail' %}active{% endif %}">
+            <div class="relatedCard__icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+            </div>
+            Retail
+          </a>
+          <a href="/industry/hospitality" class="relatedCard {% if industry.title == 'Hospitality' %}active{% endif %}">
+            <div class="relatedCard__icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </div>
+            Hospitality
+          </a>
+          <a href="/industry/manufacturing" class="relatedCard {% if industry.title == 'Manufacturing' %}active{% endif %}">
+            <div class="relatedCard__icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </div>
+            Manufacturing
+          </a>
+          <a href="/industry/oil-gas" class="relatedCard {% if industry.title == 'Oil & Gas' %}active{% endif %}">
+            <div class="relatedCard__icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+            Oil &amp; Gas
+          </a>
+          <a href="/industry/public-sector" class="relatedCard {% if industry.title == 'Public Sector' %}active{% endif %}">
+            <div class="relatedCard__icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+            </div>
+            Public Sector
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  {% endblock %}
+  {% block extra_js %}
+  <script>
+    (function() {
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            var delay = entry.target.dataset.delay || 0;
+            setTimeout(function() { entry.target.classList.add('is-visible'); }, +delay);
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.07, rootMargin: '0px 0px -28px 0px' });
+      document.querySelectorAll('.reveal').forEach(function(el) { observer.observe(el); });
+    })();
+  </script>
+  {% endblock %}

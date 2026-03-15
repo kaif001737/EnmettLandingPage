@@ -1,0 +1,927 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}Enmett | SAP &amp; IT Solutions{% endblock %}</title>
+  <meta name="description"
+    content="{% block meta_description %}Enmett delivers SAP, cybersecurity, managed services, AI &amp; automation, and resourcing for modern enterprises.{% endblock %}" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+
+  <style>
+    /* ════════════════════════════════════════
+       DESIGN TOKENS
+    ════════════════════════════════════════ */
+    :root {
+      /* ── Core palette ── */
+      --ink:           #08111f;
+      --ink-deep:      #04080f;
+      --ink-mid:       #0c1829;
+      --ink-soft:      #111f38;
+
+      --sky:           #0ea5e9;
+      --sky-bright:    #38bdf8;
+      --sky-dim:       #0284c7;
+      --sky-deep:      #0369a1;
+      --sky-glow:      rgba(14,165,233,0.22);
+      --sky-subtle:    rgba(14,165,233,0.07);
+      --sky-border:    rgba(14,165,233,0.22);
+      --sky-border-lg: rgba(14,165,233,0.35);
+
+      --surface:       #ffffff;
+      --surface-muted: #f7f9fc;
+      --surface-card:  #ffffff;
+
+      --border:        #e4e9f0;
+      --border-strong: #cdd6e3;
+      --border-dark:   rgba(255,255,255,0.07);
+      --border-mid:    rgba(255,255,255,0.13);
+
+      --text-primary:   #08111f;
+      --text-secondary: #5a6e88;
+      --text-muted:     #8898b2;
+      --text-on-dark:   #cddaec;
+      --text-faint:     #3a506e;
+      --text-ghost:     rgba(255,255,255,0.35);
+
+      /* ── Typography ── */
+      --font-display: 'Outfit', sans-serif;
+      --font-body:    'DM Sans', sans-serif;
+
+      /* ── Border radii ── */
+      --r-xs:   3px;
+      --r-sm:   8px;
+      --r-md:   12px;
+      --r-lg:   20px;
+      --r-xl:   28px;
+      --r-full: 9999px;
+
+      /* ── Legacy radius aliases ── */
+      --radius-xs:  var(--r-xs);
+      --radius-sm:  var(--r-sm);
+      --radius-md:  var(--r-md);
+      --radius-lg:  var(--r-lg);
+      --radius-xl:  var(--r-xl);
+
+      /* ── Legacy colour aliases ── */
+      --primary:       var(--ink);
+      --primary-mid:   var(--ink-mid);
+      --accent:        var(--sky);
+      --accent-bright: var(--sky-bright);
+      --accent-dim:    var(--sky-dim);
+      --accent-glow:   var(--sky-glow);
+      --accent-subtle: var(--sky-subtle);
+      --accent-border: var(--sky-border);
+
+      /* ── Shadows ── */
+      --shadow-xs:     0 1px 2px rgba(8,17,31,0.05);
+      --shadow-sm:     0 2px 8px rgba(8,17,31,0.07), 0 1px 2px rgba(8,17,31,0.04);
+      --shadow-md:     0 4px 20px rgba(8,17,31,0.08), 0 2px 6px rgba(8,17,31,0.04);
+      --shadow-lg:     0 12px 40px rgba(8,17,31,0.1),  0 4px 12px rgba(8,17,31,0.05);
+      --shadow-xl:     0 20px 56px rgba(8,17,31,0.12), 0 6px 18px rgba(8,17,31,0.06);
+      --shadow-sky:    0 4px 20px rgba(14,165,233,0.28);
+      --shadow-sky-lg: 0 8px 36px rgba(14,165,233,0.35);
+
+      /* ── Easing ── */
+      --ease-expo:   cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-std:    cubic-bezier(0.4, 0, 0.2, 1);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+      /* ── Sizes ── */
+      --topbar-h: 68px;
+      --bar-h:    36px;
+    }
+
+    /* ════════════════════════════════════════
+       RESET & BASE
+    ════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      font-family: var(--font-body);
+      color: var(--text-primary);
+      background: var(--surface);
+      line-height: 1.68;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+    img { display: block; max-width: 100%; }
+    a  { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; }
+    ul { list-style: none; }
+
+    /* ─── Accessibility ─── */
+    .skip {
+      position: absolute; top: -120px; left: 20px;
+      padding: 10px 22px; background: var(--sky); color: #fff;
+      border-radius: var(--r-sm); font-weight: 700; font-size: 0.875rem;
+      z-index: 9999; transition: top 0.2s;
+      box-shadow: var(--shadow-sky);
+    }
+    .skip:focus { top: 20px; }
+    .srOnly {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+
+    /* ─── Layout ─── */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+
+    /* ─── Blue header sections: white text for readability ─── */
+    .pageHero {
+      color: #fff;
+    }
+    .pageHero .pageHero__title,
+    .pageHero .pageHero__eyebrow { color: #fff; }
+    .pageHero .pageHero__sub,
+    .pageHero .pageHero__breadcrumb,
+    .pageHero .pageHero__breadcrumb a { color: rgba(255,255,255,0.92); }
+    .pageHero .pageHero__breadcrumb a:hover { color: #fff; }
+
+    /* ─── Global type helpers ─── */
+    h1, h2, h3, h4, h5, h6 {
+      font-family: var(--font-display);
+      line-height: 1.2;
+      letter-spacing: -0.025em;
+      color: var(--text-primary);
+    }
+    h1 { font-size: clamp(2.2rem, 5vw, 3.4rem); font-weight: 800; }
+    h2 { font-size: clamp(1.7rem, 3.5vw, 2.4rem); font-weight: 700; }
+    h3 { font-size: 1.2rem; font-weight: 700; }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-display);
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--sky);
+      margin-bottom: 14px;
+    }
+    .eyebrow::before {
+      content: '';
+      width: 18px; height: 1.5px;
+      background: currentColor;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    /* ════════════════════════════════════════
+       TOPBAR
+    ════════════════════════════════════════ */
+    .topbar {
+      position: sticky; top: 0; z-index: 904;
+      height: var(--topbar-h);
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 1px 0 var(--border), 0 2px 16px rgba(8,17,31,0.04);
+      transition: box-shadow 0.35s var(--ease-std),
+                  background 0.35s var(--ease-std);
+    }
+    .topbar.scrolled {
+      background: rgba(255,255,255,0.99);
+      box-shadow: 0 1px 0 var(--border), var(--shadow-md);
+    }
+    .topbar__inner {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      height: 100%;
+      gap: 24px;
+    }
+
+    /* ─── Brand ─── */
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      flex-shrink: 0;
+    }
+    .brand__logo {
+      height: 42px;
+      width: auto;
+      display: block;
+      transition: opacity 0.2s;
+    }
+    .brand:hover .brand__logo { opacity: 0.9; }
+    .brand__divider {
+      width: 1px;
+      height: 18px;
+      background: var(--border-strong);
+      margin: 0 12px;
+      flex-shrink: 0;
+    }
+    .brand__sub {
+      font-family: var(--font-display);
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      line-height: 1;
+    }
+
+    /* ─── Nav ─── */
+    .nav {
+      display: flex; align-items: center; justify-content: center; gap: 2px;
+    }
+    .nav__item { position: relative; }
+    .nav__link {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: transparent; border: none;
+      font-family: var(--font-body); font-size: 0.855rem; font-weight: 500;
+      color: var(--text-secondary);
+      padding: 8px 13px; border-radius: var(--r-sm);
+      transition: color 0.18s var(--ease-std), background 0.18s var(--ease-std);
+      white-space: nowrap; letter-spacing: 0.005em;
+      cursor: pointer; line-height: 1;
+    }
+    .nav__chevron {
+      width: 13px; height: 13px;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0.45;
+      transition: opacity 0.2s, transform 0.28s var(--ease-expo);
+    }
+    .nav__chevron svg { width: 10px; height: 10px; }
+    .nav__item--open .nav__chevron { opacity: 0.75; transform: rotate(180deg); }
+    .nav__link:hover,
+    .nav__item--open .nav__link { color: var(--ink); background: rgba(8,17,31,0.04); }
+
+    /* ─── Dropdown ─── */
+    .navDropdown {
+      position: absolute;
+      top: calc(100% + 10px); left: 50%;
+      transform: translateX(-50%) translateY(6px) scale(0.98);
+      background: var(--surface);
+      min-width: 210px;
+      border-radius: var(--r-md);
+      box-shadow: 0 8px 32px rgba(8,17,31,0.1), 0 2px 8px rgba(8,17,31,0.06),
+                  0 0 0 1px var(--border);
+      opacity: 0; visibility: hidden;
+      transition: opacity 0.22s var(--ease-expo),
+                  transform 0.22s var(--ease-expo),
+                  visibility 0.22s;
+      padding: 6px; z-index: 910;
+    }
+    .nav__item--open .navDropdown {
+      opacity: 1; visibility: visible;
+      transform: translateX(-50%) translateY(0) scale(1);
+    }
+    .navDropdown::before {
+      content: '';
+      position: absolute; top: -5px; left: 50%;
+      transform: translateX(-50%) rotate(45deg);
+      width: 9px; height: 9px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-left: 1px solid var(--border);
+    }
+    .navDropdown a {
+      display: flex; align-items: center; gap: 9px;
+      padding: 9px 11px; border-radius: var(--r-sm);
+      font-family: var(--font-body); font-size: 0.855rem; font-weight: 400;
+      color: var(--text-secondary);
+      transition: background 0.15s, color 0.15s, padding-left 0.2s var(--ease-expo);
+    }
+    .navDropdown a .nav__dot {
+      width: 4px; height: 4px; border-radius: 50%;
+      background: var(--sky); flex-shrink: 0;
+      opacity: 0; transform: scale(0);
+      transition: opacity 0.18s, transform 0.2s var(--ease-spring);
+    }
+    .navDropdown a:hover { background: var(--sky-subtle); color: var(--sky); padding-left: 15px; }
+    .navDropdown a:hover .nav__dot { opacity: 1; transform: scale(1); }
+    .navDropdown a.nav--active { color: var(--sky); background: var(--sky-subtle); font-weight: 500; }
+    .navDropdown a.nav--active .nav__dot { opacity: 1; transform: scale(1); }
+
+    /* ─── Header CTA ─── */
+    .headerCta { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+    /* ─── Buttons ─── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: var(--font-display); font-size: 0.82rem; font-weight: 700;
+      padding: 9px 18px; border-radius: var(--r-sm); border: none;
+      transition: all 0.2s var(--ease-std);
+      letter-spacing: 0.01em; white-space: nowrap; cursor: pointer;
+      line-height: 1; position: relative; overflow: hidden;
+    }
+    .btn svg { transition: transform 0.22s var(--ease-expo); flex-shrink: 0; }
+    .btn:hover svg { transform: translateX(3px); }
+
+    .btn--ghost {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1.5px solid var(--border-strong);
+    }
+    .btn--ghost:hover { border-color: var(--sky-border); color: var(--sky); background: var(--sky-subtle); }
+
+    .btn--primary {
+      background: var(--ink); color: #fff;
+      box-shadow: 0 2px 10px rgba(8,17,31,0.15);
+    }
+    .btn--primary:hover {
+      background: var(--sky); box-shadow: var(--shadow-sky); transform: translateY(-1px);
+    }
+
+    .btn--accent {
+      background: var(--sky); color: #fff;
+      box-shadow: 0 2px 12px rgba(14,165,233,0.28);
+    }
+    .btn--accent:hover {
+      background: var(--sky-dim);
+      box-shadow: var(--shadow-sky-lg);
+      transform: translateY(-1px);
+    }
+
+    .btn--outline-white {
+      background: transparent;
+      color: rgba(255,255,255,0.85);
+      border: 1.5px solid rgba(255,255,255,0.22);
+    }
+    .btn--outline-white:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(255,255,255,0.42);
+      color: #fff;
+    }
+
+    /* ─── Mobile toggle ─── */
+    .navToggle {
+      display: none; align-items: center; justify-content: center;
+      width: 40px; height: 40px;
+      border: 1.5px solid var(--border); border-radius: var(--r-sm);
+      background: transparent; transition: all 0.2s; flex-shrink: 0;
+    }
+    .navToggle:hover { border-color: var(--sky); background: var(--sky-subtle); }
+    .navToggle__bars,
+    .navToggle__bars::before,
+    .navToggle__bars::after {
+      display: block; width: 18px; height: 1.5px;
+      background: var(--text-primary); border-radius: 2px;
+      transition: all 0.32s var(--ease-expo);
+    }
+    .navToggle__bars { position: relative; }
+    .navToggle__bars::before,
+    .navToggle__bars::after { content: ''; position: absolute; left: 0; }
+    .navToggle__bars::before { top: -5.5px; }
+    .navToggle__bars::after  { top: 5.5px; width: 11px; }
+    .navToggle[aria-expanded="true"] .navToggle__bars { background: transparent; }
+    .navToggle[aria-expanded="true"] .navToggle__bars::before { transform: rotate(45deg) translate(3.9px, 3.9px); }
+    .navToggle[aria-expanded="true"] .navToggle__bars::after  { transform: rotate(-45deg) translate(3.9px, -3.9px); width: 18px; }
+
+    /* ════════════════════════════════════════
+       MOBILE NAV
+    ════════════════════════════════════════ */
+    @media (max-width: 960px) {
+      .container { padding: 0 20px; }
+      .pageHero .pageHero__title { font-size: clamp(1.6rem, 5vw, 2.2rem); }
+      .pageHero .pageHero__sub { font-size: 0.9375rem; }
+      .navToggle { display: inline-flex; }
+      .headerCta { display: none; }
+      body.nav-open { overflow: hidden; }
+      .topbar__inner { grid-template-columns: auto auto; }
+
+      .navOverlay {
+        position: fixed; inset: 0;
+        background: rgba(8,17,31,0.45); backdrop-filter: blur(4px);
+        opacity: 0; visibility: hidden; pointer-events: none;
+        transition: opacity 0.26s var(--ease-expo), visibility 0.26s;
+        z-index: 902;
+      }
+      .navOverlay.is-open { opacity: 1; visibility: visible; pointer-events: auto; }
+
+      .nav {
+        position: fixed;
+        top: calc(var(--topbar-h) + 10px); left: 12px; right: 12px;
+        background: var(--surface); border: 1px solid var(--border);
+        border-radius: var(--r-lg); box-shadow: var(--shadow-xl);
+        padding: 10px; flex-direction: column; align-items: stretch; gap: 3px;
+        opacity: 0; visibility: hidden; transform: translateY(-8px) scale(0.98);
+        pointer-events: none; z-index: 905;
+        max-height: calc(100svh - var(--topbar-h) - 28px); overflow-y: auto;
+        transition: all 0.28s var(--ease-expo);
+      }
+      .nav.is-open { opacity: 1; visibility: visible; transform: none; pointer-events: auto; }
+      .nav__link {
+        width: 100%; padding: 15px 18px; font-size: 0.975rem;
+        color: var(--text-primary); border-radius: var(--r-sm); justify-content: space-between;
+      }
+      .nav__chevron { margin-left: auto; }
+      .navDropdown {
+        position: static; transform: none !important;
+        box-shadow: none; border: 1px solid var(--border); border-radius: var(--r-sm);
+        background: var(--surface-muted); margin-top: 3px;
+        opacity: 1; visibility: visible; display: none; padding: 6px;
+      }
+      .navDropdown::before { display: none; }
+      .nav__item--open .navDropdown { display: flex; flex-direction: column; }
+      .navDropdown a { padding-left: 14px; padding-top: 11px; padding-bottom: 11px; }
+    }
+    @media (max-width: 560px) {
+      .container { padding: 0 16px; }
+      .brand__logo { height: 36px; }
+      .topbar__inner { gap: 12px; }
+    }
+
+    /* ════════════════════════════════════════
+       FOOTER
+    ════════════════════════════════════════ */
+    .footer {
+      background: var(--surface);
+      color: var(--text-primary);
+      margin-top: 120px;
+      position: relative; overflow: hidden;
+    }
+    .footer__edge {
+      height: 1px;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(14,165,233,0.35) 20%,
+        rgba(56,189,248,0.7) 50%,
+        rgba(14,165,233,0.35) 80%,
+        transparent 100%);
+    }
+    .footer__orb { position: absolute; border-radius: 50%; pointer-events: none; }
+    .footer__orb--a {
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(14,165,233,0.04) 0%, transparent 60%);
+      top: -280px; right: -160px;
+    }
+    .footer__orb--b {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(14,165,233,0.02) 0%, transparent 60%);
+      bottom: -180px; left: -100px;
+    }
+    .footer__body { position: relative; z-index: 1; padding: 80px 0 64px; }
+    .footer__top {
+      display: grid; grid-template-columns: 280px 1fr;
+      gap: 80px; padding-bottom: 64px;
+      border-bottom: 1px solid var(--border);
+    }
+    .footer__brandLogo {
+      height: 64px; width: auto;
+      margin-bottom: 14px; opacity: 0.95;
+      transition: opacity 0.25s, transform 0.25s;
+    }
+    .footer__brandLogo:hover { opacity: 1; transform: translateY(-1px); }
+    .footer__tagline {
+      font-size: 0.875rem; line-height: 1.8;
+      color: var(--text-secondary); margin-bottom: 32px; max-width: 240px;
+    }
+    .footer__newsletter { margin-bottom: 32px; }
+    .footer__newsletter label {
+      display: block; font-size: 0.7rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--text-muted); margin-bottom: 10px;
+    }
+    .footer__newsletter__row { display: flex; gap: 6px; }
+    .footer__newsletter input {
+      flex: 1; background: var(--surface-muted);
+      border: 1.5px solid var(--border); border-radius: var(--r-sm);
+      padding: 9px 12px; font-family: var(--font-body); font-size: 0.825rem;
+      color: var(--text-primary); outline: none;
+      transition: border-color 0.2s, background 0.2s; min-width: 0;
+    }
+    .footer__newsletter input::placeholder { color: var(--text-muted); }
+    .footer__newsletter input:focus {
+      border-color: var(--sky); background: var(--sky-subtle);
+    }
+    .footer__newsletter button {
+      background: var(--sky); color: #fff; border: none;
+      border-radius: var(--r-sm); padding: 9px 14px;
+      font-family: var(--font-display); font-size: 0.8rem; font-weight: 700;
+      cursor: pointer; white-space: nowrap;
+      transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+    }
+    .footer__newsletter button:hover {
+      background: var(--sky-dim);
+      box-shadow: 0 4px 16px rgba(14,165,233,0.32); transform: translateY(-1px);
+    }
+    .footer__sep { width: 36px; height: 1px; background: var(--border); margin-bottom: 20px; }
+    .footerSocial { display: flex; gap: 7px; }
+    .footerSocial__link {
+      width: 34px; height: 34px;
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: var(--r-sm); border: 1.5px solid var(--border);
+      color: var(--text-muted); background: var(--surface);
+      transition: all 0.22s var(--ease-std);
+    }
+    .footerSocial__link:hover {
+      color: var(--sky); border-color: var(--sky-border);
+      background: var(--sky-subtle); transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(14,165,233,0.14);
+    }
+    .footerNav { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; }
+    .footerCol__heading {
+      font-family: var(--font-display); font-size: 0.66rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.14em;
+      color: var(--text-muted); margin-bottom: 18px; padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .footerList { display: flex; flex-direction: column; gap: 9px; }
+    .footerList a {
+      font-size: 0.875rem; color: var(--text-secondary);
+      transition: color 0.18s var(--ease-std), padding-left 0.2s var(--ease-expo);
+      display: flex; align-items: center;
+    }
+    .footerList a:hover { color: var(--sky); padding-left: 4px; }
+    .footer__bottom {
+      position: relative; z-index: 1; border-top: 1px solid var(--border);
+      padding: 24px 0; display: flex; align-items: center;
+      justify-content: space-between; gap: 16px;
+    }
+    .footer__copy {
+      font-size: 0.78rem; color: var(--text-muted);
+      font-family: var(--font-display); letter-spacing: 0.01em;
+    }
+    .footer__legalLinks { display: flex; gap: 20px; }
+    .footer__legalLinks a {
+      font-size: 0.78rem; color: var(--text-muted);
+      transition: color 0.18s; font-family: var(--font-display);
+    }
+    .footer__legalLinks a:hover { color: var(--sky); }
+
+    /* ─── Footer responsive ─── */
+    @media (max-width: 1060px) {
+      .footer__top { grid-template-columns: 1fr; gap: 52px; }
+      .footer__tagline { max-width: 100%; }
+    }
+    @media (max-width: 800px) {
+      .footerNav { grid-template-columns: repeat(2, 1fr); gap: 32px; }
+    }
+    @media (max-width: 560px) {
+      .footer { margin-top: 80px; }
+      .footer__body { padding: 56px 0 44px; }
+      .footer__top { gap: 40px; }
+      .footerNav { grid-template-columns: 1fr 1fr; gap: 28px; }
+      .footer__bottom { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .footer__newsletter__row { flex-direction: column; }
+      .footer__newsletter button { width: 100%; justify-content: center; }
+    }
+
+    /* ════════════════════════════════════════
+       GLOBAL CONTENT HELPERS
+    ════════════════════════════════════════ */
+    .section__head {
+      max-width: 680px; margin: 0 auto 3rem; text-align: center;
+    }
+    .section__head .muted { margin-top: 0.9rem; color: var(--text-secondary); }
+    .panel p, .card p, .faqItem__a p { text-align: justify; }
+    .panel, .card { display: flex; flex-direction: column; gap: 0.75rem; }
+
+    /* ─── Reveal animations ─── */
+    .reveal {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.7s var(--ease-expo), transform 0.7s var(--ease-expo);
+    }
+    .reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+    .reveal-stagger > * {
+      opacity: 0; transform: translateY(18px);
+      transition: opacity 0.6s var(--ease-expo), transform 0.6s var(--ease-expo);
+    }
+    .reveal-stagger.is-visible > *:nth-child(1) { opacity: 1; transform: none; transition-delay: 0ms; }
+    .reveal-stagger.is-visible > *:nth-child(2) { opacity: 1; transform: none; transition-delay: 80ms; }
+    .reveal-stagger.is-visible > *:nth-child(3) { opacity: 1; transform: none; transition-delay: 160ms; }
+    .reveal-stagger.is-visible > *:nth-child(4) { opacity: 1; transform: none; transition-delay: 240ms; }
+    .reveal-stagger.is-visible > *:nth-child(5) { opacity: 1; transform: none; transition-delay: 320ms; }
+    .reveal-stagger.is-visible > *:nth-child(6) { opacity: 1; transform: none; transition-delay: 400ms; }
+  </style>
+
+  {% block extra_css %}{% endblock %}
+</head>
+
+<body class="page">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <!-- ══════════════════════════════════════
+       HEADER
+  ══════════════════════════════════════ -->
+  <header class="topbar" id="top">
+    <div class="container topbar__inner">
+
+      <!-- Brand -->
+      <a class="brand" href="{{ url_for('home') }}" aria-label="Enmett — home">
+        <img src="{{ url_for('static', filename='img/image.png') }}" alt="Enmett" class="brand__logo" />
+        <span class="brand__divider" aria-hidden="true"></span>
+        <span class="brand__sub">SAP &amp; IT</span>
+      </a>
+
+      <!-- Primary nav -->
+      <nav class="nav" id="nav" aria-label="Primary navigation">
+
+        <div class="nav__item nav__item--hasDropdown">
+          <button class="nav__link nav__toggleBtn" type="button" aria-expanded="false" aria-haspopup="true">
+            Services
+            <span class="nav__chevron" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </span>
+          </button>
+          <div class="navDropdown" role="menu">
+            <a href="{{ url_for('service_detail', slug='sap-solutions') }}" role="menuitem"><span class="nav__dot"></span>SAP Solutions</a>
+            <a href="{{ url_for('service_detail', slug='cyber-security') }}" role="menuitem"><span class="nav__dot"></span>Cyber Security</a>
+            <a href="{{ url_for('service_detail', slug='it-managed-services') }}" role="menuitem"><span class="nav__dot"></span>IT Managed Services</a>
+            <a href="{{ url_for('service_detail', slug='ai-automation') }}" role="menuitem"><span class="nav__dot"></span>AI &amp; Automation</a>
+            <a href="{{ url_for('service_detail', slug='resourcing') }}" role="menuitem"><span class="nav__dot"></span>Resourcing</a>
+          </div>
+        </div>
+
+        <div class="nav__item nav__item--hasDropdown">
+          <button class="nav__link nav__toggleBtn" type="button" aria-expanded="false" aria-haspopup="true">
+            Industry
+            <span class="nav__chevron" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </span>
+          </button>
+          <div class="navDropdown" role="menu">
+            <a href="{{ url_for('industry_detail', slug='finance') }}" role="menuitem"><span class="nav__dot"></span>Finance</a>
+            <a href="{{ url_for('industry_detail', slug='retail') }}" role="menuitem"><span class="nav__dot"></span>Retail</a>
+            <a href="{{ url_for('industry_detail', slug='hospitality') }}" role="menuitem"><span class="nav__dot"></span>Hospitality</a>
+            <a href="{{ url_for('industry_detail', slug='manufacturing') }}" role="menuitem"><span class="nav__dot"></span>Manufacturing</a>
+            <a href="{{ url_for('industry_detail', slug='oil-gas') }}" role="menuitem"><span class="nav__dot"></span>Oil &amp; Gas</a>
+            <a href="{{ url_for('industry_detail', slug='public-sector') }}" role="menuitem"><span class="nav__dot"></span>Public Sector</a>
+          </div>
+        </div>
+
+        <div class="nav__item nav__item--hasDropdown">
+          <button class="nav__link nav__toggleBtn" type="button" aria-expanded="false" aria-haspopup="true">
+            Company
+            <span class="nav__chevron" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </span>
+          </button>
+          <div class="navDropdown" role="menu">
+            <a href="{{ url_for('about') }}" role="menuitem"><span class="nav__dot"></span>About Us</a>
+            <a href="{{ url_for('leadership') }}" role="menuitem"><span class="nav__dot"></span>Leadership</a>
+            <a href="{{ url_for('locations') }}" role="menuitem"><span class="nav__dot"></span>Locations</a>
+            <a href="{{ url_for('careers') }}" role="menuitem"><span class="nav__dot"></span>Careers</a>
+          </div>
+        </div>
+
+        <div class="nav__item nav__item--hasDropdown">
+          <button class="nav__link nav__toggleBtn" type="button" aria-expanded="false" aria-haspopup="true">
+            Support
+            <span class="nav__chevron" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </span>
+          </button>
+          <div class="navDropdown" role="menu">
+            <a href="{{ url_for('contact_page') }}" role="menuitem"><span class="nav__dot"></span>Contact Us</a>
+            <a href="{{ url_for('help_faq') }}" role="menuitem"><span class="nav__dot"></span>Help &amp; FAQ</a>
+          </div>
+        </div>
+
+      </nav>
+
+      <!-- Desktop CTA -->
+      <div class="headerCta">
+        <a href="{{ url_for('help_faq') }}" class="btn btn--ghost">Help</a>
+        <a href="{{ url_for('contact_page') }}" class="btn btn--accent">
+          Get in Touch
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <!-- Mobile toggle -->
+      <button class="navToggle" id="navToggle" aria-controls="nav" aria-expanded="false" aria-label="Open navigation menu">
+        <span class="navToggle__bars" aria-hidden="true"></span>
+      </button>
+
+    </div>
+  </header>
+
+  <div class="navOverlay" id="navOverlay" aria-hidden="true"></div>
+
+  <!-- ══════════════════════════════════════
+       MAIN CONTENT
+  ══════════════════════════════════════ -->
+  <main id="main">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- ══════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════ -->
+  <footer class="footer" aria-label="Site footer">
+    <div class="footer__edge" aria-hidden="true"></div>
+    <div class="footer__orb footer__orb--a" aria-hidden="true"></div>
+    <div class="footer__orb footer__orb--b" aria-hidden="true"></div>
+
+    <div class="footer__body">
+      <div class="container">
+        <div class="footer__top">
+
+          <div class="footer__brand">
+            <img src="{{ url_for('static', filename='img/image.png') }}" alt="Enmett" class="footer__brandLogo" />
+            <p class="footer__tagline">
+              Empowering enterprises with intelligent SAP solutions, cybersecurity, and next-generation IT services.
+            </p>
+            <div class="footer__newsletter">
+              <label for="footer-email">Stay in the loop</label>
+              <div class="footer__newsletter__row">
+                <input type="email" id="footer-email" placeholder="your@email.com" autocomplete="email" />
+                <button type="button" aria-label="Subscribe">Subscribe</button>
+              </div>
+            </div>
+            <div class="footer__sep" aria-hidden="true"></div>
+            <div class="footerSocial" aria-label="Social media links">
+              <a class="footerSocial__link" href="https://www.instagram.com/enmett_official?igsh=MTVydG03YmptbWFraQ==" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37a4 4 0 1 1-7.99 1.26A4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+              </a>
+              <a class="footerSocial__link" href="#" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+              </a>
+              <a class="footerSocial__link" href="#" target="_blank" rel="noopener noreferrer" aria-label="Twitter / X">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l11.5 16h4.5L8.5 4H4z"/><path d="M20 4L4 20"/></svg>
+              </a>
+              <a class="footerSocial__link" href="#" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.94 2C5.12 20 12 20 12 20s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg>
+              </a>
+              <a class="footerSocial__link" href="#" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="footerNav">
+            <div class="footerCol">
+              <h3 class="footerCol__heading">Services</h3>
+              <ul class="footerList">
+                <li><a href="{{ url_for('service_detail', slug='sap-solutions') }}">SAP Solutions</a></li>
+                <li><a href="{{ url_for('service_detail', slug='cyber-security') }}">Cyber Security</a></li>
+                <li><a href="{{ url_for('service_detail', slug='it-managed-services') }}">IT Managed Services</a></li>
+                <li><a href="{{ url_for('service_detail', slug='ai-automation') }}">AI &amp; Automation</a></li>
+                <li><a href="{{ url_for('service_detail', slug='resourcing') }}">Resourcing</a></li>
+              </ul>
+            </div>
+            <div class="footerCol">
+              <h3 class="footerCol__heading">Industry</h3>
+              <ul class="footerList">
+                <li><a href="{{ url_for('industry_detail', slug='finance') }}">Finance</a></li>
+                <li><a href="{{ url_for('industry_detail', slug='retail') }}">Retail</a></li>
+                <li><a href="{{ url_for('industry_detail', slug='hospitality') }}">Hospitality</a></li>
+                <li><a href="{{ url_for('industry_detail', slug='manufacturing') }}">Manufacturing</a></li>
+                <li><a href="{{ url_for('industry_detail', slug='oil-gas') }}">Oil &amp; Gas</a></li>
+                <li><a href="{{ url_for('industry_detail', slug='public-sector') }}">Public Sector</a></li>
+              </ul>
+            </div>
+            <div class="footerCol">
+              <h3 class="footerCol__heading">Company</h3>
+              <ul class="footerList">
+                <li><a href="{{ url_for('about') }}">About Us</a></li>
+                <li><a href="{{ url_for('leadership') }}">Leadership</a></li>
+                <li><a href="{{ url_for('locations') }}">Locations</a></li>
+                <li><a href="{{ url_for('careers') }}">Careers</a></li>
+              </ul>
+            </div>
+            <div class="footerCol">
+              <h3 class="footerCol__heading">Support</h3>
+              <ul class="footerList">
+                <li><a href="{{ url_for('contact_page') }}">Contact Us</a></li>
+                <li><a href="{{ url_for('help_faq') }}">Help &amp; FAQ</a></li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="footer__bottom">
+        <span class="footer__copy">© <span id="year"></span> Enmett Holdings Pte. Ltd. All rights reserved.</span>
+        <div class="footer__legalLinks">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Use</a>
+          <a href="#">Cookie Settings</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ══════════════════════════════════════
+       SCRIPTS
+  ══════════════════════════════════════ -->
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script>
+    /* ─── Year ─── */
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    /* ─── Topbar scroll state ─── */
+    const topbar = document.getElementById('top');
+    const onScroll = () => topbar.classList.toggle('scrolled', window.scrollY > 16);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    /* ─── Mobile nav ─── */
+    const toggle  = document.getElementById('navToggle');
+    const nav     = document.getElementById('nav');
+    const overlay = document.getElementById('navOverlay');
+
+    function openNav() {
+      nav.classList.add('is-open');
+      overlay.classList.add('is-open');
+      document.body.classList.add('nav-open');
+      toggle.setAttribute('aria-expanded', 'true');
+      overlay.setAttribute('aria-hidden', 'false');
+    }
+    function closeNav() {
+      nav.classList.remove('is-open');
+      overlay.classList.remove('is-open');
+      document.body.classList.remove('nav-open');
+      toggle.setAttribute('aria-expanded', 'false');
+      overlay.setAttribute('aria-hidden', 'true');
+      document.querySelectorAll('.nav__item--open').forEach(el => {
+        el.classList.remove('nav__item--open');
+        el.querySelector('.nav__toggleBtn')?.setAttribute('aria-expanded', 'false');
+      });
+    }
+
+    toggle?.addEventListener('click', () =>
+      nav.classList.contains('is-open') ? closeNav() : openNav()
+    );
+    overlay?.addEventListener('click', closeNav);
+    nav?.addEventListener('click', (e) => {
+      if (e.target.closest('a') && window.innerWidth <= 960) closeNav();
+    });
+    window.addEventListener('resize', () => { if (window.innerWidth > 960) closeNav(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeNav(); });
+
+    /* ─── Dropdown logic ─── */
+    document.querySelectorAll('.nav__toggleBtn').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        const item   = btn.closest('.nav__item--hasDropdown');
+        const isOpen = item.classList.contains('nav__item--open');
+        document.querySelectorAll('.nav__item--open').forEach(el => {
+          if (el !== item) {
+            el.classList.remove('nav__item--open');
+            el.querySelector('.nav__toggleBtn')?.setAttribute('aria-expanded', 'false');
+          }
+        });
+        item.classList.toggle('nav__item--open', !isOpen);
+        btn.setAttribute('aria-expanded', String(!isOpen));
+      });
+    });
+    document.addEventListener('click', e => {
+      if (!e.target.closest('.nav__item--hasDropdown')) {
+        document.querySelectorAll('.nav__item--open').forEach(el => {
+          el.classList.remove('nav__item--open');
+          el.querySelector('.nav__toggleBtn')?.setAttribute('aria-expanded', 'false');
+        });
+      }
+    });
+
+    /* ─── Scroll reveal ─── */
+    if ('IntersectionObserver' in window) {
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const delay = Number(entry.target.dataset.delay || entry.target.dataset.revealDelay || 0);
+            setTimeout(() => entry.target.classList.add('is-visible'), delay);
+            obs.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.07, rootMargin: '0px 0px -28px 0px' });
+      document.querySelectorAll('.reveal, .reveal-stagger').forEach(el => obs.observe(el));
+    } else {
+      document.querySelectorAll('.reveal, .reveal-stagger').forEach(el =>
+        el.classList.add('is-visible')
+      );
+    }
+
+    /* ─── Newsletter stub ─── */
+    const newsletterBtn   = document.querySelector('.footer__newsletter button');
+    const newsletterInput = document.querySelector('.footer__newsletter input');
+    newsletterBtn?.addEventListener('click', () => {
+      const val = newsletterInput?.value?.trim();
+      if (!val || !val.includes('@')) { newsletterInput?.focus(); return; }
+      newsletterBtn.textContent = '✓ Subscribed';
+      newsletterBtn.style.background = '#059669';
+      newsletterInput.value = '';
+      newsletterInput.disabled = true;
+      newsletterBtn.disabled = true;
+    });
+  </script>
+
+  {% block extra_js %}{% endblock %}
+
+  <!-- Elfsight WhatsApp Chat -->
+  <script src="https://static.elfsight.com/platform/platform.js" async></script>
+  <div class="elfsight-app-b035bfe0-1415-4466-abe0-3f275636a1f4" data-elfsight-app-lazy></div>
+
+</body>
+</html>

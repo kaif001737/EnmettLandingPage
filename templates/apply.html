@@ -1,0 +1,426 @@
+{% extends "base.html" %}
+{% block title %}Apply Now | Enmett Careers{% endblock %}
+{% block meta_description %}Submit your application to join Enmett — upload your resume and share your details securely.{% endblock %}
+
+{% block extra_css %}
+  <style>
+    .applyPage {
+      padding: 80px 0 100px;
+      background: radial-gradient(circle at top, rgba(14,165,233,0.08), transparent 55%), #ffffff;
+    }
+    .applyLayout {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 40px;
+      align-items: flex-start;
+    }
+    .applyHead__eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--sky);
+      margin-bottom: 12px;
+    }
+    .applyHead__eyebrow::before {
+      content: '';
+      width: 18px;
+      height: 2px;
+      border-radius: 2px;
+      background: currentColor;
+    }
+    .applyHead h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 3.2vw, 2.6rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 12px;
+    }
+    .applyHead p {
+      color: var(--text-secondary);
+      max-width: 520px;
+      font-size: 0.98rem;
+      line-height: 1.75;
+    }
+
+    .applyFormCard {
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 32px 28px;
+      box-shadow: var(--shadow-md);
+      border: 1px solid #e2eaf3;
+    }
+    .applyFormCard h2 {
+      font-size: 1.3rem;
+      margin-bottom: 4px;
+    }
+    .applyFormCard p.muted {
+      margin-bottom: 20px;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .applyForm {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .applyForm__row {
+      display: flex;
+      gap: 18px;
+    }
+    .applyForm label {
+      display: flex;
+      flex-direction: column;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      flex: 1;
+    }
+    .applyForm label span.helper {
+      font-weight: 400;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .applyForm input,
+    .applyForm select,
+    .applyForm textarea {
+      margin-top: 8px;
+      border-radius: 10px;
+      border: 1px solid #d5e0f0;
+      padding: 11px 13px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      background: #f8fafc;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+    .applyForm textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+    .applyForm input:focus,
+    .applyForm select:focus,
+    .applyForm textarea:focus {
+      outline: none;
+      border-color: var(--sky);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(14,165,233,0.15);
+    }
+
+    .applyForm__fileLabel {
+      border-radius: 10px;
+      border: 1px dashed #c4d3ea;
+      padding: 14px 13px;
+      background: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .applyForm__fileTop {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .applyForm__fileTop span.badge {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: var(--sky-subtle);
+      color: var(--sky);
+    }
+    .applyForm__fileHint {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .applyForm__fileInput {
+      margin-top: 8px;
+      font-size: 0.82rem;
+    }
+
+    .applyForm__meta {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    .applyForm__actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 6px;
+    }
+    .applyForm__status {
+      font-size: 0.85rem;
+    }
+    .applyForm__status--success {
+      color: #059669;
+    }
+    .applyForm__status--error {
+      color: #dc2626;
+    }
+
+    .hp {
+      position: absolute;
+      left: -9999px;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
+
+    .applyAside {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .applyAside__card {
+      background: #020617;
+      border-radius: 18px;
+      padding: 24px 22px;
+      color: #e5edf8;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid rgba(148,163,184,0.5);
+    }
+    .applyAside__card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+      color: #f9fafb;
+    }
+    .applyAside__card p {
+      font-size: 0.9rem;
+      color: #a5b4cf;
+      margin-bottom: 10px;
+    }
+    .applyAside__meta {
+      font-size: 0.82rem;
+      color: #94a3b8;
+    }
+    .applyAside__meta strong {
+      color: #e5edf8;
+    }
+    .applyAside__list {
+      margin-top: 12px;
+      display: grid;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: #c7d2fe;
+    }
+    .applyAside__list span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .applyAside__list span::before {
+      content: "✓";
+      font-size: 0.8rem;
+      color: #22c55e;
+    }
+
+    @media (max-width: 960px) {
+      .applyLayout {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 640px) {
+      .applyPage {
+        padding: 64px 0 80px;
+      }
+      .applyFormCard {
+        padding: 24px 20px;
+      }
+      .applyForm__row {
+        flex-direction: column;
+      }
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+  <section class="applyPage">
+    <div class="container">
+      <div class="applyHead">
+        <p class="applyHead__eyebrow">Careers</p>
+        <h1>Apply to join Enmett</h1>
+        <p>Share a few details about yourself, the type of role you&apos;re interested in, and upload your latest resume in PDF format.</p>
+      </div>
+
+      <div class="applyLayout" style="margin-top:32px;">
+        <div class="applyFormCard">
+          <h2>Application form</h2>
+          <p class="muted">Fields marked * are required.</p>
+
+          <form id="applyForm" class="applyForm" enctype="multipart/form-data" novalidate>
+            <div class="applyForm__row">
+              <label>
+                Full name *
+                <input name="name" autocomplete="name" required />
+              </label>
+              <label>
+                Email address *
+                <input name="email" type="email" autocomplete="email" required />
+              </label>
+            </div>
+
+            <div class="applyForm__row">
+              <label>
+                Phone
+                <input name="phone" type="tel" inputmode="tel" autocomplete="tel" />
+                <span class="helper">Include country code if outside Singapore.</span>
+              </label>
+              <label>
+                Preferred location
+                <input name="location" placeholder="e.g. Singapore, Remote" />
+              </label>
+            </div>
+
+            <div class="applyForm__row">
+              <label>
+                Role of interest
+                <select name="role">
+                  <option value="">Select a role (optional)</option>
+                  <option value="SAP Consultant">SAP Consultant</option>
+                  <option value="Software Developer">Software Developer</option>
+                  <option value="Cyber Security Specialist">Cyber Security Specialist</option>
+                  <option value="Cloud Engineer">Cloud Engineer</option>
+                  <option value="Data Analyst">Data Analyst</option>
+                  <option value="IT Support Engineer">IT Support Engineer</option>
+                  <option value="Project Manager">Project Manager</option>
+                  <option value="Business Analyst">Business Analyst</option>
+                  <option value="Internship / Graduate">Internship / Graduate</option>
+                  <option value="Other">Other</option>
+                </select>
+              </label>
+              <label>
+                Years of experience
+                <select name="experience">
+                  <option value="">Select experience</option>
+                  <option value="Student / Fresh graduate">Student / Fresh graduate</option>
+                  <option value="0–2 years">0–2 years</option>
+                  <option value="3–5 years">3–5 years</option>
+                  <option value="6–10 years">6–10 years</option>
+                  <option value="10+ years">10+ years</option>
+                </select>
+              </label>
+            </div>
+
+            <label>
+              Brief introduction
+              <textarea name="message" rows="5" placeholder="Tell us a little about your background, skills, and what you&apos;re looking for."></textarea>
+            </label>
+
+            <label class="applyForm__fileLabel">
+              <div class="applyForm__fileTop">
+                <span>Resume / CV (PDF only) *</span>
+                <span class="badge">Required</span>
+              </div>
+              <div class="applyForm__fileHint">Upload your latest resume in PDF format. Max 10MB.</div>
+              <input class="applyForm__fileInput" type="file" name="resume" accept="application/pdf" required />
+            </label>
+
+            <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+            <div class="applyForm__meta">
+              <span>We&apos;ll review your application and reach out if there&apos;s a fit.</span>
+              <span>By submitting, you agree that Enmett may contact you about relevant opportunities.</span>
+            </div>
+
+            <div class="applyForm__actions">
+              <button class="btn btn--accent" type="submit">
+                Submit application
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </button>
+              <p id="applyStatus" class="applyForm__status" aria-live="polite"></p>
+            </div>
+          </form>
+        </div>
+
+        <aside class="applyAside">
+          <div class="applyAside__card">
+            <h3>What happens next?</h3>
+            <p>Our team reviews every application. If your profile matches a current or upcoming role, we&apos;ll reach out to schedule a conversation.</p>
+            <div class="applyAside__meta">
+              <p><strong>Tip:</strong> highlight SAP, cyber security, cloud, or IT delivery experience if you have it.</p>
+            </div>
+            <div class="applyAside__list">
+              <span>We usually respond within 1–2 weeks for active openings.</span>
+              <span>Your resume is kept confidential and used only for recruitment.</span>
+              <span>You can also email us directly at <a href="mailto:contact@enmett.com" style="color:#38bdf8;">contact@enmett.com</a>.</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
+{% block extra_js %}
+  <script>
+    (function () {
+      var form = document.getElementById('applyForm');
+      var statusEl = document.getElementById('applyStatus');
+      if (!form) return;
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (form.website && form.website.value) return;
+
+        var submitBtn = form.querySelector('button[type="submit"]');
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'Submitting…';
+        }
+        if (statusEl) {
+          statusEl.className = 'applyForm__status';
+          statusEl.textContent = '';
+        }
+
+        var formData = new FormData(form);
+
+        fetch('{{ url_for("apply") }}', {
+          method: 'POST',
+          body: formData
+        })
+          .then(function (res) { return res.json(); })
+          .then(function (data) {
+            if (data && data.ok) {
+              if (statusEl) {
+                statusEl.className = 'applyForm__status applyForm__status--success';
+                statusEl.textContent = '✓ Application submitted. Thank you — we will review your profile soon.';
+              }
+              form.reset();
+            } else {
+              throw new Error((data && data.error) || 'Something went wrong.');
+            }
+          })
+          .catch(function (err) {
+            if (statusEl) {
+              statusEl.className = 'applyForm__status applyForm__status--error';
+              statusEl.textContent = err && err.message ? err.message : 'Unable to submit right now. Please email your resume to contact@enmett.com.';
+            }
+          })
+          .finally(function () {
+            if (submitBtn) {
+              submitBtn.disabled = false;
+              submitBtn.innerHTML = 'Submit application <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+            }
+          });
+      });
+    })();
+  </script>
+{% endblock %}
+
